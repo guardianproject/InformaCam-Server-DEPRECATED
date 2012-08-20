@@ -1,0 +1,5 @@
+If you're pulling this from Github, you will need a LocalConstants.java file.  This file has a pointer to the project's root directory.
+
+It should be contained in /org/witness/informa/utils/LocalConstants.java
+
+WEB_ROOT should be set the absolute path of your codebase.

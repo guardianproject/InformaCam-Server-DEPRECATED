@@ -2,5 +2,6 @@
 bin/*
 gen/*
 target/*
+src/main/java/org/witness/informa/utils/LocalConstants.java
 src/main/webapp/images/session_cache/*
 local_couch/*

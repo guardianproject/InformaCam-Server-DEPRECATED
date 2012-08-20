@@ -5,9 +5,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 public interface Constants {
-	public final static String LOG = "***** InformaScratchbed: ";
-	//public final static String WEB_ROOT = "/var/www/";
-	public final static String WEB_ROOT = "/Users/LvH/ORG/witness/";
+	public final static String LOG = "***** InformaCamServer: ";
+	public final static String WEB_ROOT = LocalConstants.WEB_ROOT;
 	public final static String APP_ROOT = WEB_ROOT + "InformaCam-Server/";
 	public final static String CACHE_ROOT = APP_ROOT + "src/main/webapp/images/session_cache/";
 	public final static String VIEW_ROOT = APP_ROOT + "view_templates/";
