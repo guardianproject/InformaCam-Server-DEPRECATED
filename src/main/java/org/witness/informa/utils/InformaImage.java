@@ -127,7 +127,6 @@ public class InformaImage extends File implements Informa, InformaConstants {
 		
 	}
 
-	@Override
 	public void extractMetadata(String md) {
 		try {
 			informa = (JSONObject) new JSONTokener(md).nextValue();
@@ -145,18 +144,15 @@ public class InformaImage extends File implements Informa, InformaConstants {
 		createClone(new File(CACHE_ROOT), this, this.getName());
 	}
 
-	@Override
 	public void extractMetadata() {
 		
 	}
 	
-	@Override
 	public int getIntegrityRating() {
 		// TODO: get integrity rating!
 		return 100;
 	}
 	
-	@Override
 	public File createClone(File dir, File original, String cloneName) {
 		File clone = new File(dir, cloneName);
 		try {

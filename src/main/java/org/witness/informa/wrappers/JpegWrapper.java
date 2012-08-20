@@ -40,7 +40,6 @@ public class JpegWrapper implements Constants, InformaConstants {
 	
 	private class JpegThread implements Callable<JSONObject> {
 
-		@Override
 		public JSONObject call() throws Exception {
 			JSONObject result = new JSONObject();
 			

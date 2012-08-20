@@ -81,7 +81,6 @@ public class FfmpegWrapper implements Constants {
 	private class FfmpegThread implements Callable<JSONObject> {
 		InputStream is;
 		
-		@Override
 		public JSONObject call() {
 			
 			try {

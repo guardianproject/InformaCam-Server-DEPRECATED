@@ -1,16 +1,23 @@
 package org.witness.informa.utils;
 
+import java.io.IOException;
 import java.lang.StringBuffer;
 import java.util.ArrayList;
 
+import org.witness.informa.utils.InformaSearch.InformaTemporaryView;
+
+import sun.util.logging.resources.logging;
+
 import net.sf.json.JSONArray;
-import net.sf.json.JSONException;
 import net.sf.json.JSONObject;
-import net.sf.json.JSONSerializer;
 
 import com.fourspaces.couchdb.*;
 
-class CouchParser implements Constants {
+public class CouchParser implements Constants {
+	public interface AdHocViewListener {
+		public void viewGenerated(InformaTemporaryView view);
+	}
+	
 	private static String Quotify(String str) {
 		return "%22" + str + "%22";
 	}
@@ -75,10 +82,43 @@ class CouchParser implements Constants {
 			View v = doc.getView(view);			
 			ViewResults vr = db.view(v);
 			
-			if(!vr.isEmpty())
+			if(!vr.isEmpty()) {
 				result = getRows(vr, removal);
+				
+			}
 		} catch(NullPointerException e) {
 			Log(Couch.ERROR, e.toString());
+		}
+		
+		return result;
+	}
+	
+	public static ArrayList<JSONObject> getRows(InformaSearch search, Database db, InformaTemporaryView tempView, String[] removal) {
+		ArrayList<JSONObject> result = null;
+		try {
+			// create a new view in derivatives/_design/search (if that does not exist)
+			ViewResults vr = db.getAllDesignDocuments();
+			
+			if(!vr.isEmpty()) {
+				ArrayList<String> designs = new ArrayList<String>();
+				JSONArray rows = (JSONArray) vr.get("rows");
+				Object[] obj = rows.toArray();
+				for(Object o : obj)
+					designs.add(String.valueOf(((JSONObject) o).get("key")));
+				
+				if(!designs.contains("_design/search")) {
+					// add this view
+					db.saveDocument(new Document(), "_design/search");
+				}
+				
+				//((AdHocViewListener) search).viewGenerated(tempView);
+			}
+		} catch(NullPointerException e) {
+			Log(Couch.ERROR, e.toString());
+			e.printStackTrace();
+		} catch (IOException e) {
+			Log(Couch.ERROR, e.toString());
+			e.printStackTrace();
 		}
 		
 		return result;

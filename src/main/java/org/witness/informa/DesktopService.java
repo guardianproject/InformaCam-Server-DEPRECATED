@@ -5,7 +5,6 @@ import org.cometd.bayeux.server.BayeuxServer;
 import org.cometd.bayeux.server.ServerSession;
 import org.cometd.server.AbstractService;
 import org.witness.informa.utils.Constants.DC.Attempts;
-import org.witness.informa.utils.Constants.Media;
 import org.witness.informa.utils.Constants;
 import org.witness.informa.utils.InformaMessage;
 import org.witness.informa.utils.MediaLoader;
@@ -16,6 +15,12 @@ public class DesktopService extends AbstractService implements Constants {
 	public DesktopService(BayeuxServer bayeux) {
 		super(bayeux, "desktopConnection");
 		addService("/service/desktopConnection", "desktopResponse");
+		
+		if(ml == null)
+			ml = new MediaLoader();
+		
+		ml.getDerivatives();
+		
 	}
 	
 	public void desktopResponse(ServerSession remote, Message message) {

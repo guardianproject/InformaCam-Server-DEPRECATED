@@ -6,14 +6,17 @@ import java.util.Map;
 
 public interface Constants {
 	public final static String LOG = "***** InformaScratchbed: ";
-	public final static String WEB_ROOT = "/var/www/";
-	public final static String APP_ROOT = WEB_ROOT + "InformaCamDesktop/";
+	//public final static String WEB_ROOT = "/var/www/";
+	public final static String WEB_ROOT = "/Users/LvH/ORG/witness/";
+	public final static String APP_ROOT = WEB_ROOT + "InformaCam-Server/";
 	public final static String CACHE_ROOT = APP_ROOT + "src/main/webapp/images/session_cache/";
+	public final static String VIEW_ROOT = APP_ROOT + "view_templates/";
 	
 	public final static class Couch {
 		public static String ERROR = "COUCH ERROR";
 		public static String INFO = "COUCH INFO";
 		public static String DEBUG = "COUCH DEBUG";
+		public final static String VAR_SENTINEL = "@VARS";
 		
 		public final static class Documents {
 			public final static String _ID = "_id";
@@ -33,6 +36,21 @@ public interface Constants {
 			
 			public final static class Sources {
 				
+			}
+			
+			public final static class Derivatives {
+				public final static class Geolocate {
+					public final static String RADIUS = "radius";
+					public final static String QUERY_LAT = "queryLat";
+					public final static String QUERY_LNG = "queryLng";
+				}
+				
+				public final static String GET_ALL = "name";
+				
+			}
+			
+			public final static class TempViews {
+				public final static String GEOLOCATE = VIEW_ROOT + "geolocate.json";
 			}
 		}
 		

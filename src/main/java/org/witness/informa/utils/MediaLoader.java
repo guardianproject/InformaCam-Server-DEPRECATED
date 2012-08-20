@@ -8,7 +8,9 @@ import java.io.InputStreamReader;
 import java.lang.reflect.Constructor;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.ExecutionException;
 
@@ -18,7 +20,10 @@ import javax.swing.filechooser.FileFilter;
 import net.sf.json.JSONException;
 import net.sf.json.JSONObject;
 
+import org.witness.informa.utils.Constants.Couch.Views;
+import org.witness.informa.utils.Constants.Couch.Views.Derivatives.Geolocate;
 import org.witness.informa.utils.Constants.Media.MediaTypes;
+import org.witness.informa.utils.InformaSearch.InformaTemporaryView;
 import org.witness.informa.wrappers.FfmpegWrapper;
 import org.witness.informa.wrappers.JpegWrapper;
 
@@ -27,23 +32,28 @@ import com.fourspaces.couchdb.*;
 public class MediaLoader implements Constants {
 	InformaVideo video;
 	InformaImage image;
+	public InformaSearch search;
 	
 	public int mediaType = 0;
 	
-	public Database dbSubmissions, dbSources;
-	public Document docSubmissions, docSources;
+	public Database dbSubmissions, dbSources, dbDerivatives;
+	public Document docSubmissions, docSources, docDerivatives;
 	
 	public MediaLoader() {
 		Session dbSession = new Session("localhost", 5984);
 		dbSubmissions = dbSession.getDatabase("submissions");
 		dbSources = dbSession.getDatabase("sources");
+		dbDerivatives = dbSession.getDatabase("derivatives");
 		
 		try {
 			docSubmissions = dbSubmissions.getDocument("_design/submissions");
 			docSources = dbSources.getDocument("_design/sources");
+			docDerivatives = dbDerivatives.getDocument("_design/derivatives");
 		} catch(IOException e) {
 			CouchParser.Log(Couch.ERROR, e.toString());
 		}
+		
+		search = new InformaSearch(dbDerivatives, docDerivatives);
 	}
 	
 	private void initVideo(String path) throws Exception {
@@ -58,6 +68,17 @@ public class MediaLoader implements Constants {
 	
 	public ArrayList<JSONObject> getSubmissions() {
 		return CouchParser.getRows(dbSubmissions, docSubmissions, Couch.Views.Submissions.GET_BY_MEDIA_TYPE, new String[] {"hashed_pgp"});
+	}
+	
+	public void getDerivatives() {
+		Map<String, Object> keyValPair = new HashMap<String, Object>();
+		keyValPair.put(Geolocate.RADIUS, 5);
+		keyValPair.put(Geolocate.QUERY_LAT, 40.78);
+		keyValPair.put(Geolocate.QUERY_LNG, -73.9745873);
+		
+		search.geolocate(keyValPair);
+		
+		
 	}
 	
 	public ArrayList<JSONObject> getSources() {

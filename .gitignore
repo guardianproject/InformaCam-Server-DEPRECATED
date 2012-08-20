@@ -1,0 +1,6 @@
+.DS_Store
+bin/*
+gen/*
+target/*
+src/main/webapp/images/session_cache/*
+local_couch/*
