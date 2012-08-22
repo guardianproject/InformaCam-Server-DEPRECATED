@@ -12,9 +12,10 @@ function clearUi() {
 
 function toggleValue(el, isMulti) {
 	var group = $(el).parent();
+	var type = $(el).get(0).tagName;
 	$(el).addClass('selected');
 	if(isMulti == undefined) {
-		$.each(group.children('a'), function() {
+		$.each(group.children(type), function() {
 			if(this != el)
 				$(this).removeClass('selected');
 		});
@@ -298,6 +299,24 @@ function populateTable(data, root) {
 	$("#ui_submissions").css('display','block');
 }
 
+function listenForListInput(el) {
+	var listHolderName = $(el).attr('id') + "_holder"
+	var listHolder = $("#" + listHolderName);
+	$(el).keypress(function(key) {
+		if(key.which == 13) {
+			$(listHolder).append(
+				$(document.createElement('a'))
+					.html($(el).val() + " [x]")
+					.addClass('smallList')
+					.click(function() {
+						$(this).remove();
+					})
+			);
+			$(el).val('');
+		}
+	});
+}
+
 function initLayout() {
 	header = $('#ic_header');
 	nav = $('#ic_nav');
@@ -323,6 +342,8 @@ function initLayout() {
 	
 	spinner_holder = $("#spinner_holder");
 	spinner_holder.css('margin-top', $(window).height()/2 - 100);
+	
+	$("#search_refine_options").css('height', $(window).height()/1.4);
 	
 	ui = {
 		media: {
@@ -419,6 +440,10 @@ function initLayout() {
 		$(".ic_toMedia").live('click', function() {
 			window.location = '#media/';	//why does sammy.redirect not work?
 			selectSubmission(this);
+		});
+		
+		$(".ic_smallListInput").live('focus', function() {
+			listenForListInput($(this));
 		});
 		
 	});

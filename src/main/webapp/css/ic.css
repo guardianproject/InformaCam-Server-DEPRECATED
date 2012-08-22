@@ -429,6 +429,16 @@ div.ic_toggle a.selected {
 	background-image:none;
 }
 
+#search_refine_options ul li.selected a {
+	color:#c6ff00;
+}
+
+#search_refine_options {
+	overflow-y:scroll;
+	overflow-x:hidden;
+	padding-right:30px;
+}
+
 #search_refine_options ul, #search_refine_options input {
 	margin:0 0 10px 0;
 	width:98%;
@@ -456,6 +466,20 @@ div.ic_toggle a.selected {
 
 #search_refine_options a.ic_as_li {
 	padding:0;
+}
+
+div.ic_smallListHolder {
+	padding:0;
+	margin:0 0 20px 0;
+}
+
+a.smallList {
+	color:#ffffff;
+	background-color:#999999;
+	cursor:pointer;
+	font-size:0.5em;
+	padding:2px 5px;
+	margin:0 5px;
 }
 
 /*--------------------------------------

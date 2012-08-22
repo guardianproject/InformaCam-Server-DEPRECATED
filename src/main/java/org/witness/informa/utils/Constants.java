@@ -63,6 +63,7 @@ public interface Constants {
 			public final static int CHOOSE_MEDIA = 99;
 			public final static int LOAD_MEDIA = 100;
 			public final static int VIEW_SUBMISSIONS = 102;
+			public final static int SEARCH = 103;
 		}
 		
 		public final static class Commands {
@@ -70,6 +71,7 @@ public interface Constants {
 			public final static int LOAD_MEDIA = DC.Attempts.LOAD_MEDIA;
 			public final static int WAIT_FOR_PROCESS = 101;
 			public final static int VIEW_SUBMISSIONS = DC.Attempts.VIEW_SUBMISSIONS;
+			public final static int LOAD_SEARCH_RESULTS = DC.Attempts.SEARCH;
 		}
 		
 		public final static class Keys {
@@ -110,15 +112,15 @@ public interface Constants {
 	}
 	
 	public final static class Media {
-		public final static String PATH_START =  "/Users/LvH/ORG/witness/SSC/test_img/";
 		public final static String LOCAL_PATH = "localPath";
 		
-		public final static String[] EXTENSIONS = {"jpeg", "jpg", "mov", "mp4", "mkv"};
+		public final static String[] EXTENSIONS = {"jpeg", "jpg", "mov", "mp4", "mkv", "ogg"};
 		public final static class MimeTypes {
 			public final static int JPEG = 100;
 			public final static int MP4 = 101;
 			public final static int MOV = 102;
 			public final static int MKV = 103;
+			public final static int OGG = 104;
 		}
 		public final static Map<String, Integer> MIME_TYPES;
 		static {
@@ -128,6 +130,7 @@ public interface Constants {
 			mime_types.put(".mov", Media.MimeTypes.MOV);
 			mime_types.put(".mp4", Media.MimeTypes.MP4);
 			mime_types.put(".mkv", Media.MimeTypes.MKV);
+			mime_types.put(".ogg", Media.MimeTypes.OGG);
 			MIME_TYPES = Collections.unmodifiableMap(mime_types);
 		}
 		

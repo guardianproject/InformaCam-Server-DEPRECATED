@@ -226,7 +226,7 @@
 			</h1>
 			<table class="ic_search ic_table">
 				<tr>
-					<td width="20%">
+					<td width="25%">
 						<div id="search_refine_options">
 							<h2>
 								<script type="text/javascript">
@@ -245,20 +245,20 @@
 									document.write(Search.By_Keyword.LABEL);
 								</script>
 							</h3>
-							<input id="media_keyword" type="text" />
-							
+							<input id="media_keyword" type="text" class="ic_smallListInput" />
+							<div id="media_keyword_holder" class="ic_smallListHolder"></div>
 							<h3>
 								<script type="text/javascript">
 									document.write(Search.By_Type.LABEL);
 								</script>
 							</h3>
 							<ul id="media_type">
-								<li><a onclick="">
+								<li onclick="toggleValue(this)"><a>
 									<script type="text/javascript">
 										document.write(Search.By_Type.Fields.IMAGE);
 									</script>
 								</a></li>
-								<li><a onclick="">
+								<li onclick="toggleValue(this)"><a onclick="">
 									<script type="text/javascript">
 										document.write(Search.By_Type.Fields.VIDEO);
 									</script>
@@ -271,27 +271,27 @@
 								</script>
 							</h3>
 							<ul id="media_timeframe">
-								<li><a onclick="">
+								<li onclick="toggleValue(this)"><a onclick="">
 									<script type="text/javascript">
 										document.write(Search.By_Timeframe.Fields.PAST_24_HOURS);
 									</script>
 								</a></li>
-								<li><a onclick="">
+								<li onclick="toggleValue(this)"><a onclick="">
 									<script type="text/javascript">
 										document.write(Search.By_Timeframe.Fields.PAST_WEEK);
 									</script>
 								</a></li>
-								<li><a onclick="">
+								<li onclick="toggleValue(this)"><a onclick="">
 									<script type="text/javascript">
 										document.write(Search.By_Timeframe.Fields.PAST_MONTH);
 									</script>
 								</a></li>
-								<li><a onclick="">
+								<li onclick="toggleValue(this)"><a onclick="">
 									<script type="text/javascript">
 										document.write(Search.By_Timeframe.Fields.PAST_YEAR);
 									</script>
 								</a></li>
-								<li><a onclick="">
+								<li onclick="toggleValue(this)"><a onclick="">
 									<script type="text/javascript">
 										document.write(Search.By_Timeframe.Fields.CUSTOM_RANGE);
 									</script>

@@ -18,9 +18,6 @@ public class DesktopService extends AbstractService implements Constants {
 		
 		if(ml == null)
 			ml = new MediaLoader();
-		
-		ml.getDerivatives();
-		
 	}
 	
 	public void desktopResponse(ServerSession remote, Message message) {

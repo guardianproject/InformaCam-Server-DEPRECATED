@@ -5,7 +5,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.lang.reflect.Constructor;
+import java.net.MalformedURLException;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -14,20 +14,19 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.ExecutionException;
 
-import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileFilter;
 
 import net.sf.json.JSONException;
 import net.sf.json.JSONObject;
 
-import org.witness.informa.utils.Constants.Couch.Views;
+import org.ektorp.*;
+import org.ektorp.http.HttpClient;
+import org.ektorp.http.StdHttpClient;
+import org.ektorp.impl.StdCouchDbConnector;
+import org.ektorp.impl.StdCouchDbInstance;
+
 import org.witness.informa.utils.Constants.Couch.Views.Derivatives.Geolocate;
 import org.witness.informa.utils.Constants.Media.MediaTypes;
-import org.witness.informa.utils.InformaSearch.InformaTemporaryView;
-import org.witness.informa.wrappers.FfmpegWrapper;
-import org.witness.informa.wrappers.JpegWrapper;
-
-import com.fourspaces.couchdb.*;
 
 public class MediaLoader implements Constants {
 	InformaVideo video;
@@ -36,55 +35,58 @@ public class MediaLoader implements Constants {
 	
 	public int mediaType = 0;
 	
-	public Database dbSubmissions, dbSources, dbDerivatives;
-	public Document docSubmissions, docSources, docDerivatives;
+	StdCouchDbConnector dbSources, dbDerivatives;
+	ViewQuery docSources, docDerivatives;
 	
 	public MediaLoader() {
-		Session dbSession = new Session("localhost", 5984);
-		dbSubmissions = dbSession.getDatabase("submissions");
-		dbSources = dbSession.getDatabase("sources");
-		dbDerivatives = dbSession.getDatabase("derivatives");
-		
+		StdCouchDbInstance db = null;
 		try {
-			docSubmissions = dbSubmissions.getDocument("_design/submissions");
-			docSources = dbSources.getDocument("_design/sources");
-			docDerivatives = dbDerivatives.getDocument("_design/derivatives");
-		} catch(IOException e) {
+			HttpClient couchClient = new StdHttpClient.Builder()
+				.url("http://localhost:5984")
+				.username(LocalConstants.USERNAME)
+				.password(LocalConstants.PASSWORD)
+				.build();
+			db = new StdCouchDbInstance(couchClient);
+		} catch (MalformedURLException e) {
 			CouchParser.Log(Couch.ERROR, e.toString());
+			e.printStackTrace();
+			
 		}
 		
+		
+		dbSources = new StdCouchDbConnector("sources", db);
+		dbDerivatives = new StdCouchDbConnector("derivatives", db);
+		
+		docSources = new ViewQuery().designDocId("_design/sources");
+		docDerivatives = new ViewQuery().designDocId("_design/derivatives");
+				
 		search = new InformaSearch(dbDerivatives, docDerivatives);
 	}
 	
+	@SuppressWarnings("unused")
 	private void initVideo(String path) throws Exception {
 		video = new InformaVideo(path);
 		image = null;
 	}
 	
+	@SuppressWarnings("unused")
 	private void initImage(String path) throws Exception {
 		image = new InformaImage(path);
 		video = null;
 	}
 	
 	public ArrayList<JSONObject> getSubmissions() {
-		return CouchParser.getRows(dbSubmissions, docSubmissions, Couch.Views.Submissions.GET_BY_MEDIA_TYPE, new String[] {"hashed_pgp"});
-	}
-	
-	public void getDerivatives() {
-		Map<String, Object> keyValPair = new HashMap<String, Object>();
-		keyValPair.put(Geolocate.RADIUS, 5);
-		keyValPair.put(Geolocate.QUERY_LAT, 40.78);
-		keyValPair.put(Geolocate.QUERY_LNG, -73.9745873);
-		
-		search.geolocate(keyValPair);
-		
-		
+		return CouchParser.getRows(dbDerivatives, docDerivatives, Couch.Views.Submissions.GET_BY_MEDIA_TYPE, new String[] {"hashed_pgp"});
 	}
 	
 	public ArrayList<JSONObject> getSources() {
 		ArrayList<JSONObject> sourcesList = new ArrayList<JSONObject>();
 		
 		return sourcesList;
+	}
+	
+	public ArrayList<JSONObject> getSearchResults(Map<String, Object> searchParams) {
+		return search.init(searchParams);
 	}
 	
 	public JSONObject loadMedia(String path) {

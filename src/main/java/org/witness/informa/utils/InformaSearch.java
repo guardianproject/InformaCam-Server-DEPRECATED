@@ -1,8 +1,12 @@
 package org.witness.informa.utils;
 
 import java.io.BufferedReader;
+import java.io.DataInputStream;
+import java.io.File;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -11,49 +15,41 @@ import java.util.Map.Entry;
 
 import net.sf.json.JSONObject;
 
+import org.ektorp.ViewQuery;
+import org.ektorp.impl.StdCouchDbConnector;
 import org.witness.informa.utils.Constants.Couch.Views.TempViews;
-import org.witness.informa.utils.CouchParser.AdHocViewListener;
 
-import com.fourspaces.couchdb.AdHocView;
-import com.fourspaces.couchdb.Database;
-import com.fourspaces.couchdb.Document;
-
-public class InformaSearch implements AdHocViewListener, Constants {
+public class InformaSearch implements Constants {
 	List<InformaTemporaryView> viewCache;
-	Database db;
-	Document doc;
-	
-	String test;
-	
-	public InformaSearch(Database db, Document doc) {
+	StdCouchDbConnector db;
+	ViewQuery doc;
+		
+	public InformaSearch(StdCouchDbConnector db, ViewQuery doc) {
 		this.db = db;
 		this.doc = doc;
+	}
+	
+	public ArrayList<JSONObject> init(Map<String, Object> params) {
+		ArrayList<JSONObject> result = null;
 		
-		test = "function(doc) {if(doc.location) {var queryLat = 40.78;var queryLng = -73.9745873;var radius = 5;" +
-				"var R = 6371;var lat = doc.location[0];var lng = doc.location[1];" +
-				"var deltaLat = (queryLat-lat) * Math.PI / 180;var deltaLng = (queryLng-lng) * Math.PI / 180;" +
-				"var compLat1 = lat * Math.PI / 180;var compLat2 = queryLat * Math.PI / 180;" +
-				"var a = Math.sin(deltaLat/2) * Math.sin(deltaLat/2) +Math.sin(deltaLng/2) * Math.sin(deltaLng/2) *" +
-				"Math.cos(compLat1) * Math.cos(compLat2);var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));" +
-				"var d = R * c;if(d <= radius) {var res = {};res['distance'] = d;" +
-				"for(key in doc)res[key] = doc[key];emit(doc._id, res);}}}";
-
+		return result;
 	}
 	
 	public void geolocate(Map<String, Object> keyValPair) {
 		InformaTemporaryView itv = new InformaTemporaryView(TempViews.GEOLOCATE, keyValPair);
 	}
 	
-	public void viewGenerated(InformaTemporaryView view) {
-		if(viewCache == null)
-			viewCache = new ArrayList<InformaTemporaryView>();
+	public class InformaSearchResult {
 		
-		viewCache.add(view);
 	}
 	
-	public class InformaTemporaryView {
+	public class InformaTemporaryView implements Serializable  {
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = -5274860094221733977L;
 		Map<String, Object> keyValPair;
-		String view;
+		String view, viewHash;
 		
 		public InformaTemporaryView(String template, Map<String, Object> keyValPair) {
 			this.keyValPair = keyValPair;
@@ -80,16 +76,13 @@ public class InformaSearch implements AdHocViewListener, Constants {
 					Iterator<Entry<String, Object>> it = this.keyValPair.entrySet().iterator();
 					while(it.hasNext()) {
 						Entry<String, Object> kvp = it.next();
-						sb.append("var " + kvp.getKey() + " = " + String.valueOf(kvp.getValue()) + ";\n");
+						sb.append("var " + kvp.getKey() + " = " + String.valueOf(kvp.getValue()) + ";");
 					}
 					
 					view = view.replace(Couch.VAR_SENTINEL, sb.toString());
 				}
 				
-				
-				view = test;
-				log(view);
-				
+				viewHash = CouchParser.hashView(view);
 				build();
 			} catch (IOException e) {
 				e.printStackTrace();
@@ -99,21 +92,26 @@ public class InformaSearch implements AdHocViewListener, Constants {
 		}
 		
 		private void build() {
-			ArrayList<JSONObject> result = CouchParser.getRows(InformaSearch.this, db, this, null);
-			
-			/*
-			for(JSONObject j : result)
-				log(j.toString());
-			*/
+			ArrayList<JSONObject> results = CouchParser.getRows(InformaSearch.this, db, this, null);
+			if(results != null) {
+				if(viewCache == null)
+					viewCache = new ArrayList<InformaTemporaryView>();
+				
+				viewCache.add(this);
+			}
 		}
 		
 		
-		public void save() {
-			
+		public void save() throws IOException {
+			File viewFile = new File(Constants.VIEW_ROOT, viewHash + ".search");
+			FileWriter fw = new FileWriter(viewFile);
+			fw.write(view);
+			fw.close();
 		}
 		
-		private void log(String msg) {
-			System.out.println("****************Temp View Builder************\n" + msg);
+		@SuppressWarnings("unused")
+		private void log(Object msg) {
+			System.out.println("****************Temp View Builder************: " + String.valueOf(msg));
 		}
 	}
 }
