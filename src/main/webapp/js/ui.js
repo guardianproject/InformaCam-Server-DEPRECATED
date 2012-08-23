@@ -22,6 +22,94 @@ function toggleValue(el, isMulti) {
 	}
 }
 
+function doClear(el) {
+	switch($(el).get(0).tagName.toLowerCase()) {
+		case "input":
+			$(el).val('');
+			break;
+		case "li":
+			$(el).removeClass('selected');
+			break;
+		case "a":
+			$(el).removeClass('selected');
+			break;
+		case "div":
+			$(el).empty();
+			break;
+	}
+}
+
+function doGet(el) {
+	var keyValPair = {};
+	switch($(el).get(0).tagName.toLowerCase()) {
+		case "input":
+			if($(el).val() != '') {
+				keyValPair[$(el).attr('optionKey')] = $(el).val();
+			} else
+				keyValPair = null;
+			break;
+		case "li":
+			keyValPair[$(el).attr('optionKey')] = $(el).attr('optionValue');
+			break;
+		case "a":
+			keyValPair[$(el).attr('optionKey')] = $(el).attr('optionValue');
+			break;
+		case "div":
+			var key = $(el).attr('optionKey');
+			var vals = new Array;
+			$.each($(el).children('a.smallList'), function() {
+				vals.push($(this).html().replace(" [x]",""));
+			});
+			if(vals.length > 0)
+				keyValPair[key] = vals;
+			else
+				keyValPair = null;
+			break;
+	}
+	
+	return keyValPair;
+}
+
+function getOptions(elName) {
+	var el = $("#" + elName);
+	var targetedClasses = ["ic_smallListInput", "ic_smallListHolder", "selected"];
+	var options = new Array;
+	
+	$.each($(el).children(), function() {
+		var child = this;
+		if(jQuery.inArray($(child).attr('class'), targetedClasses) != -1) {
+			var returnedOption = doGet(child);
+			if(returnedOption != null) 
+				options.push(returnedOption);
+		}
+		$.each($(child).children(), function() {
+			if(jQuery.inArray($(this).attr('class'), targetedClasses) != -1) {
+				var returnedOption = doGet(this);
+				if(returnedOption != null) 
+					options.push(returnedOption);
+			}
+		});
+	});
+	
+	return options;
+}
+
+function clearOptions(elName) {
+	var el = $("#" + elName);
+	var targetedClasses = ["ic_smallListInput", "ic_smallListHolder", "selected"];
+	$.each($(el).children(), function() {
+		var child = this;
+		if(jQuery.inArray($(child).attr('class'), targetedClasses) != -1) {
+			doClear(child);
+		}
+		$.each($(child).children(), function() {
+			if(jQuery.inArray($(this).attr('class'), targetedClasses) != -1) {
+				doClear(this);
+			}
+		});
+	});
+}
+
 function launchUi(which) {
 	clearUi();
 	which.root.css('display','block');
@@ -303,7 +391,7 @@ function listenForListInput(el) {
 	var listHolderName = $(el).attr('id') + "_holder"
 	var listHolder = $("#" + listHolderName);
 	$(el).keypress(function(key) {
-		if(key.which == 13) {
+		if(key.which == 13 && $(el).val() != '') {
 			$(listHolder).append(
 				$(document.createElement('a'))
 					.html($(el).val() + " [x]")

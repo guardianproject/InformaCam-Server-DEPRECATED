@@ -439,6 +439,15 @@ div.ic_toggle a.selected {
 	padding-right:30px;
 }
 
+#search_refine_options #search_refine_actions a {
+	cursor:pointer;
+	font-size:0.8em;
+	color:#8FAE22;
+	background-color:#c6ff00;
+	padding:0 5px;
+	border:1px solid #8FAE22;
+}
+
 #search_refine_options ul, #search_refine_options input {
 	margin:0 0 10px 0;
 	width:98%;

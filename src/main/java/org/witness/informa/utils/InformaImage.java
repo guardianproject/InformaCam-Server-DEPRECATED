@@ -76,7 +76,7 @@ public class InformaImage extends File implements Informa, InformaConstants {
 	private void createUnredactedImage() throws DecoderException, IOException, InterruptedException, ExecutionException {
 		JSONArray imageRegions = informa.getJSONObject(Keys.Informa.DATA).getJSONArray(Data.IMAGE_REGIONS);
 		
-		File clone = new File(CACHE_ROOT, getName().replace(".jpg", "_unredacted.jpg"));
+		File clone = new File(MEDIA_CACHE, getName().replace(".jpg", "_unredacted.jpg"));
 		BufferedImage copyTemplate = ImageIO.read(this);
 		Graphics2D g2D = copyTemplate.createGraphics();
 		g2D.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
@@ -92,7 +92,7 @@ public class InformaImage extends File implements Informa, InformaConstants {
 				Map<String, ArrayList<Object>> command = new HashMap<String, ArrayList<Object>>();
 				ArrayList<Object> args = new ArrayList<Object>();
 				args.add(getAbsolutePath());
-				args.add(CACHE_ROOT + getName().replace(".jpg", i + ".jpg"));
+				args.add(MEDIA_CACHE + getName().replace(".jpg", i + ".jpg"));
 				args.add(regionData);
 				args.add(regionData.length);
 				command.put(Callback.Jpeg.REVERSE_REDACTION, args);
@@ -141,7 +141,7 @@ public class InformaImage extends File implements Informa, InformaConstants {
 		
 		informa.put(Media.LOCAL_PATH, getAbsolutePath());
 		informa.put(Keys.Device.INTEGRITY, getIntegrityRating());
-		createClone(new File(CACHE_ROOT), this, this.getName());
+		createClone(new File(MEDIA_CACHE), this, this.getName());
 	}
 
 	public void extractMetadata() {

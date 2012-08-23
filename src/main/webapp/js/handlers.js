@@ -58,6 +58,7 @@ function handleDesktopServiceMessage(data) {
 			case Command.SEARCH:
 				if(data.metadata != null) {
 					// do stuff with the search results
+					removeSpinner();
 				}
 				break;
 

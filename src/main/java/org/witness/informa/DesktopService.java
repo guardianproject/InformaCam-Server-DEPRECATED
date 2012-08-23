@@ -51,6 +51,12 @@ public class DesktopService extends AbstractService implements Constants {
 				msg.put(DC.Keys.COMMAND, DC.Commands.VIEW_SUBMISSIONS);
 				msg.put(DC.Keys.METADATA, ml.getSubmissions());
 				break;
+			case Attempts.SEARCH:
+				if(ml == null)
+					ml = new MediaLoader();
+				
+				msg.put(DC.Keys.COMMAND, DC.Commands.LOAD_SEARCH_RESULTS);
+				msg.put(DC.Keys.METADATA, ml.getSearchResults(msg.opts));
 			}
 		}
 		

@@ -11,11 +11,11 @@ var Command = {
 
 var media;
 var MediaTypes = {
-	VIDEO: 102,
-	IMAGE: 101,
+	VIDEO: 401,
+	IMAGE: 400,
 	Names: {
-		102: MediaTypes_str.VIDEO,
-		101: MediaTypes_str.IMAGE
+		401: MediaTypes_str.VIDEO,
+		400: MediaTypes_str.IMAGE
 	}
 };
 
@@ -83,11 +83,39 @@ var Styles = {
 	}
 };
 
+var searchQuery;
+var SearchParameters = {
+	KEYWORDS: 299,
+	Type: {
+		IMAGE: MediaTypes.IMAGE,
+		VIDEO: MediaTypes.VIDEO
+	},
+	Timeframe: {
+		PAST_24_HOURS: 300,
+		PAST_WEEK: 301,
+		PAST_MONTH: 302,
+		PAST_YEAR: 303,
+		CUSTOM_RANGE: 304
+	},
+	Location: {
+		RADIUS: 305,
+		LATLNG: 306
+	}
+}
+
 var ic, ui;
 var header, nav, footer, main, alert_holder, popup_holder, spinner_holder;
 var metadata_readout, media_options, media_options_menu, media_frame, media_overlay, mcx;
 var frameRatio;
 var regionsTraced = true;
+
+function isArray(object) {
+	if(typeof object == 'object') {
+		var test = object.constructor.toString().match(/array/i);
+		return(test != null);
+	}
+	return false;
+}
 
 function getNameByValue(group, value) {
 	var name;

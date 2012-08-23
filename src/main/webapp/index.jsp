@@ -24,6 +24,7 @@
 	<script type="text/javascript" src="js/sammy.js"></script>
 	<script type="text/javascript" src="js/ui.js"></script>
 	<script type="text/javascript" src="js/media.js"></script>
+	<script type="text/javascript" src="js/search.js"></script>
 	<script type="text/javascript" src="js/submissions.js"></script>
 	<link rel="stylesheet" type="text/css" href="css/ic.css" />
     <title>InformaCam - powered by The Guardian Project</title>
@@ -228,11 +229,10 @@
 				<tr>
 					<td width="25%">
 						<div id="search_refine_options">
-							<h2>
-								<script type="text/javascript">
-									document.write(Search.REFINE);
-								</script>
-							</h2>
+							<div id="search_refine_actions">
+								<a onclick="initSearch();">Search</a>
+								<a onclick="clearOptions('search_refine_options');searchQuery.clear();">Reset</a>
+							</div>
 							
 							<a onclick="" class="ic_as_li" id="media_saved_search">
 								<script type="text/javascript">
@@ -245,20 +245,20 @@
 									document.write(Search.By_Keyword.LABEL);
 								</script>
 							</h3>
-							<input id="media_keyword" type="text" class="ic_smallListInput" />
-							<div id="media_keyword_holder" class="ic_smallListHolder"></div>
+							<input optionKey="keyword" id="media_keyword" type="text" class="ic_smallListInput" />
+							<div optionKey="keyword" id="media_keyword_holder" class="ic_smallListHolder"></div>
 							<h3>
 								<script type="text/javascript">
 									document.write(Search.By_Type.LABEL);
 								</script>
 							</h3>
 							<ul id="media_type">
-								<li onclick="toggleValue(this)"><a>
+								<li optionKey="type" optionValue="400" onclick="toggleValue(this)"><a>
 									<script type="text/javascript">
 										document.write(Search.By_Type.Fields.IMAGE);
 									</script>
 								</a></li>
-								<li onclick="toggleValue(this)"><a onclick="">
+								<li optionKey="type" optionValue="401" onclick="toggleValue(this)"><a onclick="">
 									<script type="text/javascript">
 										document.write(Search.By_Type.Fields.VIDEO);
 									</script>
@@ -271,27 +271,27 @@
 								</script>
 							</h3>
 							<ul id="media_timeframe">
-								<li onclick="toggleValue(this)"><a onclick="">
+								<li optionKey="timeframe" optionValue="300" onclick="toggleValue(this)"><a onclick="">
 									<script type="text/javascript">
 										document.write(Search.By_Timeframe.Fields.PAST_24_HOURS);
 									</script>
 								</a></li>
-								<li onclick="toggleValue(this)"><a onclick="">
+								<li optionKey="timeframe" optionValue="301" onclick="toggleValue(this)"><a onclick="">
 									<script type="text/javascript">
 										document.write(Search.By_Timeframe.Fields.PAST_WEEK);
 									</script>
 								</a></li>
-								<li onclick="toggleValue(this)"><a onclick="">
+								<li optionKey="timeframe" optionValue="302" onclick="toggleValue(this)"><a onclick="">
 									<script type="text/javascript">
 										document.write(Search.By_Timeframe.Fields.PAST_MONTH);
 									</script>
 								</a></li>
-								<li onclick="toggleValue(this)"><a onclick="">
+								<li optionKey="timeframe" optionValue="303" onclick="toggleValue(this)"><a onclick="">
 									<script type="text/javascript">
 										document.write(Search.By_Timeframe.Fields.PAST_YEAR);
 									</script>
 								</a></li>
-								<li onclick="toggleValue(this)"><a onclick="">
+								<li optionKey="timeframe" optionValue="304" onclick="toggleValue(this)"><a onclick="">
 									<script type="text/javascript">
 										document.write(Search.By_Timeframe.Fields.CUSTOM_RANGE);
 									</script>
@@ -303,7 +303,8 @@
 									document.write(Search.By_Location.LABEL);
 								</script>
 							</h3>
-							<input id="media_location"  class="hinted" type="text" />
+							<input optionKey="location" id="media_location"  type="text" class="ic_smallListInput" />
+							<div optionKey="location" id="media_location_holder" class="ic_smallListHolder"></div>
 							<a class="ic_as_li" onclick="">
 								<script type="text/javascript">
 									document.write(Search.By_Location.Fields.MAP);

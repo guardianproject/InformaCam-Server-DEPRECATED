@@ -8,8 +8,9 @@ public interface Constants {
 	public final static String LOG = "***** InformaCamServer: ";
 	public final static String WEB_ROOT = LocalConstants.WEB_ROOT;
 	public final static String APP_ROOT = WEB_ROOT + "InformaCam-Server/";
-	public final static String CACHE_ROOT = APP_ROOT + "src/main/webapp/images/session_cache/";
+	public final static String MEDIA_CACHE = APP_ROOT + "src/main/webapp/images/session_cache/";
 	public final static String VIEW_ROOT = APP_ROOT + "view_templates/";
+	public final static String VIEW_CACHE = VIEW_ROOT + "caches/";
 	
 	public final static class Couch {
 		public static String ERROR = "COUCH ERROR";
@@ -111,6 +112,77 @@ public interface Constants {
 		}
 	}
 	
+	public final static class Search {
+		public final static class Parameters {
+			public final static Map<String, Integer> KEYS;
+			static {
+				Map<String, Integer> keys = new HashMap<String, Integer>();
+				keys.put(Search.Parameters.Keywords.TAG, Search.Parameters.Keywords.KEY);
+				keys.put(Search.Parameters.Type.TAG, Search.Parameters.Type.KEY);
+				keys.put(Search.Parameters.Timeframe.TAG, Search.Parameters.Timeframe.KEY);
+				keys.put(Search.Parameters.Location.TAG, Search.Parameters.Location.KEY);
+				KEYS = Collections.unmodifiableMap(keys);
+			}
+			
+			public final static class Keywords {
+				public final static String TAG = "keyword";
+				public final static int KEY = 299;
+			}
+			
+			public final static class Type {
+				public final static int KEY = 298;
+				public final static String TAG = "type";
+				
+				public final static int IMAGE = Media.MediaTypes.IMAGE;
+				public final static int VIDEO = Media.MediaTypes.VIDEO;
+				public final static Map<String, Integer> TYPES;
+				static {
+					Map<String, Integer> types = new HashMap<String, Integer>();
+					types.put("IMAGE", Search.Parameters.Type.IMAGE);
+					types.put("VIDEO", Search.Parameters.Type.VIDEO);
+					TYPES = Collections.unmodifiableMap(types);
+				}
+			}
+			
+			public final static class Timeframe {
+				public final static int KEY = 297;
+				public final static String TAG = "timeframe";
+				
+				public final static int PAST_24_HOURS = 300;
+				public final static int PAST_WEEK = 301;
+				public final static int PAST_MONTH = 302;
+				public final static int PAST_YEAR = 303;
+				public final static int CUSTOM_RANGE = 304;
+				public final static Map<String, Integer> TIMEFRAMES;
+				static {
+					Map<String, Integer> timeframes = new HashMap<String, Integer>();
+					timeframes.put("PAST_24_HOURS", Search.Parameters.Timeframe.PAST_24_HOURS);
+					timeframes.put("PAST_WEEK", Search.Parameters.Timeframe.PAST_WEEK);
+					timeframes.put("PAST_MONTH", Search.Parameters.Timeframe.PAST_MONTH);
+					timeframes.put("PAST_YEAR", Search.Parameters.Timeframe.PAST_YEAR);
+					timeframes.put("CUSTOM_RANGE", Search.Parameters.Timeframe.CUSTOM_RANGE);
+					TIMEFRAMES = Collections.unmodifiableMap(timeframes);
+				}
+			}
+			
+			public final static class Location {
+				public final static int KEY = 296;
+				public final static String TAG = "location";
+				
+				public final static int RADIUS = 305;
+				public final static int LATLNG = 306;
+				public final static Map<String, Integer> LOCATION_PARAMETERS;
+				static {
+					Map<String, Integer> location_parameters = new HashMap<String, Integer>();
+					location_parameters.put("RADIUS", Search.Parameters.Location.RADIUS);
+					location_parameters.put("LATLNG", Search.Parameters.Location.LATLNG);
+					LOCATION_PARAMETERS = Collections.unmodifiableMap(location_parameters);
+				}
+			}
+		}
+		
+	}
+	
 	public final static class Media {
 		public final static String LOCAL_PATH = "localPath";
 		
@@ -136,8 +208,8 @@ public interface Constants {
 		
 		public final static String MEDIA_TYPE = "mediaType";
 		public final static class MediaTypes {
-			public final static int VIDEO = 200;
-			public final static int IMAGE = 201;
+			public final static int VIDEO = 401;
+			public final static int IMAGE = 400;
 		}
 		
 		public final static String DIMENSIONS = "dimensions";

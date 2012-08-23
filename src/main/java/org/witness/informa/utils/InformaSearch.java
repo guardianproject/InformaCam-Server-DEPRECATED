@@ -31,7 +31,28 @@ public class InformaSearch implements Constants {
 	
 	public ArrayList<JSONObject> init(Map<String, Object> params) {
 		ArrayList<JSONObject> result = null;
-		
+		Iterator<Entry<String, Object>> pIt = params.entrySet().iterator();
+		while(pIt.hasNext()) {
+			Entry<String, Object> param = pIt.next();
+			String value = String.valueOf(param.getValue());
+			switch(Search.Parameters.KEYS.get(param.getKey())) {
+			case Search.Parameters.Keywords.KEY:
+				
+				String[] keywords = value.subSequence(1, value.length() - 1).toString().split(",");
+				for(String k : keywords)
+					CouchParser.Log("keyword", k);
+				
+				break;
+			case Search.Parameters.Type.KEY:
+				int type = Integer.parseInt(value);
+				break;
+			case Search.Parameters.Timeframe.KEY:
+				int timeframe = Integer.parseInt(value);
+				break;
+			case Search.Parameters.Location.KEY:
+				break;
+			}
+		}
 		return result;
 	}
 	
@@ -103,7 +124,11 @@ public class InformaSearch implements Constants {
 		
 		
 		public void save() throws IOException {
-			File viewFile = new File(Constants.VIEW_ROOT, viewHash + ".search");
+			File viewCache = new File(VIEW_CACHE);
+			if(!viewCache.exists())
+				viewCache.mkdir();
+			
+			File viewFile = new File(viewCache, viewHash + ".search");
 			FileWriter fw = new FileWriter(viewFile);
 			fw.write(view);
 			fw.close();
