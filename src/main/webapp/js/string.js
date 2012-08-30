@@ -187,7 +187,7 @@ var Search = {
 	MAIN_TITLE: "Search",
 	REFINE: "Refine",
 	By_Saved_Search: {
-		LABEL: "Load saved search..."
+		LABEL: "Load"
 	},
 	By_Keyword:  {
 		LABEL: "By Keyword"

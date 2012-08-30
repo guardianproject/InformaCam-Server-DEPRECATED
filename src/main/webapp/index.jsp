@@ -232,13 +232,12 @@
 							<div id="search_refine_actions">
 								<a onclick="initSearch();">Search</a>
 								<a onclick="clearOptions('search_refine_options');searchQuery.clear();">Reset</a>
+								<a onclick="">
+									<script type="text/javascript">
+										document.write(Search.By_Saved_Search.LABEL);
+									</script>
+								</a>
 							</div>
-							
-							<a onclick="" class="ic_as_li" id="media_saved_search">
-								<script type="text/javascript">
-									document.write(Search.By_Saved_Search.LABEL);
-								</script>
-							</a>
 							
 							<h3 style="margin-top:10px;">
 								<script type="text/javascript">

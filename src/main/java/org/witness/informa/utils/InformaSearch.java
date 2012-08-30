@@ -35,6 +35,7 @@ public class InformaSearch implements Constants {
 		while(pIt.hasNext()) {
 			Entry<String, Object> param = pIt.next();
 			String value = String.valueOf(param.getValue());
+			
 			switch(Search.Parameters.KEYS.get(param.getKey())) {
 			case Search.Parameters.Keywords.KEY:
 				

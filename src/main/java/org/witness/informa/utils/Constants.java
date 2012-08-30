@@ -25,12 +25,11 @@ public interface Constants {
 		
 		public final static class Views {
 			public final static class Submissions {
-				public final static String GET_BY_HASHED_PGP = "hashed_pgp";
-				public final static String GET_BY_MEDIA_TYPE = "media_type";
+				public final static String GET_BY_SOURCE_ID = "sourceId";
+				public final static String GET_BY_MEDIA_TYPE = "mediaType";
 				public final static class GetByTimestamp {
-					public final static String RECEIVED = "timestamp_received";
-					public final static String SUBMITTED = "timestamp_submitted";
-					public final static String CREATED = "timestamp_created";
+					public final static String SUBMITTED = "timestampIndexed";
+					public final static String CREATED = "dateCreated";
 				}
 			}
 			
@@ -45,7 +44,16 @@ public interface Constants {
 					public final static String QUERY_LNG = "queryLng";
 				}
 				
-				public final static String GET_ALL = "name";
+				public final static String GET_ALL = "representation";
+				public final static String DATE_CREATED = "dateCreated";
+				public final static String SOURCE_ID = "sourceId";
+				public final static String KEYWORDS = "keywords";
+				public final static String LOCATION_ON_SAVE = "locationOnSave";
+				public final static String LOCATION = "location";
+				public final static String MEDIA_TYPE = "mediaType";
+				public final static String TIMESTAMP_INDEXED = "timestampIndexed";
+				public final static String ALIAS = "alias";
+				
 				
 			}
 			
