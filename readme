@@ -2,11 +2,15 @@ If you're pulling this from Github, you will need a LocalConstants.java file.  T
 
 It should be contained in /org/witness/informa/utils/LocalConstants.java and should look a bit like this:
 
-
 package org.witness.informa.utils;
 
 public class LocalConstants {
   public final static String WEB_ROOT = "/absolute/path/to/repo/";
-	public final static String USERNAME = "couchdb username";
-	public final static String PASSWORD = "couchdb password";
+  public final static String USERNAME = "couchdb username";
+  public final static String PASSWORD = "couchdb password";
 }
+
+You'll also need to have couchdb set up with 3 databases installed: submissions, derivatives, and sources.  Please PUT the corresponding design documents in view_templates into the databases to ready couchdb for use.
+Here's an example of how you do that:
+
+curl -X PUT -d @derivatives.json http://username:password@localhost:5984/derivatives/_design/derivatives
