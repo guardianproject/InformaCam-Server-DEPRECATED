@@ -9,7 +9,9 @@ import org.ektorp.ViewQuery;
 import org.ektorp.ViewResult;
 import org.ektorp.impl.StdCouchDbConnector;
 import org.ektorp.support.DesignDocument;
-import org.witness.informa.utils.InformaSearch.InformaTemporaryView;
+import org.witness.informa.InformaSearch;
+import org.witness.informa.InformaSearch.InformaTemporaryView;
+
 import net.sf.json.JSONObject;
 
 public class CouchParser implements Constants {
@@ -19,6 +21,29 @@ public class CouchParser implements Constants {
 	
 	private static String Arrayify(String str) {
 		return "%5B" + str + "%5D";
+	}
+	
+	public static JSONObject getRecord(StdCouchDbConnector db, ViewQuery doc, String view, Object match, String[] removal) {
+		JSONObject result = null;
+		doc.viewName(view);
+		doc.key(match);
+		
+		try {
+			ViewResult vr = db.queryView(doc);
+			result = JSONObject.fromObject(vr.getRows().get(0).getValue());
+			if(removal != null) {
+				for(String r : removal)
+					result.remove(r);
+			}
+			
+		} catch(NullPointerException e) {
+			Log(Couch.ERROR, e.toString());
+			e.printStackTrace();
+		} catch(IndexOutOfBoundsException e) {
+			Log(Couch.ERROR, e.toString());
+			e.printStackTrace();
+		}
+		return result;
 	}
 	
 	private static ArrayList<JSONObject> getRows(ViewResult vr, String[] removal) {

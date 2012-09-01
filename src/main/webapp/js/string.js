@@ -1,4 +1,4 @@
-var TimeAndDate = {
+var TimeAndDate_STR = {
 	Days: {
 		SHORT: [
 			"Mon",
@@ -50,11 +50,15 @@ var TimeAndDate = {
 	}
 };
 
-var Alerts = {
+var Alert_STR = {
 	Errors: {
 		MAIN_TITLE: "Error",
 		SELECTED_VIEW: "Sorry.  %view is not an available view.",
-		NO_METADATA: "There is no informa-styled metadata attached to this image.  Load anyway?"
+		NO_METADATA: "There is no informa-styled metadata attached to this image.  Load anyway?",
+		LOGIN_FAILURE: "Sorry, I could not log you in.  Please try again.",
+		CHANGE_PASSWORD_MISMATCH: "Your passwords don't match.  Please try again.",
+		NO_SAVED_SEARCHES: "You don't have any saved searches yet.",
+		EMPTY_SEARCH: "Please refine your search. If you'd like to see all submissions, visit the \"Submissions\" tab instead."
 	},
 	MediaLoading: {
 		MAIN_TITLE: "Media Loading...",
@@ -64,16 +68,25 @@ var Alerts = {
 	Basic: {
 		YES: "Yes",
 		NO: "No",
-		OK: "OK"
+		OK: "OK",
+		CANCEL: "Cancel"
 	},
 	Submissions: {
 		MAIN_TITLE: "No Submissions",
 		NO_NEW_SUBMISSIONS: "There are no submissions for you to view."
-		
+	},
+	Search: {
+		Prompt: {
+			MAIN_TITLE: "Save this search query",
+			TEXT: "Please give a title to your search query. It will be available to you every time you are logged in."
+		},
+		SavedSearches: {
+			MAIN_TITLE: "Saved Searches"
+		}
 	}
 };
 
-var Submissions = {
+var Derivative_STR = {
 	MAIN_TITLE: "Submissions",
 	CHOOSER_TITLE: "Please choose an image/video...",
 	Fields: {
@@ -87,10 +100,15 @@ var Submissions = {
 		SUBMITTED_BY: "Submitted by",
 		UNKNOWN: "unknown",
 		N_A: "n/a"
-	}
+	},
+	UnaliasedTitle: {
+		IMAGE: "Image by ",
+		VIDEO: "Video by "
+	},
+	UnaliasedSource: "User ID "
 };
 
-var Menus = {
+var Menu_STR = {
 	Media: {
 		Image: {
 			SHARE_IMAGE: "Share Image"
@@ -109,42 +127,29 @@ var Menus = {
 	}
 };
 
-var Submissions_str = {
-	FILENAME: "Filename",
-	MEDIA_TYPE: "Media Type",
-	SIZE: "Size",
-	TIME_SUBMITTED: "Time Submitted",
-	TIME_CREATED: "Time Created",
-	TIME_RECEIVED: "Time Received",
-	SUBMITTED: "Submitted on",
-	SUBMITTED_BY: "Submitted by",
-	UNKNOWN: "unknown",
-	N_A: "n/a"
-}
-
-var Display_str = {
+var Display_STR = {
 	REDACTED: "Redacted",
 	UNREDACTED: "Unredacted"
 }
 
-var View_str = {
+var View_STR = {
 	NORMAL: "Normal View",
 	MAP: "Map View",
 	MOTION: "Motion View",
 	NETWORK: "Network View"
 }
 
-var MediaTypes_str = {
+var MediaTypes_STR = {
 	IMAGE: "Image",
 	VIDEO: "Video"
 }
 
-var ImageRegion_str = {
+var ImageRegion_STR = {
 	ON: "On",
 	OFF: "Off"
 }
 
-var Metadata = {
+var Metadata_STR = {
 	Intent: {
 		label: "Intent",
 		SUBMITTED_BY: "Submitted by: %=sigKeyId",
@@ -183,7 +188,7 @@ var Metadata = {
 	}
 };
 
-var Search = {
+var Search_STR = {
 	MAIN_TITLE: "Search",
 	REFINE: "Refine",
 	By_Saved_Search: {
@@ -195,8 +200,8 @@ var Search = {
 	By_Type: {
 		LABEL: "By Type",
 		Fields: {
-			IMAGE: MediaTypes_str.IMAGE,
-			VIDEO: MediaTypes_str.VIDEO
+			IMAGE: MediaTypes_STR.IMAGE,
+			VIDEO: MediaTypes_STR.VIDEO
 		}
 	},
 	By_Timeframe: {
@@ -221,5 +226,15 @@ var Search = {
 		Fields: {
 		
 		}
+	},
+	SavedSearches: {
+		LABEL: "Saved Searches",
+		Fields: {
+			Name: "Name",
+			Keywords: "Keywords",
+			Locations: "Locations",
+			MediaType: "Media Types",
+			Timeframe: "Timeframe"
+		}
 	}
-}
+};

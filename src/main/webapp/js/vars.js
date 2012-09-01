@@ -5,17 +5,25 @@ var Command = {
 	CHOOSE_MEDIA: 99,
 	LOAD_MEDIA: 100,
 	WAIT_FOR_PROCESS: 101,
-	VIEW_SUBMISSIONS: 102,
-	SEARCH: 103
+	VIEW_DERIVATIVES: 102,
+	SEARCH: 103,
+	SAVE_SEARCH: 104,
+	LOAD_SEARCH: 105,
+	ATTEMPT_LOGIN: 106,
+	LOGOUT: 107,
 };
 
-var media;
+var entity;
 var MediaTypes = {
 	VIDEO: 401,
 	IMAGE: 400,
 	Names: {
-		401: MediaTypes_str.VIDEO,
-		400: MediaTypes_str.IMAGE
+		401: MediaTypes_STR.VIDEO,
+		400: MediaTypes_STR.IMAGE
+	},
+	UnaliasedTitle: {
+		401: Derivative_STR.UnaliasedTitle.VIDEO,
+		400: Derivative_STR.UnaliasedTitle.IMAGE
 	}
 };
 
@@ -29,8 +37,8 @@ var Display = {
 	REDACTED: 200,
 	UNREDACTED: 201,
 	Names: {
-		200: Display_str.REDACTED,
-		201: Display_str.UNREDACTED
+		200: Display_STR.REDACTED,
+		201: Display_STR.UNREDACTED
 	}
 };
 
@@ -40,10 +48,10 @@ var View = {
 	MOTION: 302,
 	NETWORK: 303,
 	Names: {
-		300: View_str.NORMAL,
-		301: View_str.MAP,
-		302: View_str.MOTION,
-		303: View_str.NETWORK
+		300: View_STR.NORMAL,
+		301: View_STR.MAP,
+		302: View_STR.MOTION,
+		303: View_STR.NETWORK
 	}
 };
 
@@ -51,27 +59,27 @@ var OwnershipTypes = {
 	INDIVIDUAL: 400,
 	ORGANIZATION: 401,
 	Names: {
-		400: Metadata.Intent.OwnershipTypes.INDIVIDUAL,
-		401: Metadata.Intent.OwnershipTypes.ORGANIZATION
+		400: Metadata_STR.Intent.OwnershipTypes.INDIVIDUAL,
+		401: Metadata_STR.Intent.OwnershipTypes.ORGANIZATION
 	}
 };
 
 var ImageRegions = {
 	IDENTIFY: {
 		name: "org.witness.ssc.image.filters.InformaTagger",
-		label: Metadata.Data.ImageRegions.Filters.IDENTIY
+		label: Metadata_STR.Data.ImageRegions.Filters.IDENTIY
 	},
 	PIXELATE: {
 		name: "org.witness.ssc.image.filters.PixelizeObscure",
-		label: Metadata.Data.ImageRegions.Filters.PIXELATE
+		label: Metadata_STR.Data.ImageRegions.Filters.PIXELATE
 	},
 	BACKGROUND_PIXELATE: {
 		name: "org.witness.ssc.image.filters.CrowdPixelizeObscure",
-		label: Metadata.Data.ImageRegions.Filters.BACKGROUND_PIXELATE
+		label: Metadata_STR.Data.ImageRegions.Filters.BACKGROUND_PIXELATE
 	},
 	REDACT: {
 		name: "org.witness.ssc.image.filters.SolidObscure",
-		label: Metadata.Data.ImageRegions.Filters.REDACT
+		label: Metadata_STR.Data.ImageRegions.Filters.REDACT
 	}
 };
 
@@ -83,7 +91,7 @@ var Styles = {
 	}
 };
 
-var searchQuery;
+var searchQuery, searchAlias;
 var SearchParameters = {
 	KEYWORDS: 299,
 	Type: {
@@ -95,13 +103,22 @@ var SearchParameters = {
 		PAST_WEEK: 301,
 		PAST_MONTH: 302,
 		PAST_YEAR: 303,
-		CUSTOM_RANGE: 304
+		CUSTOM_RANGE: 304,
+		Names: {
+			300: Search_STR.By_Timeframe.Fields.PAST_24_HOURS,
+			301: Search_STR.By_Timeframe.Fields.PAST_WEEK,
+			302: Search_STR.By_Timeframe.Fields.PAST_MONTH,
+			303: Search_STR.By_Timeframe.Fields.PAST_YEAR,
+			304: Search_STR.By_Timeframe.Fields.CUSTOM_RANGE
+		}
 	},
 	Location: {
 		RADIUS: 305,
 		LATLNG: 306
 	}
 }
+
+var currentUser;
 
 var ic, ui;
 var header, nav, footer, main, alert_holder, popup_holder, spinner_holder;

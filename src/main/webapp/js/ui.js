@@ -10,6 +10,19 @@ function clearUi() {
 	spinner_holder.css('display','none');
 }
 
+function updateLoginUi() {
+	if(User.isLoggedIn()) {
+		$($("#ic_login").children("p")[0]).css('display','block');
+		$($("#ic_login").children("p")[1]).css('display','none');
+		
+		$("#loginDisplayName").html(currentUser.displayName);
+		
+	} else {
+		$($("#ic_login").children("p")[0]).css('display','none');
+		$($("#ic_login").children("p")[1]).css('display','block');
+	}
+}
+
 function toggleValue(el, isMulti) {
 	var group = $(el).parent();
 	var type = $(el).get(0).tagName;
@@ -70,6 +83,35 @@ function doGet(el) {
 	return keyValPair;
 }
 
+function setOptions(elName, options) {
+	var el = $("#" + elName);
+	for(option in options) {
+		console.info(option + " = " + options[option]);
+		
+		if(options[option].constructor.toString().match(/Array/i)) {
+			var listHolder = "#" + option + "_holder";
+			console.info(listHolder);
+			$.each(options[option], function() {
+				val = this;
+				$(listHolder).append(
+					$(document.createElement('a'))
+						.html(val + " [x]")
+						.addClass('smallList')
+						.click(function() {
+							$(this).remove();
+						})
+				);
+			});
+		} else if(options[option].constructor.toString().match(/Number/i)) {
+			var selectionHolder = "#" + option + "_holder";
+			$.each($(selectionHolder).children(), function() {
+				if($(this).attr('optionValue') == options[option])
+					toggleValue(this);
+			});
+		}
+	}	
+}
+
 function getOptions(elName) {
 	var el = $("#" + elName);
 	var targetedClasses = ["ic_smallListInput", "ic_smallListHolder", "selected"];
@@ -108,6 +150,28 @@ function clearOptions(elName) {
 			}
 		});
 	});
+}
+
+function listenForInputHint(el) {
+	if($(el).hasClass('unfocused')) {
+		if($(el).val() == $(el).attr('hint'))
+			$(el).val('');
+			
+		if($(el).hasClass('ic_password'))
+			$(el).prop('type','password');
+			
+		$(el).removeClass('unfocused');
+		$(el).addClass('focused');
+	} else {
+		if($(el).val() == '')
+			$(el).val($(el).attr('hint'));
+			
+		if($(el).hasClass('ic_password') && $(el).val() == $(el).attr('hint'))
+			$(el).prop('type','text');
+			
+		$(el).removeClass('focused');
+		$(el).addClass('unfocused');
+	}
 }
 
 function launchUi(which) {
@@ -149,21 +213,21 @@ function toggleMediaView(state) {
 }
 
 function setImageRatio() {
-	var ratio = media.informa.imageDimensions[0]/media.informa.imageDimensions[1];
+	var ratio = entity.imageDimensions[0]/entity.imageDimensions[1];
 	var displayWidth, displayHeight;
 	var maxWidth = media_frame.width() * 0.9;
 	var maxHeight = media_frame.height() * 0.9;
 	
 	if(
-		media.informa.imageDimensions[0] > media.informa.imageDimensions[1] &&
+		entity.imageDimensions[0] > entity.imageDimensions[1] &&
 		ratio <= 1
 	) {
 		displayWidth = maxWidth;
 		displayHeight = displayWidth * ratio;
-	} else if(media.informa.imageDimensions[1] >= maxHeight) {
+	} else if(entity.imageDimensions[1] >= maxHeight) {
 		displayHeight = maxHeight;
 		displayWidth = displayHeight/ratio;
-	} else if(media.informa.imageDimensions[0] == media.informa.imageDimensions[1]) {
+	} else if(entity.imageDimensions[0] == entity.imageDimensions[1]) {
 		displayHeight = displayWidth = maxHeight;
 	}
 	
@@ -189,24 +253,25 @@ function setImageRatio() {
 	
 	media_overlay.css({
 		'margin-left': margLeft,
-		'margin-top': margTop
+		'margin-top': margTop,
+		'background-image': "url('images/session_cache/" + entity.derivative.representation[0] + "')",
+		'background-repeat': 'no-repeat',
+		'background-size': 'contain',
+		'background-position': 'center'
 	});
 }
 
 function placeMedia() {
-	if(media != null && media != undefined) {
-		$("#media_title").html(media.title);
-		setImageRatio();
-		loadMediaOptions();
-		setMetadata();
-		toggleMediaView(true);
-		removeAlert();
-	}
+	$("#media_title").html(entity.title);
+	setImageRatio();
+	loadMediaOptions();
+	setMetadata();
+	toggleMediaView(true);
 }
 
 function loadMediaOptions() {
 	$("#options_menu").empty();
-	$.each(media.options, function() {
+	$.each(entity.options, function() {
 		var opt = this;
 		$("#options_menu").append(
 			$(document.createElement('li'))
@@ -226,17 +291,17 @@ function traceRegions() {
 	regionsTraced = true;
 	
 	mcx.lineWidth = 4;
-	$.each(media.imageRegions.list, function() {
+	$.each(entity.derivative.j3m.data.annotations, function() {
 		if(this.obfuscationType == ImageRegions.IDENTIFY)
 			mcx.strokeStyle = Styles.Color.INACTIVE_TAGGED;
 		else
 			mcx.strokeStyle = Styles.Color.INACTIVE;
 			
 		mcx.strokeRect(
-			this.regionCoordinates.region_left, 
-			this.regionCoordinates.region_top,
-			this.regionDimensions.region_height,
-			this.regionDimensions.region_width
+			this.regionBounds.regionCoordinates.region_left, 
+			this.regionBounds.regionCoordinates.region_top,
+			this.regionBounds.regionDimensions.region_height,
+			this.regionBounds.regionDimensions.region_width
 		);
 		
 	});
@@ -249,16 +314,9 @@ function hideRegions() {
 }
 
 function setMetadata() {
-	$(document.getElementsByTagName('HEAD').item(0)).append(
-		$(document.createElement('script'))
-			.prop({
-				'type': 'text/javascript',
-				'src': 'js/informa.js'
-			})
-	);
-	
 	$("#metadata_readout").empty();
-	$.each(Informa.MetadataReadout, function() {
+	$.each(entity.informa, function() {
+		console.info(this);
 		var dataGroup = this;
 		var dataPoints = dataGroup.loads;
 		
@@ -268,7 +326,7 @@ function setMetadata() {
 		);
 		
 		var readout = document.createElement('ul');
-		$.each(dataPoints, function(idx, item) {
+		$.each(dataPoints, function(index, item) {
 			$(readout).append(
 				$(document.createElement('li'))
 					.html(parseForReplacementMetadata(item))
@@ -276,31 +334,7 @@ function setMetadata() {
 		});
 		
 		$("#metadata_readout").append(readout);
-
 	});
-}
-
-function switchDisplay() {
-	var currentDisplay;
-	switch(media.currentDisplay) {
-		case Display.REDACTED:
-			currentDisplay = media.paths.redacted;
-			break;
-		case Display.UNREDACTED:
-			currentDisplay = media.paths.unredacted;
-			break;
-	}
-		
-	if(media.type == MediaTypes.IMAGE) {
-		media_overlay.css({
-			'background-image': "url('images/session_cache/" + currentDisplay + "')",
-			'background-repeat': 'no-repeat',
-			'background-size': 'contain',
-			'background-position': 'center'
-		});
-	} else if(media.type == MediaTypes.VIDEO) {
-	
-	}
 }
 
 function showSpinner() {
@@ -339,11 +373,12 @@ function showAlert(title, txt, isDismissable, replacements, options) {
 	if(isDismissable) {
 		if(options != null && options != undefined ) {
 			$.each(options, function() {
+				var button = this;
 				$("#alert_options").append(
 					$(document.createElement('a'))
-						.html(this.label)
+						.html(button.label)
 						.addClass('dismissal')
-						.click(function() {this.action.call();})
+						.click(function() {button.action.call();})
 				);
 			});
 		} else {
@@ -431,7 +466,7 @@ function initLayout() {
 	spinner_holder = $("#spinner_holder");
 	spinner_holder.css('margin-top', $(window).height()/2 - 100);
 	
-	$("#search_refine_options").css('height', $(window).height()/1.4);
+	$("#search_refine_options").css('height', (($(window).height() - 100) - (header.height() + footer.height())));
 	
 	ui = {
 		media: {
@@ -442,7 +477,7 @@ function initLayout() {
 			root: $('#ui_submissions'),
 			tab: $(nav.children()[1]),
 			init: function() {
-				getSubmissions();
+				Media.getAll.init();
 				
 			}
 		},
@@ -527,16 +562,27 @@ function initLayout() {
 		
 		$(".ic_toMedia").live('click', function() {
 			window.location = '#media/';	//why does sammy.redirect not work?
-			selectSubmission(this);
+			Media.load.init($(this).attr('id'));
 		});
 		
 		$(".ic_smallListInput").live('focus', function() {
 			listenForListInput($(this));
 		});
 		
+		$(".hinted").live('focus', function() {listenForInputHint($(this));});
+		$(".hinted").live('blur', function() {listenForInputHint($(this));});
+		$.each($(".hinted"), function() {
+			$(this).val($(this).attr('hint'));
+			if($(this).hasClass('ic_password')) {
+				$(this).prop('type','text');
+			}
+		});
+		
 	});
 	
 	ic.run('#media/');
+	
+	updateLoginUi();
 }
 
 $(document).ready(function() {

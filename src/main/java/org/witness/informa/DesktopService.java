@@ -1,5 +1,7 @@
 package org.witness.informa;
 
+import java.util.Map;
+
 import org.cometd.bayeux.Message;
 import org.cometd.bayeux.server.BayeuxServer;
 import org.cometd.bayeux.server.ServerSession;
@@ -7,7 +9,6 @@ import org.cometd.server.AbstractService;
 import org.witness.informa.utils.Constants.DC.Attempts;
 import org.witness.informa.utils.Constants;
 import org.witness.informa.utils.InformaMessage;
-import org.witness.informa.utils.MediaLoader;
 
 public class DesktopService extends AbstractService implements Constants {
 	MediaLoader ml = null;
@@ -20,17 +21,25 @@ public class DesktopService extends AbstractService implements Constants {
 			ml = new MediaLoader();
 	}
 	
+	@SuppressWarnings("unchecked")
 	public void desktopResponse(ServerSession remote, Message message) {
 		InformaMessage msg = new InformaMessage(message);
 		if(msg.in.containsKey(Attempts.TAG)) {
 			long l = (Long) msg.in.get(Attempts.TAG);
 			switch((int) l) {
-			case Attempts.CHOOSE_MEDIA:
+			case Attempts.ATTEMPT_LOGIN:
 				if(ml == null)
 					ml = new MediaLoader();
 				
-				msg.put(DC.Keys.COMMAND, DC.Commands.CHOOSE_MEDIA);
-				msg.put(DC.Keys.METADATA, ml.getSubmissions());
+				msg.put(DC.Keys.COMMAND, DC.Commands.ATTEMPT_LOGIN);
+				msg.put(DC.Keys.METADATA, ml.loginUser(msg.opts));
+				break;
+			case Attempts.VIEW_DERIVATIVES:
+				if(ml == null)
+					ml = new MediaLoader();
+				
+				msg.put(DC.Keys.COMMAND, DC.Commands.VIEW_DERIVATIVES);
+				msg.put(DC.Keys.METADATA, ml.getDerivatives());
 				break;
 			case Attempts.LOAD_MEDIA:
 				try {
@@ -44,19 +53,21 @@ public class DesktopService extends AbstractService implements Constants {
 					Log(e.toString());
 				}
 				break;
-			case Attempts.VIEW_SUBMISSIONS:
-				if(ml == null)
-					ml = new MediaLoader();
-				
-				msg.put(DC.Keys.COMMAND, DC.Commands.VIEW_SUBMISSIONS);
-				msg.put(DC.Keys.METADATA, ml.getSubmissions());
-				break;
 			case Attempts.SEARCH:
 				if(ml == null)
 					ml = new MediaLoader();
 				
 				msg.put(DC.Keys.COMMAND, DC.Commands.LOAD_SEARCH_RESULTS);
 				msg.put(DC.Keys.METADATA, ml.getSearchResults(msg.opts));
+				break;
+			case Attempts.SAVE_SEARCH:
+				msg.put(DC.Keys.COMMAND, DC.Commands.SAVE_SEARCH);
+				msg.put(DC.Keys.METADATA, ml.search.saveSearch((String) msg.opts.get(DC.Options.ALIAS), (Map<String, Object>) msg.opts.get(DC.Options.PARAMETERS)));
+				break;
+			case Attempts.LOAD_SEARCH:
+				msg.put(DC.Keys.COMMAND, DC.Commands.LOAD_SEARCH);
+				msg.put(DC.Keys.METADATA, ml.getSearchResults(ml.search.loadSearch((String) msg.opts.get(DC.Options._ID))));
+				break;
 			}
 		}
 		

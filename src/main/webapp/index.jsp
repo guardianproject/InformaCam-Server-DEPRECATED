@@ -9,11 +9,8 @@
     <script type="text/javascript" src="${pageContext.request.contextPath}/org/cometd.js"></script>
     <script type="text/javascript" src="${pageContext.request.contextPath}/jquery/jquery.cometd.js"></script>
     <script type="text/javascript" src="js/application.js"></script>
+    <script type="text/javascript" src="js/api.js"></script>
     <script type="text/javascript" src="js/formatter.js"></script>
-    <%--
-    The reason to use a JSP is that it is very easy to obtain server-side configuration
-    information (such as the contextPath) and pass it to the JavaScript environment on the client.
-    --%>
     <script type="text/javascript">
         var config = {
             contextPath: '${pageContext.request.contextPath}'
@@ -25,7 +22,6 @@
 	<script type="text/javascript" src="js/ui.js"></script>
 	<script type="text/javascript" src="js/media.js"></script>
 	<script type="text/javascript" src="js/search.js"></script>
-	<script type="text/javascript" src="js/submissions.js"></script>
 	<link rel="stylesheet" type="text/css" href="css/ic.css" />
     <title>InformaCam - powered by The Guardian Project</title>
 </head>
@@ -60,22 +56,22 @@
 		<ul id="ic_nav">
 			<li><a href="#media/">
 				<script type="text/javascript">
-					document.write(Menus.Main.MEDIA);
+					document.write(Menu_STR.Main.MEDIA);
 				</script>
 			</a></li>
 			<li><a href="#submissions/">
 				<script type="text/javascript">
-					document.write(Menus.Main.SUBMISSIONS);
+					document.write(Menu_STR.Main.SUBMISSIONS);
 				</script>
 			</a></li>
 			<li><a href="#admin/">
 				<script type="text/javascript">
-					document.write(Menus.Main.ADMIN);
+					document.write(Menu_STR.Main.ADMIN);
 				</script>
 			</a></li>
 			<li><a href="#help/">
 				<script type="text/javascript">
-					document.write(Menus.Main.HELP);
+					document.write(Menu_STR.Main.HELP);
 				</script>
 			</a></li>
 		</ul>
@@ -90,7 +86,7 @@
 						<div id="media_options">
 							<ul class="ic_menu_button">
 								<li>
-									<a onclick="chooseMedia();">Load</a>
+									<a onclick="Media.getAll.init();">Load</a>
 								</li>
 								<li>
 									<a href="#search/">Search</a>
@@ -101,22 +97,22 @@
 										<ul id="views_menu">
 											<li onclick="media.setCurrentView(View.NORMAL);">
 												<script type="text/javascript">
-													document.write(View_str.NORMAL);
+													document.write(View_STR.NORMAL);
 												</script>
 											</li>
 											<li onclick="media.setCurrentView(View.MAP);">
 												<script type="text/javascript">
-													document.write(View_str.MAP);
+													document.write(View_STR.MAP);
 												</script>
 											</li>
 											<li onclick="media.setCurrentView(View.MOTION);">
 												<script type="text/javascript">
-													document.write(View_str.MOTION);
+													document.write(View_STR.MOTION);
 												</script>
 											</li>
 											<li onclick="media.setCurrentView(View.NETWORK);">
 												<script type="text/javascript">
-													document.write(View_str.NETWORK);
+													document.write(View_STR.NETWORK);
 												</script>
 											</li>
 										</ul>
@@ -129,29 +125,15 @@
 									</div>
 								</li>
 								<li class="ic_menu_buttonOverride">
-									<span>Display: </span>
-									<div class="ic_toggle" id="mediaView">
-										<a id="display_redacted" onclick="toggleValue(this);media.setCurrentDisplay(Display.REDACTED);" rel="redacted" class="selected">
-											<script type="text/javascript">
-												document.write(Display_str.REDACTED);
-											</script>
-										</a><a id="display_unredacted" onclick="toggleValue(this);media.setCurrentDisplay(Display.UNREDACTED);" rel="unredacted">
-											<script type="text/javascript">
-												document.write(Display_str.UNREDACTED);
-											</script>
-										</a>
-									</div>
-								</li>
-								<li class="ic_menu_buttonOverride">
 									<span>ImageRegion Tracing: </span>
 									<div class="ic_toggle" id="imageRegionView">
 										<a id="irTracing_on" onclick="toggleValue(this);traceRegions();" rel="tracingOn" class="selected">
 											<script type="text/javascript">
-												document.write(ImageRegion_str.ON);
+												document.write(ImageRegion_STR.ON);
 											</script>
 										</a><a id="irTracing_off" onclick="toggleValue(this);hideRegions();" rel="tracingOff">
 											<script type="text/javascript">
-												document.write(ImageRegion_str.OFF);
+												document.write(ImageRegion_STR.OFF);
 											</script>
 										</a>
 									</div>
@@ -175,32 +157,22 @@
 				<tr class="tr_header">
 					<td id="submissions_filename">
 						<script type="text/javascript">
-							document.write(Submissions_str.FILENAME);
+							document.write(Derivative_STR.Fields.FILENAME);
 						</script>
 					</td>
 					<td id="submissions_mediaType">
 						<script type="text/javascript">
-							document.write(Submissions_str.MEDIA_TYPE);
+							document.write(Derivative_STR.Fields.MEDIA_TYPE);
 						</script>
 					</td>
 					<td id="submissions_timeCreated">
 						<script type="text/javascript">
-							document.write(Submissions_str.TIME_CREATED);
-						</script>
-					</td>
-					<td id="submissions_timeSubmitted">
-						<script type="text/javascript">
-							document.write(Submissions_str.TIME_SUBMITTED);
-						</script>
-					</td>
-					<td id="submissions_timeReceived">
-						<script type="text/javascript">
-							document.write(Submissions_str.TIME_RECEIVED);
+							document.write(Derivative_STR.Fields.TIME_CREATED);
 						</script>
 					</td>
 					<td id="submissions_submittedBy">
 						<script type="text/javascript">
-							document.write(Submissions_str.SUBMITTED_BY);
+							document.write(Derivative_STR.Fields.SUBMITTED_BY);
 						</script>
 					</td>
 				</tr>
@@ -220,98 +192,102 @@
 		</div>
 		
 		<div id="ui_search">
-			<h1>
-				<script type="text/javascript">
-					document.write(Search.MAIN_TITLE);
-				</script>
-			</h1>
 			<table class="ic_search ic_table">
 				<tr>
 					<td width="25%">
 						<div id="search_refine_options">
 							<div id="search_refine_actions">
-								<a onclick="initSearch();">Search</a>
-								<a onclick="clearOptions('search_refine_options');searchQuery.clear();">Reset</a>
-								<a onclick="">
+								<a onclick="Search.query.init();">
 									<script type="text/javascript">
-										document.write(Search.By_Saved_Search.LABEL);
+										document.write(Search_STR.MAIN_TITLE);
+									</script>
+								</a>
+								<a onclick="clearOptions('search_refine_options');searchQuery.clear();">Reset</a>
+								<a onclick="Search.getSavedSearches();">
+									<script type="text/javascript">
+										document.write(Search_STR.By_Saved_Search.LABEL);
 									</script>
 								</a>
 							</div>
 							
 							<h3 style="margin-top:10px;">
 								<script type="text/javascript">
-									document.write(Search.By_Keyword.LABEL);
+									document.write(Search_STR.By_Keyword.LABEL);
 								</script>
 							</h3>
-							<input optionKey="keyword" id="media_keyword" type="text" class="ic_smallListInput" />
-							<div optionKey="keyword" id="media_keyword_holder" class="ic_smallListHolder"></div>
+							<input optionKey="keywords" id="keywords" type="text" class="ic_smallListInput" />
+							<div optionKey="keywords" id="keywords_holder" class="ic_smallListHolder"></div>
 							<h3>
 								<script type="text/javascript">
-									document.write(Search.By_Type.LABEL);
+									document.write(Search_STR.By_Type.LABEL);
 								</script>
 							</h3>
-							<ul id="media_type">
-								<li optionKey="type" optionValue="400" onclick="toggleValue(this)"><a>
+							<ul id="mediaType_holder">
+								<li optionKey="mediaType" optionValue="400" onclick="toggleValue(this)"><a>
 									<script type="text/javascript">
-										document.write(Search.By_Type.Fields.IMAGE);
+										document.write(Search_STR.By_Type.Fields.IMAGE);
 									</script>
 								</a></li>
-								<li optionKey="type" optionValue="401" onclick="toggleValue(this)"><a onclick="">
+								<li optionKey="mediaType" optionValue="401" onclick="toggleValue(this)"><a onclick="">
 									<script type="text/javascript">
-										document.write(Search.By_Type.Fields.VIDEO);
+										document.write(Search_STR.By_Type.Fields.VIDEO);
 									</script>
 								</a></li>
 							</ul>
 							
 							<h3>
 								<script type="text/javascript">
-									document.write(Search.By_Timeframe.LABEL);
+									document.write(Search_STR.By_Timeframe.LABEL);
 								</script>
 							</h3>
-							<ul id="media_timeframe">
+							<ul id="timeframe_holder">
 								<li optionKey="timeframe" optionValue="300" onclick="toggleValue(this)"><a onclick="">
 									<script type="text/javascript">
-										document.write(Search.By_Timeframe.Fields.PAST_24_HOURS);
+										document.write(Search_STR.By_Timeframe.Fields.PAST_24_HOURS);
 									</script>
 								</a></li>
 								<li optionKey="timeframe" optionValue="301" onclick="toggleValue(this)"><a onclick="">
 									<script type="text/javascript">
-										document.write(Search.By_Timeframe.Fields.PAST_WEEK);
+										document.write(Search_STR.By_Timeframe.Fields.PAST_WEEK);
 									</script>
 								</a></li>
 								<li optionKey="timeframe" optionValue="302" onclick="toggleValue(this)"><a onclick="">
 									<script type="text/javascript">
-										document.write(Search.By_Timeframe.Fields.PAST_MONTH);
+										document.write(Search_STR.By_Timeframe.Fields.PAST_MONTH);
 									</script>
 								</a></li>
 								<li optionKey="timeframe" optionValue="303" onclick="toggleValue(this)"><a onclick="">
 									<script type="text/javascript">
-										document.write(Search.By_Timeframe.Fields.PAST_YEAR);
+										document.write(Search_STR.By_Timeframe.Fields.PAST_YEAR);
 									</script>
 								</a></li>
 								<li optionKey="timeframe" optionValue="304" onclick="toggleValue(this)"><a onclick="">
 									<script type="text/javascript">
-										document.write(Search.By_Timeframe.Fields.CUSTOM_RANGE);
+										document.write(Search_STR.By_Timeframe.Fields.CUSTOM_RANGE);
 									</script>
 								</a></li>
 							</ul>
 							
 							<h3>
 								<script type="text/javascript">
-									document.write(Search.By_Location.LABEL);
+									document.write(Search_STR.By_Location.LABEL);
 								</script>
 							</h3>
-							<input optionKey="location" id="media_location"  type="text" class="ic_smallListInput" />
-							<div optionKey="location" id="media_location_holder" class="ic_smallListHolder"></div>
+							<input optionKey="location" id="location"  type="text" class="ic_smallListInput" />
+							<div optionKey="location" id="location_holder" class="ic_smallListHolder"></div>
 							<a class="ic_as_li" onclick="">
 								<script type="text/javascript">
-									document.write(Search.By_Location.Fields.MAP);
+									document.write(Search_STR.By_Location.Fields.MAP);
 								</script>
 							</a>
 						</div>
 					</td>
-					<td id="search_results_holder" style="visibility:hidden">
+					<!--<td id="search_results_holder" style="visibility:hidden">-->
+					<td id="search_results_holder">
+						<div id="search_results_info">
+							<p>Results: <span id="num_search_results">none</span> found</p>
+							<a onclick="Search.prompt();">Save Search</a>
+						</div>
 						<div id="search_results">
 							
 						</div>
@@ -323,7 +299,10 @@
 	</div>
 	
 	<div id="ic_footer">
-		<div id="ic_login"></div>
+		<div id="ic_login">
+			<p>Hello, <span id="loginDisplayName"></span>!  <a onclick="User.logout();">Logout?</a></p>
+			<p>Please log in: <input class="hinted unfocused" hint="username" type="text" id="loginUsername" /> <input type="password" class="hinted ic_password unfocused" hint="password" id="loginPassword" /> <a onclick="User.login();">Go</a></p>
+		</div>
 	</div>
 	
 	</body>

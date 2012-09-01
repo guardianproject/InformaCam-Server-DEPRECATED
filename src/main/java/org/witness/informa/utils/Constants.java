@@ -12,6 +12,8 @@ public interface Constants {
 	public final static String VIEW_ROOT = APP_ROOT + "view_templates/";
 	public final static String VIEW_CACHE = VIEW_ROOT + "caches/";
 	
+	public final static String DERIVATIVE_ROOT = LocalConstants.ENGINE_ROOT + "derivatives/";
+	
 	public final static class Couch {
 		public static String ERROR = "COUCH ERROR";
 		public static String INFO = "COUCH INFO";
@@ -37,6 +39,10 @@ public interface Constants {
 				
 			}
 			
+			public final static class Admin {
+				public final static String ATTEMPT_LOGIN = "attemptLogin";
+			}
+			
 			public final static class Derivatives {
 				public final static class Geolocate {
 					public final static String RADIUS = "radius";
@@ -45,6 +51,7 @@ public interface Constants {
 				}
 				
 				public final static String GET_ALL = "representation";
+				public final static String GET_BY_ID = "getById";
 				public final static String DATE_CREATED = "dateCreated";
 				public final static String SOURCE_ID = "sourceId";
 				public final static String KEYWORDS = "keywords";
@@ -53,6 +60,7 @@ public interface Constants {
 				public final static String MEDIA_TYPE = "mediaType";
 				public final static String TIMESTAMP_INDEXED = "timestampIndexed";
 				public final static String ALIAS = "alias";
+				public final static String GET_ALL_SHORTENED = "mediaShortDescription";
 				
 				
 			}
@@ -71,16 +79,24 @@ public interface Constants {
 			public final static String TAG = "attempt";
 			public final static int CHOOSE_MEDIA = 99;
 			public final static int LOAD_MEDIA = 100;
-			public final static int VIEW_SUBMISSIONS = 102;
+			public final static int VIEW_DERIVATIVES = 102;
 			public final static int SEARCH = 103;
+			public final static int SAVE_SEARCH = 104;
+			public final static int LOAD_SEARCH = 105;
+			public final static int ATTEMPT_LOGIN = 106;
+			public final static int LOGOUT = 107;
 		}
 		
 		public final static class Commands {
 			public final static int CHOOSE_MEDIA = DC.Attempts.CHOOSE_MEDIA;
 			public final static int LOAD_MEDIA = DC.Attempts.LOAD_MEDIA;
 			public final static int WAIT_FOR_PROCESS = 101;
-			public final static int VIEW_SUBMISSIONS = DC.Attempts.VIEW_SUBMISSIONS;
+			public final static int VIEW_DERIVATIVES = DC.Attempts.VIEW_DERIVATIVES;
 			public final static int LOAD_SEARCH_RESULTS = DC.Attempts.SEARCH;
+			public final static int SAVE_SEARCH = DC.Attempts.SAVE_SEARCH;
+			public final static int LOAD_SEARCH = DC.Attempts.LOAD_SEARCH;
+			public final static int ATTEMPT_LOGIN = DC.Attempts.ATTEMPT_LOGIN;
+			public final static int LOGOUT = DC.Attempts.LOGOUT;
 		}
 		
 		public final static class Keys {
@@ -97,6 +113,8 @@ public interface Constants {
 			public final static String _ID = Couch.Documents._ID;
 			public final static String _REV = Couch.Documents._REV;
 			public final static String LOCAL_MEDIA_PATH = "attachment";
+			public final static String ALIAS = "alias";
+			public final static String PARAMETERS = "parameters";
 		}
 		
 	}
@@ -133,7 +151,7 @@ public interface Constants {
 			}
 			
 			public final static class Keywords {
-				public final static String TAG = "keyword";
+				public final static String TAG = "keywords";
 				public final static int KEY = 299;
 			}
 			

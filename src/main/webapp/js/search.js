@@ -1,4 +1,4 @@
-function SearchBuilder() {
+var SearchBuilder = function() {
 	var options;
 	
 	this.setOptions = function(options) {
@@ -32,15 +32,4 @@ function SearchBuilder() {
 	this.clear = function() {
 		searchQuery = new SearchBuilder();
 	}
-}
-
-function initSearch() {
-	searchQuery = new SearchBuilder();
-	searchQuery.setOptions(getOptions('search_refine_options'));
-	
-	showSpinner();
-	broadcast({
-		attempt: Command.SEARCH,
-		options: searchQuery.build()
-	});
 }
