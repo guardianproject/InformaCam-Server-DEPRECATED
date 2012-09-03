@@ -21,12 +21,26 @@ var MediaEntity = function(data) {
 		keywords: data.keywords
 	}
 	
+	this.setAlias = function() {
+		Media.rename.prompt();
+	}
+	
 	if(data.discussions != undefined)
 		this.derivative.discussions = data.discussions;
 	if(data.messages != undefined)
 		this.derivative.messages = data.messages;
 		
 	this.options = new Array();
+	
+	this.options.push(
+		{
+			label: Menu_STR.Media.RENAME,
+			action: function() {
+				entity.setAlias();
+			}
+		}
+	);
+	
 	switch(this.mediaType) {
 		case MediaTypes.IMAGE:
 			this.options.push(
@@ -63,6 +77,23 @@ var MediaEntity = function(data) {
 			entity.sendMessage();
 		}
 	});
+	
+	this.visualize = function(type) {
+		switch(type) {
+			case View.NORMAL:
+				toggleValue($("#metadata_readout").get(0));
+				break;
+			case View.MAP:
+				toggleValue($("#map_view_readout").get(0));
+				break;
+			case View.MOTION:
+				toggleValue($("#motion_view_readout").get(0));
+				break;
+			case View.NETWORK:
+				toggleValue($("#network_view_readout").get(0));
+				break;
+		}
+	};
 	
 	this.shareMedia = function() {
 		alert("sharing media");
@@ -122,4 +153,6 @@ var MediaEntity = function(data) {
 			]
 		}
 	};
+	
+	this.visualize(View.NORMAL);
 }

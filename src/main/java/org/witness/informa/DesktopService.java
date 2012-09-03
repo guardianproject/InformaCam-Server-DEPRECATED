@@ -68,6 +68,9 @@ public class DesktopService extends AbstractService implements Constants {
 				msg.put(DC.Keys.COMMAND, DC.Commands.LOAD_SEARCH);
 				msg.put(DC.Keys.METADATA, ml.getSearchResults(ml.search.loadSearch((String) msg.opts.get(DC.Options._ID))));
 				break;
+			case Attempts.RENAME_MEDIA:
+				msg.put(DC.Keys.COMMAND, DC.Commands.RENAME_MEDIA);
+				msg.put(DC.Keys.METADATA, ml.renameMedia((String) msg.opts.get(DC.Options._ID), (String) msg.opts.get(DC.Options._REV), (String) msg.opts.get(DC.Options.ALIAS)));
 			}
 		}
 		

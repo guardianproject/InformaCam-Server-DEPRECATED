@@ -1,1 +1,1 @@
-@VARSvar keywordsFound = 0;for(keyword in keywords) {for(kw in doc.keywords) {if(keyword == kw) {keywordsFound++;}}}if(keywordsFound > 0) {++criteriaMet;res['keywordRank'] = keywordsFound;}
+@VARSvar keywordsFound = 0;for(keyword in doc.keywords) {for(kw in keywords) {if(keyword == kw) {keywordsFound++;}}}if(keywordsFound > 0) {++criteriaMet;res['keywordRank'] = keywordsFound;}

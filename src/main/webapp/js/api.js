@@ -204,6 +204,46 @@ var Media = {
 		callback: function() {
 		
 		}
+	},
+	rename: {
+		prompt: function() {
+			showAlert(Alert_STR.Media.Prompt.MAIN_TITLE, 
+				Alert_STR.Media.Prompt.TEXT + '<input type="text" id="mediaAlias" />',
+				true, null, 
+				[
+					{
+						label: Alert_STR.Basic.OK,
+						action: function() {
+							Media.rename.init();
+						}
+					},
+					{
+						label: Alert_STR.Basic.CANCEL,
+						action: function() {
+							removeAlert();
+						}
+					}
+				]);
+		},
+		init : function() {				
+			showSpinner();
+			alert($("#mediaAlias").val());
+			broadcast({
+				attempt: Command.RENAME_MEDIA,
+				options: {
+					alias: $("#mediaAlias").val(),
+					_id: entity._id,
+					_rev: entity._rev
+				}
+			});
+		},
+		callback: function(data) {
+			if(data.result == true) {
+				$("#media_title").html(data.newAlias);
+				entity.title = newAlias;
+			} else
+				showAlert(Alert_STR.Errors.MAIN_TITLE, Alert_STR.Errors.RENAME_FAIL, false, null, null);
+		}
 	}
 }
 

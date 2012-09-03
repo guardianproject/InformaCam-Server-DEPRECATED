@@ -54,14 +54,14 @@
 		</div>
 		
 		<ul id="ic_nav">
-			<li><a href="#media/">
-				<script type="text/javascript">
-					document.write(Menu_STR.Main.MEDIA);
-				</script>
-			</a></li>
 			<li><a href="#submissions/">
 				<script type="text/javascript">
 					document.write(Menu_STR.Main.SUBMISSIONS);
+				</script>
+			</a></li>
+			<li><a href="#search/">
+				<script type="text/javascript">
+					document.write(Menu_STR.Main.SEARCH);
 				</script>
 			</a></li>
 			<li><a href="#admin/">
@@ -86,31 +86,25 @@
 						<div id="media_options">
 							<ul class="ic_menu_button">
 								<li>
-									<a onclick="Media.getAll.init();">Load</a>
-								</li>
-								<li>
-									<a href="#search/">Search</a>
-								</li>
-								<li>
 									<a>Views</a>
 									<div class="ic_dropdown">
 										<ul id="views_menu">
-											<li onclick="media.setCurrentView(View.NORMAL);">
+											<li onclick="entity.visualize(View.NORMAL);">
 												<script type="text/javascript">
 													document.write(View_STR.NORMAL);
 												</script>
 											</li>
-											<li onclick="media.setCurrentView(View.MAP);">
+											<li onclick="entity.visualize(View.MAP);">
 												<script type="text/javascript">
 													document.write(View_STR.MAP);
 												</script>
 											</li>
-											<li onclick="media.setCurrentView(View.MOTION);">
+											<li onclick="entity.visualize(View.MOTION);">
 												<script type="text/javascript">
 													document.write(View_STR.MOTION);
 												</script>
 											</li>
-											<li onclick="media.setCurrentView(View.NETWORK);">
+											<li onclick="entity.visualize(View.NETWORK);">
 												<script type="text/javascript">
 													document.write(View_STR.NETWORK);
 												</script>
@@ -146,7 +140,13 @@
 					</td>
 					<td id="metadata_holder">
 						<h2 id="media_title"></h2>
-						<div id="metadata_readout"></div>
+						<div id="visualization_holder">
+							<div id="metadata_readout"></div>
+							<div id="map_view_readout">hi  this is map view</div>
+							<div id="motion_view_readout">hi this is motion view</div>
+							<div id="network_view_readout">hi this is network view</div>
+						</div>
+						
 					</td>
 				</tr>
 			</table>
@@ -202,7 +202,13 @@
 										document.write(Search_STR.MAIN_TITLE);
 									</script>
 								</a>
-								<a onclick="clearOptions('search_refine_options');searchQuery.clear();">Reset</a>
+								
+								<a onclick="clearOptions('search_refine_options');searchQuery.clear();">
+									<script type="text/javascript">
+										document.write(Search_STR.RESET);
+									</script>
+								</a>
+								
 								<a onclick="Search.getSavedSearches();">
 									<script type="text/javascript">
 										document.write(Search_STR.By_Saved_Search.LABEL);

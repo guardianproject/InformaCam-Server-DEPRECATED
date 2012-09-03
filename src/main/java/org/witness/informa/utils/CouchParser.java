@@ -110,8 +110,22 @@ public class CouchParser implements Constants {
 		return result;
 	}
 	
+	public static boolean updateRecord(Class c, StdCouchDbConnector db, String id, String rev) {
+		// TODO: ugh...
+		Object o = db.get(c, id, rev);
+		if(o == null)
+			return false;
+		
+		db.update(o);
+		return true;
+	}
+	
 	public static void Log(String tag, String msg) {
 		System.out.println("*********** " + tag + " *************: " + msg);
+	}
+	
+	public static class Derivative {
+		
 	}
 	
 }

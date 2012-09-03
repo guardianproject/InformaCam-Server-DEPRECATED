@@ -59,7 +59,8 @@ var Alert_STR = {
 		CHANGE_PASSWORD_MISMATCH: "Your passwords don't match.  Please try again.",
 		NO_SAVED_SEARCHES: "You don't have any saved searches yet.",
 		EMPTY_SEARCH: "Please refine your search. If you'd like to see all submissions, visit the \"Submissions\" tab instead.",
-		LOGIN_PROMPT: "Please log in at the bottom of the screen to continue."
+		LOGIN_PROMPT: "Please log in at the bottom of the screen to continue.",
+		RENAME_FAIL: "Could not change the media object's title."
 	},
 	MediaLoading: {
 		MAIN_TITLE: "Media Loading...",
@@ -83,6 +84,12 @@ var Alert_STR = {
 		},
 		SavedSearches: {
 			MAIN_TITLE: "Saved Searches"
+		}
+	},
+	Media: {
+		Prompt: {
+			MAIN_TITLE: "Rename this media object",
+			TEXT: "New name: "
 		}
 	}
 };
@@ -112,16 +119,17 @@ var Derivative_STR = {
 var Menu_STR = {
 	Media: {
 		Image: {
-			SHARE_IMAGE: "Share Image"
+			SHARE_IMAGE: "Export Image"
 		},
 		Video: {
-			SHARE_VIDEO: "Share Video"
+			SHARE_VIDEO: "Export Video"
 		},
+		RENAME: "Rename File",
 		EXPORT_METADATA: "Export Metadata As...",
 		SEND_MESSAGE: "Send Message..."
 	},
 	Main: {
-		MEDIA: "Media",
+		SEARCH: "SEARCH",
 		SUBMISSIONS: "Submissions",
 		ADMIN: "Admin",
 		HELP: "Help"
@@ -192,6 +200,7 @@ var Metadata_STR = {
 var Search_STR = {
 	MAIN_TITLE: "Search",
 	REFINE: "Refine",
+	RESET: "Reset",
 	By_Saved_Search: {
 		LABEL: "Load"
 	},

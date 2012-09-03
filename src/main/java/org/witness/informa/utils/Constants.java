@@ -92,6 +92,7 @@ public interface Constants {
 			public final static int LOAD_SEARCH = 105;
 			public final static int ATTEMPT_LOGIN = 106;
 			public final static int LOGOUT = 107;
+			public final static int RENAME_MEDIA = 108;
 		}
 		
 		public final static class Commands {
@@ -104,6 +105,7 @@ public interface Constants {
 			public final static int LOAD_SEARCH = DC.Attempts.LOAD_SEARCH;
 			public final static int ATTEMPT_LOGIN = DC.Attempts.ATTEMPT_LOGIN;
 			public final static int LOGOUT = DC.Attempts.LOGOUT;
+			public final static int RENAME_MEDIA = DC.Attempts.RENAME_MEDIA;
 		}
 		
 		public final static class Keys {
@@ -122,6 +124,7 @@ public interface Constants {
 			public final static String LOCAL_MEDIA_PATH = "attachment";
 			public final static String ALIAS = "alias";
 			public final static String PARAMETERS = "parameters";
+			public final static String RESULT = "result";
 		}
 		
 	}

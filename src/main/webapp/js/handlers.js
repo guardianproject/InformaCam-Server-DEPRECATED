@@ -56,6 +56,11 @@ function handleDesktopServiceMessage(data) {
 					showAlert(Alert_STR.Errors.MAIN_TITLE, Alert_STR.Errors.LOGIN_FAILURE, false, null, null);
 				}
 				break;
+			case Command.RENAME_MEDIA:
+				removeSpinner();
+				if(data.metadata != null)
+					Media.rename.callback(data.metadata);
+				break;
 		}
 	}
 }

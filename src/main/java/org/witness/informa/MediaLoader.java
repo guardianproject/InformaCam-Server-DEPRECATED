@@ -35,6 +35,7 @@ import org.witness.informa.utils.Constants.Couch.Views;
 import org.witness.informa.utils.Constants.Couch.Views.Derivatives;
 import org.witness.informa.utils.Constants.Couch.Views.Derivatives.Geolocate;
 import org.witness.informa.utils.Constants.Media.MediaTypes;
+import org.witness.informa.utils.CouchParser.Derivative;
 
 public class MediaLoader implements Constants {
 	public InformaSearch search;
@@ -89,6 +90,13 @@ public class MediaLoader implements Constants {
 		ViewQuery getUsers = new ViewQuery().designDocId(Couch.Design.ADMIN);
 		String unpw = (String) credentials.get("username") + (String) credentials.get("password");
 		return CouchParser.getRecord(dbUsers, getUsers, Couch.Views.Admin.ATTEMPT_LOGIN, unpw, new String[] {"unpw"});
+	}
+	
+	public JSONObject renameMedia(String id, String rev, String newAlias) {
+		JSONObject res = new JSONObject();
+		res.put(DC.Options.ALIAS, newAlias);
+		res.put(DC.Options.RESULT, CouchParser.updateRecord(Derivative.class, dbDerivatives, id, rev));
+		return res;
 	}
 	
 	@SuppressWarnings("unchecked")

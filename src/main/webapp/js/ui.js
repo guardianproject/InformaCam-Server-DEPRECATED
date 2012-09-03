@@ -27,6 +27,7 @@ function toggleValue(el, isMulti) {
 	var group = $(el).parent();
 	var type = $(el).get(0).tagName;
 	$(el).addClass('selected');
+	
 	if(isMulti == undefined) {
 		$.each(group.children(type), function() {
 			if(this != el)
@@ -352,6 +353,14 @@ function removeSpinner() {
 	spinner_holder.css('display','none');
 }
 
+function listenForEscapeButton(el, callback) {
+	$(window).keypress(function(key) {
+		if(key.which == 0)
+			callback.call();
+			// TODO PLS! $(window).removeEvent('keypress');
+	});
+}
+
 function showPopup(title, content) {
 	if(title == undefined || title == null) {
 		title = $("#popup_title").html();
@@ -362,6 +371,7 @@ function showPopup(title, content) {
 	$("#popup_content").append(content);
 	
 	popup_holder.css('display','block');
+	listenForEscapeButton(popup_holder, removePopup);
 }
 
 function removePopup() {
@@ -482,7 +492,7 @@ function initLayout() {
 		},
 		submissions: {
 			root: $('#ui_submissions'),
-			tab: $(nav.children()[1]),
+			tab: $(nav.children()[0]),
 			init: function() {
 				Media.getAll.init();
 				
@@ -501,7 +511,7 @@ function initLayout() {
 		},
 		search: {
 			root: $("#ui_search"),
-			tab: $(nav.children()[0])
+			tab: $(nav.children()[1])
 		}
 	};
 	
@@ -587,7 +597,7 @@ function initLayout() {
 		
 	});
 	
-	ic.run('#media/');
+	ic.run('#submissions/');
 	updateLoginUi();
 }
 

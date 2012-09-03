@@ -11,6 +11,7 @@ var Command = {
 	LOAD_SEARCH: 105,
 	ATTEMPT_LOGIN: 106,
 	LOGOUT: 107,
+	RENAME_MEDIA: 108
 };
 
 var entity;

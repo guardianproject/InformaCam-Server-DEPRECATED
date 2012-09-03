@@ -131,12 +131,21 @@ Layout*/
 	z-index:0;
 }
 
-#metadata_readout {
-	border-top:1px solid #c6ff00;
+#visualization_holder {
 	margin:0;
-	padding:0 5px;
 	overflow:auto;
+}
+
+#visualization_holder div {
+	position:absolute;
 	background-image:url('../images/ic_trans_blk.png');
+	padding:0 5px;
+	border-top:1px solid #c6ff00;
+	visibility:hidden;
+}
+
+#visualization_holder div.selected {
+	visibility:visible;
 }
 
 #ui_submissions {
@@ -473,6 +482,7 @@ div.ic_toggle a.selected {
 	color:#8FAE22;
 	background-color:#c6ff00;
 	padding:0 5px;
+	margin:0 3px 0 0;
 	border:1px solid #8FAE22;
 }
 
