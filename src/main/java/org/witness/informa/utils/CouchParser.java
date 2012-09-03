@@ -110,35 +110,6 @@ public class CouchParser implements Constants {
 		return result;
 	}
 	
-	public static ArrayList<JSONObject> getRows(InformaSearch search, StdCouchDbConnector db, InformaTemporaryView itv, String[] removal) {
-		ArrayList<JSONObject> result = null;
-		
-		DesignDocument.View view = new DesignDocument.View(itv.view);
-		DesignDocument doc = new DesignDocument("_design/" + itv.viewHash);
-		doc.addView("call", view);
-		
-		try {
-			db.create(doc);
-		} catch(UpdateConflictException e) {
-			Log(Couch.DEBUG, "doc already exists");
-		}
-		
-		try {
-			ViewQuery query = new ViewQuery().designDocId(doc.getId()).viewName("call");
-			ViewResult vr = db.queryView(query);
-			result = getRows(vr, removal);
-		} catch(NullPointerException e) {
-			Log(Couch.ERROR, e.toString());
-			e.printStackTrace();
-		}
-		
-		return result;
-	}
-	
-	public static String hashView(String view) {
-		return DigestUtils.md5Hex(view);
-	}
-	
 	public static void Log(String tag, String msg) {
 		System.out.println("*********** " + tag + " *************: " + msg);
 	}

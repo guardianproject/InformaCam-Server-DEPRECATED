@@ -25,6 +25,13 @@ public interface Constants {
 			public final static String _REV = "_rev";
 		}
 		
+		public final static class Design {
+			public final static String DERIVATIVES = "_design/derivatives";
+			public final static String SOURCES = "_design/sources";
+			public final static String SUBMISSIONS = "_design/submissions";
+			public final static String ADMIN = "_design/admin";
+		}
+		
 		public final static class Views {
 			public final static class Submissions {
 				public final static String GET_BY_SOURCE_ID = "sourceId";
@@ -157,7 +164,7 @@ public interface Constants {
 			
 			public final static class Type {
 				public final static int KEY = 298;
-				public final static String TAG = "type";
+				public final static String TAG = "mediaType";
 				
 				public final static int IMAGE = Media.MediaTypes.IMAGE;
 				public final static int VIDEO = Media.MediaTypes.VIDEO;
@@ -295,4 +302,6 @@ public interface Constants {
 			}
 		}
 	}
+	
+	
 }

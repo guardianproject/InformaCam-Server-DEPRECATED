@@ -40,7 +40,6 @@ public class MediaLoader implements Constants {
 	public InformaSearch search;
 		
 	StdCouchDbConnector dbSources, dbDerivatives, dbUsers;
-	ViewQuery docSources, docDerivatives, docUsers;
 	
 	public MediaLoader() {
 		StdCouchDbInstance db = null;
@@ -60,16 +59,16 @@ public class MediaLoader implements Constants {
 		dbSources = new StdCouchDbConnector("sources", db);
 		dbDerivatives = new StdCouchDbConnector("derivatives", db);
 		dbUsers = new StdCouchDbConnector("admin", db);
-		
-		docSources = new ViewQuery().designDocId("_design/sources");
-		docDerivatives = new ViewQuery().designDocId("_design/derivatives");
-		docUsers = new ViewQuery().designDocId("_design/admin");
 				
-		search = new InformaSearch(dbDerivatives, docDerivatives);
+		search = new InformaSearch(dbDerivatives);
 	}
 	
 	public ArrayList<JSONObject> getDerivatives() {
-		return CouchParser.getRows(dbDerivatives, docDerivatives, Couch.Views.Derivatives.GET_ALL_SHORTENED, null);
+		ViewQuery getDerivatives = new ViewQuery().designDocId(Couch.Design.DERIVATIVES);
+		ArrayList<JSONObject> res = CouchParser.getRows(dbDerivatives, getDerivatives, Couch.Views.Derivatives.GET_ALL_SHORTENED, null);
+		for(JSONObject j : res)
+			CouchParser.Log(Couch.INFO, j.toString());
+		return res;
 	}
 	
 	public ArrayList<JSONObject> getSources() {
@@ -82,14 +81,20 @@ public class MediaLoader implements Constants {
 		return search.query(searchParams);
 	}
 	
+	public ArrayList<JSONObject> getSearchResults(String viewHash) {
+		return search.query(viewHash);
+	}
+	
 	public JSONObject loginUser(Map<String, Object> credentials) {
+		ViewQuery getUsers = new ViewQuery().designDocId(Couch.Design.ADMIN);
 		String unpw = (String) credentials.get("username") + (String) credentials.get("password");
-		return CouchParser.getRecord(dbUsers, docUsers, Couch.Views.Admin.ATTEMPT_LOGIN, unpw, new String[] {"unpw"});
+		return CouchParser.getRecord(dbUsers, getUsers, Couch.Views.Admin.ATTEMPT_LOGIN, unpw, new String[] {"unpw"});
 	}
 	
 	@SuppressWarnings("unchecked")
 	public JSONObject loadMedia(String id) {
-		JSONObject derivative = CouchParser.getRecord(dbDerivatives, docDerivatives, Couch.Views.Derivatives.GET_BY_ID, id, null);
+		ViewQuery getDerivative = new ViewQuery().designDocId(Couch.Design.DERIVATIVES);
+		JSONObject derivative = CouchParser.getRecord(dbDerivatives, getDerivative, Couch.Views.Derivatives.GET_BY_ID, id, null);
 		
 		// copy representations to img cache
 		File mediaCache = new File(MEDIA_CACHE);

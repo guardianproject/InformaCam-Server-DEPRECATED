@@ -45,7 +45,6 @@ function handleDesktopServiceMessage(data) {
 				break;
 			case Command.SEARCH:
 				if(data.metadata != null) {
-					// do stuff with the search results
 					Search.query.callback(data.metadata);
 				}
 				break;

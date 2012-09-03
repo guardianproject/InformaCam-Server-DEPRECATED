@@ -58,7 +58,8 @@ var Alert_STR = {
 		LOGIN_FAILURE: "Sorry, I could not log you in.  Please try again.",
 		CHANGE_PASSWORD_MISMATCH: "Your passwords don't match.  Please try again.",
 		NO_SAVED_SEARCHES: "You don't have any saved searches yet.",
-		EMPTY_SEARCH: "Please refine your search. If you'd like to see all submissions, visit the \"Submissions\" tab instead."
+		EMPTY_SEARCH: "Please refine your search. If you'd like to see all submissions, visit the \"Submissions\" tab instead.",
+		LOGIN_PROMPT: "Please log in at the bottom of the screen to continue."
 	},
 	MediaLoading: {
 		MAIN_TITLE: "Media Loading...",
@@ -117,7 +118,7 @@ var Menu_STR = {
 			SHARE_VIDEO: "Share Video"
 		},
 		EXPORT_METADATA: "Export Metadata As...",
-		VIEW_SUBMISSION_INFO: "View Submission Info"
+		SEND_MESSAGE: "Send Message..."
 	},
 	Main: {
 		MEDIA: "Media",

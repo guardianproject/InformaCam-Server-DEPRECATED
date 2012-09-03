@@ -176,11 +176,18 @@ function listenForInputHint(el) {
 
 function launchUi(which) {
 	clearUi();
-	which.root.css('display','block');
-	if(which.tab)
-		which.tab.addClass("active");
-	if(which.init)
-		which.init.call();
+	if(User.isLoggedIn()) {	
+		which.root.css('display','block');
+		if(which.tab)
+			which.tab.addClass("active");
+		if(which.init)
+			which.init.call();
+	} else
+		promptForLogin();
+}
+
+function promptForLogin() {
+	showAlert(Alert_STR.Errors.MAIN_TITLE, Alert_STR.Errors.LOGIN_PROMPT, false, null, null);
 }
 
 function showMenu(root, which) {
@@ -581,7 +588,6 @@ function initLayout() {
 	});
 	
 	ic.run('#media/');
-	
 	updateLoginUi();
 }
 

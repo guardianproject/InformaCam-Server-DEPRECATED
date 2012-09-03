@@ -215,7 +215,7 @@
 									document.write(Search_STR.By_Keyword.LABEL);
 								</script>
 							</h3>
-							<input optionKey="keywords" id="keywords" type="text" class="ic_smallListInput" />
+							<input optionKey="keywords" id="keywords" type="text" class="ic_smallListInput" style="width:98%;" />
 							<div optionKey="keywords" id="keywords_holder" class="ic_smallListHolder"></div>
 							<h3>
 								<script type="text/javascript">
@@ -273,17 +273,16 @@
 									document.write(Search_STR.By_Location.LABEL);
 								</script>
 							</h3>
-							<input optionKey="location" id="location"  type="text" class="ic_smallListInput" />
-							<div optionKey="location" id="location_holder" class="ic_smallListHolder"></div>
-							<a class="ic_as_li" onclick="">
+							<input optionKey="location" id="location"  type="text" class="ic_smallListInput" style="width:72%;" /> <a class="ic_inner_option" onclick="">
 								<script type="text/javascript">
 									document.write(Search_STR.By_Location.Fields.MAP);
 								</script>
 							</a>
+							<div optionKey="location" id="location_holder" class="ic_smallListHolder"></div>
+							
 						</div>
 					</td>
-					<!--<td id="search_results_holder" style="visibility:hidden">-->
-					<td id="search_results_holder">
+					<td id="search_results_holder" style="visibility:hidden">
 						<div id="search_results_info">
 							<p>Results: <span id="num_search_results">none</span> found</p>
 							<a onclick="Search.prompt();">Save Search</a>

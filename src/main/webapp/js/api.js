@@ -87,6 +87,9 @@ var Search = {
 				showAlert(Alert_STR.Errors.MAIN_TITLE, Alert_STR.Errors.EMPTY_SEARCH, false, null, null);
 		},
 		callback: function(searchResults) {
+			$("#search_results").empty();
+			$("#search_results").append(formatSearchResultsForList(searchResults));
+			$("#search_results_holder").css('visibility','visible');
 			removeSpinner();
 		}
 	},

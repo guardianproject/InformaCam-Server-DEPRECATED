@@ -58,9 +58,9 @@ var MediaEntity = function(data) {
 	});
 	
 	this.options.push({
-		label: Menu_STR.Media.VIEW_SUBMISSION_INFO,
+		label: Menu_STR.Media.SEND_MESSAGE,
 		action: function() {
-			entity.viewSubmissionInfo();
+			entity.sendMessage();
 		}
 	});
 	
@@ -72,7 +72,7 @@ var MediaEntity = function(data) {
 		alert("exporting metadata");
 	};
 	
-	this.viewSubmissionInfo = function() {
+	this.sendMessage = function() {
 		alert("view submission info");
 	};
 	

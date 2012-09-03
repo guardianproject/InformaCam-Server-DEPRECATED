@@ -16,8 +16,13 @@ import java.util.Map.Entry;
 
 import net.sf.json.JSONObject;
 
+import org.apache.commons.codec.digest.DigestUtils;
+import org.ektorp.UpdateConflictException;
 import org.ektorp.ViewQuery;
+import org.ektorp.ViewResult;
 import org.ektorp.impl.StdCouchDbConnector;
+import org.ektorp.support.DesignDocument;
+import org.ektorp.support.DesignDocument.View;
 import org.witness.informa.utils.Constants;
 import org.witness.informa.utils.CouchParser;
 import org.witness.informa.utils.Constants.Couch;
@@ -32,11 +37,9 @@ import org.witness.informa.utils.Constants.Search.Parameters.Type;
 public class InformaSearch implements Constants {
 	List<InformaTemporaryView> viewCache;
 	StdCouchDbConnector db;
-	ViewQuery doc;
 		
-	public InformaSearch(StdCouchDbConnector db, ViewQuery doc) {
+	public InformaSearch(StdCouchDbConnector db) {
 		this.db = db;
-		this.doc = doc;
 	}
 	
 	private static Map<String, Object> parse(Map<String, Object> params) {
@@ -79,42 +82,123 @@ public class InformaSearch implements Constants {
 		return parsed;
 	}
 	
+	public ArrayList<JSONObject> query(String viewHash) {
+		return CouchParser.getRows(db, new ViewQuery().designDocId("_design/" + viewHash), "call", null);
+	}
+	
 	public ArrayList<JSONObject> query(Map<String, Object> params) {
 		ArrayList<JSONObject> result = null;
 		Map<String, Object> parameters = parse(params);
 		
-		if(parameters.containsKey("keywords"))
-			setKeywords();
+		StringBuilder query = new StringBuilder();
+		int meetsCriteria = 0;
+		query.append("function(doc){if(doc._id) {var res = {};var criteriaMet = 0;");
 		
-		if(parameters.containsKey("timeframe"))
-			setTimeframe();
+		if(parameters.containsKey("location")) {
+			query.append(setGeolocate());
+			++meetsCriteria;
+		}
 		
-		if(parameters.containsKey("mediaType"))
-			setMediaType();
+		if(parameters.containsKey("keywords")) {
+			query.append(setKeywords((List<String>) parameters.get("keywords")));
+			++meetsCriteria;
+		}
 		
-		if(parameters.containsKey("location"))
-			setGeolocate();
+		if(parameters.containsKey("timeframe")) {
+			query.append(setTimeframe((Integer) parameters.get("timeframe")));
+			++meetsCriteria;
+		}
+		
+		if(parameters.containsKey("mediaType")) {
+			query.append(setMediaType((Integer) parameters.get("mediaType")));
+			++meetsCriteria;
+		}
+		
+		query.append("var meetsCriteria = " + meetsCriteria + ";");
+		query.append("if(meetsCriteria==criteriaMet) {res['_id'] = doc._id; res['mediaType'] = doc.mediaType; res['dateCreated'] = doc.dateCreated; res['sourceId'] = doc.sourceId;emit(doc._id, res);}}}");
+		
+		InformaTemporaryView itv = new InformaTemporaryView(query.toString(), parameters);
+		result = itv.build();
 		
 		return result;
 	}
 	
-	private void setGeolocate() {
-		Map<String, Object> keyValPair = new HashMap<String, Object>();
-		InformaTemporaryView itv = new InformaTemporaryView(TempViews.GEOLOCATE, keyValPair);
-	}
-	
-	private void setTimeframe() {
+	private String setGeolocate() {
+		String template = readTemplate("geolocate.tmpl");
+		return "";
 		
 	}
 	
-	private void setMediaType() {
+	private String setTimeframe(int timeframe) {
+		String template = readTemplate("timeframe.tmpl");
+		StringBuffer sb = new StringBuffer();
 		
+		long upperBound = System.currentTimeMillis();
+		long lowerBound = 0L;
+		switch(timeframe) {
+		case Search.Parameters.Timeframe.PAST_24_HOURS:
+			lowerBound = upperBound - getDaysAsMillis(1);
+			break;
+		case Search.Parameters.Timeframe.PAST_WEEK:
+			lowerBound = upperBound - getDaysAsMillis(7);
+			break;
+		case Search.Parameters.Timeframe.PAST_MONTH:
+			lowerBound = upperBound - getDaysAsMillis(30);
+			break;
+		case Search.Parameters.Timeframe.PAST_YEAR:
+			lowerBound = upperBound - getDaysAsMillis(365);
+			break;
+		}
+		
+		sb.append("var upperBound = " + upperBound + ";");
+		sb.append("var lowerBound = " + lowerBound + ";");
+		
+		return template.replace(Couch.VAR_SENTINEL, sb.toString());
 	}
 	
-	private void setKeywords() {
-		
+	private static final long getDaysAsMillis(int days) {
+		long day = 24 * 60 * 60 * 1000;
+		CouchParser.Log(Couch.INFO, "days: " + days + " x day: " + day + " = " + (days * day));
+		return (days * day);
 	}
 	
+	private String setMediaType(int mediaType) {
+		String template = readTemplate("mediaType.tmpl");
+		
+		return template.replace(Couch.VAR_SENTINEL, "var mediaType = " + mediaType + ";");
+	}
+	
+	private String setKeywords(List<String> keywords) {
+		String template = readTemplate("keywords.tmpl");
+		StringBuffer sb = new StringBuffer();
+		
+		for(String kw : keywords)
+			sb.append("," + kw);
+		
+		return template.replace(Couch.VAR_SENTINEL, "var keywords = [" + sb.toString().substring(1) + "];");
+	}
+	
+	private String readTemplate(String template) {
+		StringBuffer sb = new StringBuffer();
+		String line;
+		int read = 0;
+		char[] buf = new char[1024];
+		
+		try {
+			BufferedReader br = new BufferedReader(new FileReader(VIEW_ROOT + template));
+			while((read = br.read(buf)) != -1) {
+				line = String.valueOf(buf, 0, read);
+				sb.append(line);
+				buf = new char[1024];
+			}
+			br.close();
+			return sb.toString();
+		} catch(IOException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+		
 	public Map<String, Object> loadSearch(String id) {
 		// get the search params from the db
 		Map<String, Object> results = null;
@@ -132,68 +216,42 @@ public class InformaSearch implements Constants {
 		return result;
 	}
 	
-	public class InformaSearchResult {
-		
-	}
-	
-	public class InformaTemporaryView implements Serializable  {
-		private static final long serialVersionUID = -5274860094221733977L;
-		private Map<String, Object> keyValPair;
-		
-		public String view, viewHash;
-		
-		public InformaTemporaryView(String template, Map<String, Object> keyValPair) {
-			this.keyValPair = keyValPair;
-			
-			StringBuffer sb = new StringBuffer();
-			String line;
-			int read = 0;
-			char[] buf = new char[1024];
-			
-			try {
-				BufferedReader br = new BufferedReader(new FileReader(template));
-				while((read = br.read(buf)) != -1) {
-					line = String.valueOf(buf, 0, read);
-					sb.append(line);
-					buf = new char[1024];
-				}
-				br.close();
+	public class InformaTemporaryView  {
+		DesignDocument.View view;
+		DesignDocument viewDoc;
+		String viewQuery, viewHash;
+		Map<String, Object> parameters;
 				
-				view = sb.toString();
-				sb = null;
-				
-				if(view.contains(Couch.VAR_SENTINEL)) {
-					sb = new StringBuffer();
-					Iterator<Entry<String, Object>> it = this.keyValPair.entrySet().iterator();
-					while(it.hasNext()) {
-						Entry<String, Object> kvp = it.next();
-						sb.append("var " + kvp.getKey() + " = " + String.valueOf(kvp.getValue()) + ";");
-					}
-					
-					view = view.replace(Couch.VAR_SENTINEL, sb.toString());
-				}
-				
-				viewHash = CouchParser.hashView(view);
-				build();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-			
-			
+		public InformaTemporaryView(String viewQuery, Map<String, Object> parameters) {
+			this.viewQuery = viewQuery;
+			this.parameters = parameters;
+			viewHash = DigestUtils.md5Hex(viewQuery);
 		}
 		
-		private void build() {
-			ArrayList<JSONObject> results = CouchParser.getRows(InformaSearch.this, db, this, null);
-			if(results != null) {
+		public ArrayList<JSONObject> build() {
+			view = new DesignDocument.View(viewQuery);
+			viewDoc = new DesignDocument("_design/" + viewHash);
+			viewDoc.addView("call", view);
+						
+			try {
+				db.create(viewDoc);
+			} catch(UpdateConflictException e) {
+				CouchParser.Log(Couch.DEBUG, "doc already exists");
+			}
+			
+			ArrayList<JSONObject> result = CouchParser.getRows(db, new ViewQuery().designDocId(viewDoc.getId()), "call", null);
+			if(result != null && result.size() > 0) {
 				if(viewCache == null)
 					viewCache = new ArrayList<InformaTemporaryView>();
 				
 				viewCache.add(this);
 			}
+			return result;
 		}
 		
 		
 		public void save() throws IOException {
+			/*
 			File viewCache = new File(VIEW_CACHE);
 			if(!viewCache.exists())
 				viewCache.mkdir();
@@ -202,6 +260,7 @@ public class InformaSearch implements Constants {
 			FileWriter fw = new FileWriter(viewFile);
 			fw.write(view);
 			fw.close();
+			*/
 		}
 		
 		@SuppressWarnings("unused")

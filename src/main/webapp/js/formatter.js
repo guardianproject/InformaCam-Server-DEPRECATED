@@ -2,6 +2,46 @@ function formatUnaliasedTitle(sourceId, mediaType) {
 	return MediaTypes.UnaliasedTitle[mediaType] + sourceId;
 }
 
+function formatSearchResultsForList(searchResults) {
+	var content = $(document.createElement('ol'));
+	$("#num_search_results").html(searchResults.length);
+	$.each(searchResults, function(index, item) {
+		var res = item;
+		var idx = index;
+		
+		var title = res.alias;
+		if(title == undefined || title == null)
+			title = formatUnaliasedTitle(res.sourceId, res.mediaType);
+		
+		var table  = $(document.createElement('table'))
+			.append(
+				$(document.createElement('tr'))
+					.append(
+						$(document.createElement('td'))
+							.prop('width','20%')
+							.append(
+								$(document.createElement('img'))
+									.prop('src','images/ic_logo.png')
+							)
+					)
+					.append(
+						$(document.createElement('td'))
+							.html(
+								title + "<br />" + 
+								formatTimestampForHumans(res.dateCreated)
+							)
+							.attr({
+								'class':'ic_toMedia',
+								'id':res._id
+							})
+					)
+			);
+		content.append($(document.createElement('li')).append(table));
+	});
+	
+	return content;
+}
+
 function formatSavedSearchesForList() {
 	var content = $(document.createElement('table')).prop('width','100%');
 	

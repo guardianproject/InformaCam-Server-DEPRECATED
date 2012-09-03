@@ -271,11 +271,15 @@ p {
 	color:#fff;
 }
 
-#ic_login a {
+#ic_login a, a.ic_inner_option, a.ic_inner_option:link, a.ic_inner_option:visited, a.ic_inner_option:hover {
 	padding:4px 5px;
 	background-color:#8fae22;
 	cursor:pointer;
 	color:#ffffff;
+}
+
+a.ic_inner_option, a.ic_inner_option:link, a.ic_inner_option:visited, a.ic_inner_option:hover {
+	font-size:0.6em;
 }
 
 #metadata_readout ul li {
@@ -478,9 +482,13 @@ div.ic_toggle a.selected {
 	top:-35px;
 }
 
-#search_refine_options ul, #search_refine_options input {
+#search_refine_options ul {
 	margin:0 0 10px 0;
 	width:98%;
+}
+
+#search_refine_options input {
+	margin:0 0 10px 0;
 }
 
 #search_refine_options ul {
@@ -523,12 +531,12 @@ a.smallList {
 
 /*--------------------------------------
 Tables*/
-table.ic_table {
+table.ic_table, #search_results table {
 	width:100%;
 	table-layout:fixed;
 }
 
-table.ic_table tr, #popup_content table tr {
+table.ic_table tr, #popup_content table tr, #search_results table tr {
 	vertical-align:top;
 }
 
@@ -540,6 +548,19 @@ table.ic_search tr td {
 	border:1px solid #fff;
 	background-image:url('../images/ic_trans_blk.png');
 	padding:6px;
+}
+
+#search_results table tr td {
+	border:1px solid #cccccc;
+	background-image:none;
+	background-color:#ffffff;
+	font-size:0.7em;
+	color:#999999;
+}
+
+#search_results table tr td img {
+	width:140px;
+	height:85px;
 }
 
 #popup_content table tr td {
