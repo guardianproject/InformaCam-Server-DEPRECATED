@@ -271,6 +271,9 @@ public class CouchParser implements Constants {
 		@JsonProperty("dateCreated")
 		private long dateCreated;
 		
+		@JsonProperty("discussions")
+		private List<JSONObject> discussions;
+		
 		public String getId() {
 			return _id;
 		}
@@ -365,6 +368,14 @@ public class CouchParser implements Constants {
 
 		public void setJ3m(JSONObject j3m) {
 			this.j3m = j3m;
+		}
+
+		public List<JSONObject> getDiscussions() {
+			return discussions;
+		}
+
+		public void setDiscussions(List<JSONObject> discussions) {
+			this.discussions = discussions;
 		}
 	}
 	
