@@ -18,7 +18,7 @@ public class DesktopService extends AbstractService implements Constants {
 		addService("/service/desktopConnection", "desktopResponse");
 		
 		if(ml == null)
-			ml = new MediaLoader();
+			ml = new MediaLoader();		
 	}
 	
 	@SuppressWarnings("unchecked")

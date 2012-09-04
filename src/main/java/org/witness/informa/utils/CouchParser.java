@@ -1,13 +1,23 @@
 package org.witness.informa.utils;
 
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import org.apache.commons.codec.digest.DigestUtils;
+import org.codehaus.jackson.annotate.JsonIgnoreProperties;
+import org.codehaus.jackson.annotate.JsonProperty;
+import org.codehaus.jackson.annotate.JsonWriteNullProperties;
 import org.ektorp.UpdateConflictException;
 import org.ektorp.ViewQuery;
 import org.ektorp.ViewResult;
 import org.ektorp.impl.StdCouchDbConnector;
+import org.ektorp.support.CouchDbDocument;
 import org.ektorp.support.DesignDocument;
 import org.witness.informa.InformaSearch;
 import org.witness.informa.InformaSearch.InformaTemporaryView;
@@ -110,11 +120,41 @@ public class CouchParser implements Constants {
 		return result;
 	}
 	
-	public static boolean updateRecord(Class c, StdCouchDbConnector db, String id, String rev) {
-		// TODO: ugh...
+	public static boolean updateRecord(Class c, StdCouchDbConnector db, String id, String rev, Map<String, Object> updateValues) {
+		// ugh i can't believe i had to do this... use reflection to get the function to set the new value!
+		List<Method> methods = new ArrayList<Method>();
+		
 		Object o = db.get(c, id, rev);
 		if(o == null)
 			return false;
+		
+		Method[] mtd = o.getClass().getDeclaredMethods();
+		for(int m=0; m<mtd.length; m++)
+			methods.add(mtd[m]);
+		
+		Iterator<Entry<String, Object>> uIt = updateValues.entrySet().iterator();
+		while(uIt.hasNext()) {
+			Entry<String, Object> entry = uIt.next();
+			for(Method m : methods) {
+				if(m.getName().toLowerCase().contains("set" + entry.getKey().toLowerCase())) {
+					try {
+						m.invoke(o, entry.getValue());
+					} catch (IllegalArgumentException e) {
+						Log(Couch.ERROR, e.toString());
+						e.printStackTrace();
+					} catch (IllegalAccessException e) {
+						Log(Couch.ERROR, e.toString());
+						e.printStackTrace();
+					} catch (InvocationTargetException e) {
+						Log(Couch.ERROR, e.toString());
+						e.printStackTrace();
+					}
+				}
+			}
+		}
+		
+		((CouchDbDocument) o).setId(id);
+		((CouchDbDocument) o).setRevision(rev);
 		
 		db.update(o);
 		return true;
@@ -124,8 +164,140 @@ public class CouchParser implements Constants {
 		System.out.println("*********** " + tag + " *************: " + msg);
 	}
 	
-	public static class Derivative {
+	@SuppressWarnings("deprecation")
+	@JsonWriteNullProperties()
+	public static class Derivative extends CouchDbDocument {
+		@JsonProperty("_id")
+		private String _id;
 		
+		@JsonProperty("_rev")
+		private String _rev;
+		
+		@JsonProperty("alias")
+		private String alias;
+		
+		@JsonProperty("keywords")
+		private List<String> keywords;
+		
+		@JsonProperty("mediaType")
+		private int mediaType;
+		
+		@JsonProperty("j3m")
+		private JSONObject j3m;
+		
+		@JsonProperty("location")
+		private List<double[]> location;
+		
+		@JsonProperty("locationOnSave")
+		private double[] locationOnSave;
+		
+		@JsonProperty("representation")
+		private List<String> representation;
+		
+		@JsonProperty("sourceId")
+		private String sourceId;
+		
+		@JsonProperty("timestampIndexed")
+		private long timestampIndexed;
+		
+		@JsonProperty("dateCreated")
+		private long dateCreated;
+		
+		public String getId() {
+			return _id;
+		}
+		
+		public void setId(String _id) {
+			this._id = _id;
+		}
+		
+		public String getRev() {
+			return _rev;
+		}
+		
+		public void setRev(String _rev) {
+			this._rev = _rev;
+		}
+		
+		public String getAlias() {
+			return alias;
+		}
+		
+		public void setAlias(String alias) {
+			this.alias = alias;
+		}
+
+		public long getDateCreated() {
+			return dateCreated;
+		}
+
+		public void setDateCreated(long dateCreated) {
+			this.dateCreated = dateCreated;
+		}
+
+		public long getTimestampIndexed() {
+			return timestampIndexed;
+		}
+
+		public void setTimestampIndexed(long timestampIndexed) {
+			this.timestampIndexed = timestampIndexed;
+		}
+
+		public String getSourceId() {
+			return sourceId;
+		}
+
+		public void setSourceId(String sourceId) {
+			this.sourceId = sourceId;
+		}
+
+		public List<String> getKeywords() {
+			return keywords;
+		}
+
+		public void setKeywords(List<String> keywords) {
+			this.keywords = keywords;
+		}
+
+		public int getMediaType() {
+			return mediaType;
+		}
+
+		public void setMediaType(int mediaType) {
+			this.mediaType = mediaType;
+		}
+
+		public List<String> getRepresentation() {
+			return representation;
+		}
+
+		public void setRepresentation(List<String> representation) {
+			this.representation = representation;
+		}
+
+		public double[] getLocationOnSave() {
+			return locationOnSave;
+		}
+
+		public void setLocationOnSave(double[] locationOnSave) {
+			this.locationOnSave = locationOnSave;
+		}
+
+		public List<double[]> getLocation() {
+			return location;
+		}
+
+		public void setLocation(List<double[]> location) {
+			this.location = location;
+		}
+
+		public JSONObject getJ3m() {
+			return j3m;
+		}
+
+		public void setJ3m(JSONObject j3m) {
+			this.j3m = j3m;
+		}
 	}
 	
 }

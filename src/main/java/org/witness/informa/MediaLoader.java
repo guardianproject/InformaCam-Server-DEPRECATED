@@ -90,12 +90,15 @@ public class MediaLoader implements Constants {
 		ViewQuery getUsers = new ViewQuery().designDocId(Couch.Design.ADMIN);
 		String unpw = (String) credentials.get("username") + (String) credentials.get("password");
 		return CouchParser.getRecord(dbUsers, getUsers, Couch.Views.Admin.ATTEMPT_LOGIN, unpw, new String[] {"unpw"});
-	}
+	}	
 	
 	public JSONObject renameMedia(String id, String rev, String newAlias) {
+		Map<String, Object> setAlias = new HashMap<String, Object>();
+		setAlias.put("alias", newAlias);
+		
 		JSONObject res = new JSONObject();
 		res.put(DC.Options.ALIAS, newAlias);
-		res.put(DC.Options.RESULT, CouchParser.updateRecord(Derivative.class, dbDerivatives, id, rev));
+		res.put(DC.Options.RESULT, CouchParser.updateRecord(Derivative.class, dbDerivatives, id, rev, setAlias));
 		return res;
 	}
 	
