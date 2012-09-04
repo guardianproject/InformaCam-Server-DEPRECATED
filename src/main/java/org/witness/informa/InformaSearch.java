@@ -251,16 +251,7 @@ public class InformaSearch implements Constants {
 		
 		
 		public void save() throws IOException {
-			/*
-			File viewCache = new File(VIEW_CACHE);
-			if(!viewCache.exists())
-				viewCache.mkdir();
 			
-			File viewFile = new File(viewCache, viewHash + ".search");
-			FileWriter fw = new FileWriter(viewFile);
-			fw.write(view);
-			fw.close();
-			*/
 		}
 		
 		@SuppressWarnings("unused")

@@ -164,8 +164,76 @@ public class CouchParser implements Constants {
 		System.out.println("*********** " + tag + " *************: " + msg);
 	}
 	
-	@SuppressWarnings("deprecation")
-	@JsonWriteNullProperties()
+	@SuppressWarnings("serial")
+	public static class User extends CouchDbDocument {
+		@JsonProperty("_id")
+		private String _id;
+		
+		@JsonProperty("_rev")
+		private String _rev;
+		
+		@JsonProperty("displayName")
+		private String displayName;
+		
+		@JsonProperty("savedSearches")
+		private List<JSONObject> savedSearches;
+		
+		@JsonProperty("unpw")
+		private String unpw;
+		
+		@JsonProperty("username")
+		private String username;
+		
+		public String getId() {
+			return _id;
+		}
+		
+		public void setId(String _id) {
+			this._id = _id;
+		}
+		
+		public String getRev() {
+			return _rev;
+		}
+		
+		public void setRev(String _rev) {
+			this._rev = _rev;
+		}
+
+		public String getDisplayName() {
+			return displayName;
+		}
+
+		public void setDisplayName(String displayName) {
+			this.displayName = displayName;
+		}
+
+		public List<JSONObject> getSavedSearches() {
+			return savedSearches;
+		}
+
+		public void setSavedSearches(List<JSONObject> savedSearches) {
+			this.savedSearches = savedSearches;
+		}
+
+		public String getUnpw() {
+			return unpw;
+		}
+
+		public void setUnpw(String unpw) {
+			this.unpw = unpw;
+		}
+
+		public String getUsername() {
+			return username;
+		}
+
+		public void setUsername(String username) {
+			this.username = username;
+		}
+	}
+	
+	@SuppressWarnings("serial")
 	public static class Derivative extends CouchDbDocument {
 		@JsonProperty("_id")
 		private String _id;
