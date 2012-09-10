@@ -53,8 +53,13 @@ function handleDesktopServiceMessage(data) {
 				if(data.metadata != null)
 					User.loadSession(data.metadata);
 				else {
+					currentUser = null;
 					showAlert(Alert_STR.Errors.MAIN_TITLE, Alert_STR.Errors.LOGIN_FAILURE, false, null, null);
 				}
+				break;
+			case Command.LOGOUT:
+				removeSpinner();
+				User.unloadSession();
 				break;
 			case Command.RENAME_MEDIA:
 				removeSpinner();

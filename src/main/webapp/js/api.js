@@ -13,7 +13,12 @@ var User = {
 		)
 			return res;		//default username & password :(
 		
-		showSpinner();	
+		showSpinner();
+		var d = new Date();
+		var now = d.getTime();
+		d.setTime(now + (3600 * 1000)); // an hour
+		document.cookie="username=" + username + ";expires=" + d.toUTCString();
+		document.cookie="password=" + password + ";expires=" + d.toUTCString();
 		broadcast({
 			attempt: Command.ATTEMPT_LOGIN,
 			options: {
@@ -25,6 +30,12 @@ var User = {
 	logout : function() {
 		// whatever broadcast we need to send...
 		showSpinner();
+		var d = new Date();
+		var now = d.getTime();
+		d.setTime(now - (3600 * 1000)); // an hour ago
+		document.cookie="username=;expires=" + d.toUTCString();
+		document.cookie="password=;expires=" + d.toUTCString();
+		
 		broadcast({
 			attempt: Command.LOGOUT,
 			options: {
@@ -55,6 +66,7 @@ var User = {
 	},
 	unloadSession: function() {
 		currentUser = null;
+		clearUi();
 		updateLoginUi();
 	},
 	reloadSession : function() {
@@ -63,9 +75,37 @@ var User = {
 	},
 	isLoggedIn : function() {
 		var res = false;
+		
 		if(currentUser != undefined && currentUser != null)
 			res = true;
-		
+		else {
+			var i, c = document.cookie.split("; ");
+			
+			var username = "";
+			var	password = "";
+			
+			if(c.length > 0) {
+				for(i=0;i<c.length;i++) {
+					var cName = c[i].substr(0,c[i].indexOf("="));
+					var cVal = c[i].substr(c[i].indexOf("=") + 1);
+					
+					if(cName == "username")
+						username = cVal;
+					
+					if(cName == "password")
+						password = cVal;	
+				}
+				
+				
+				if(username != "" && password != "") {
+					User.login(username, password);
+					
+					if(currentUser != null)
+						res = true;
+				}
+			}
+		}
+
 		return res;
 	}
 };

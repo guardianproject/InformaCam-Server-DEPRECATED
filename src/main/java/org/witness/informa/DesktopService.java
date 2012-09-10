@@ -34,6 +34,10 @@ public class DesktopService extends AbstractService implements Constants {
 				msg.put(DC.Keys.COMMAND, DC.Commands.ATTEMPT_LOGIN);
 				msg.put(DC.Keys.METADATA, ml.loginUser(msg.opts));
 				break;
+			case Attempts.LOGOUT:
+				msg.put(DC.Keys.COMMAND, DC.Commands.LOGOUT);
+				msg.put(DC.Keys.METADATA, true);
+				break;
 			case Attempts.VIEW_DERIVATIVES:
 				if(ml == null)
 					ml = new MediaLoader();

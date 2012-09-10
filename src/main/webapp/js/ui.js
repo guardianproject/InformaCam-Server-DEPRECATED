@@ -11,7 +11,7 @@ function clearUi() {
 }
 
 function updateLoginUi() {
-	if(User.isLoggedIn()) {
+	if(currentUser != null && currentUser != undefined) {
 		$($("#ic_login").children("p")[0]).css('display','block');
 		$($("#ic_login").children("p")[1]).css('display','none');
 		
