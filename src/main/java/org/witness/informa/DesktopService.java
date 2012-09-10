@@ -62,7 +62,7 @@ public class DesktopService extends AbstractService implements Constants {
 				break;
 			case Attempts.SAVE_SEARCH:
 				msg.put(DC.Keys.COMMAND, DC.Commands.SAVE_SEARCH);
-				msg.put(DC.Keys.METADATA, ml.search.saveSearch((String) msg.opts.get(DC.Options.ALIAS), (Map<String, Object>) msg.opts.get(DC.Options.PARAMETERS)));
+				msg.put(DC.Keys.METADATA, ml.saveSearch(msg.opts));
 				break;
 			case Attempts.LOAD_SEARCH:
 				msg.put(DC.Keys.COMMAND, DC.Commands.LOAD_SEARCH);

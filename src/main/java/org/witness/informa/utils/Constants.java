@@ -48,6 +48,15 @@ public interface Constants {
 			
 			public final static class Admin {
 				public final static String ATTEMPT_LOGIN = "attemptLogin";
+				public final static String GET_BY_ID = "getById";
+				
+				public static class Keys {
+					public final static String VIEW_HASH = "viewHash";
+					public final static String PARAMETERS = DC.Options.PARAMETERS;
+					public final static String ALIAS = DC.Options.ALIAS;
+					public static final String SAVED_SEARCHES = "savedSearches";
+					public static final String _REV = DC.Options._REV;
+				}
 			}
 			
 			public final static class Derivatives {
@@ -70,10 +79,6 @@ public interface Constants {
 				public final static String GET_ALL_SHORTENED = "mediaShortDescription";
 				
 				
-			}
-			
-			public final static class TempViews {
-				public final static String GEOLOCATE = VIEW_ROOT + "geolocate.json";
 			}
 		}
 		

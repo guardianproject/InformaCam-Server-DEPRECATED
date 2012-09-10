@@ -100,6 +100,7 @@ var Search = {
 			showAlert(Alert_STR.Errors.MAIN_TITLE, Alert_STR.Errors.NO_SAVED_SEARCHES, false, null, null);
 	},
 	loadSearch: function(id) {
+		Search.clear();
 		setOptions("search_refine_options", currentUser.savedSearches[id].parameters);
 		currentUser.searchBasedOffOfExistingSearch = id;
 		removePopup();
@@ -139,13 +140,28 @@ var Search = {
 				attempt: Command.SAVE_SEARCH,
 				options: {
 					alias: alias,
-					parameters: searchQuery.build()
+					parameters: searchQuery.build(),
+					_id: currentUser._id,
+					_rev: currentUser._rev
 				}
 			});
 		},
-		callback: function() {
-		
+		callback: function(savedSearchResult) {
+			removeAlert();
+			currentUser.savedSearches = savedSearchResult.savedSearches;
+			currentUser._rev = savedSearchResult._rev;
+			showAlert(Alert_STR.Search.SavedSearches.MAIN_TITLE, Alert_STR.Basic.OK, false, null, null);
 		}
+	},
+	clear: function() {
+		if(searchQuery != undefined && searchQuery != null)
+			delete searchQuery;
+		if(currentUser.searchBasedOffOfExistingSearch != undefined)
+			delete currentUser.searchBasedOffOfExistingSearch;
+
+		clearOptions('search_refine_options');
+		$("#search_results").empty();
+		$("#search_results_holder").css('visibility','hidden');
 	}
 }
 

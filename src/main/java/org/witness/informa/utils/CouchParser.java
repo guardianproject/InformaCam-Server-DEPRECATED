@@ -9,18 +9,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.apache.commons.codec.digest.DigestUtils;
-import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.codehaus.jackson.annotate.JsonProperty;
-import org.codehaus.jackson.annotate.JsonWriteNullProperties;
-import org.ektorp.UpdateConflictException;
 import org.ektorp.ViewQuery;
 import org.ektorp.ViewResult;
 import org.ektorp.impl.StdCouchDbConnector;
 import org.ektorp.support.CouchDbDocument;
-import org.ektorp.support.DesignDocument;
-import org.witness.informa.InformaSearch;
-import org.witness.informa.InformaSearch.InformaTemporaryView;
 
 import net.sf.json.JSONObject;
 
@@ -118,15 +111,15 @@ public class CouchParser implements Constants {
 		}
 		
 		return result;
-	}
+	}	
 	
-	public static boolean updateRecord(Class c, StdCouchDbConnector db, String id, String rev, Map<String, Object> updateValues) {
+	public static String updateRecord(Class c, StdCouchDbConnector db, String id, String rev, Map<String, Object> updateValues) {
 		// ugh i can't believe i had to do this... use reflection to get the function to set the new value!
 		List<Method> methods = new ArrayList<Method>();
 		
 		Object o = db.get(c, id, rev);
 		if(o == null)
-			return false;
+			return null;
 		
 		Method[] mtd = o.getClass().getDeclaredMethods();
 		for(int m=0; m<mtd.length; m++)
@@ -157,7 +150,7 @@ public class CouchParser implements Constants {
 		((CouchDbDocument) o).setRevision(rev);
 		
 		db.update(o);
-		return true;
+		return ((CouchDbDocument) o).getRevision();
 	}
 	
 	public static void Log(String tag, String msg) {

@@ -28,8 +28,4 @@ var SearchBuilder = function() {
 		
 		return query;
 	}
-	
-	this.clear = function() {
-		searchQuery = new SearchBuilder();
-	}
 }

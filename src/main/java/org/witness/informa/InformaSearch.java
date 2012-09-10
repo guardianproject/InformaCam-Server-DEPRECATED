@@ -8,6 +8,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -26,13 +27,14 @@ import org.ektorp.support.DesignDocument.View;
 import org.witness.informa.utils.Constants;
 import org.witness.informa.utils.CouchParser;
 import org.witness.informa.utils.Constants.Couch;
+import org.witness.informa.utils.Constants.DC;
 import org.witness.informa.utils.Constants.Search;
-import org.witness.informa.utils.Constants.Couch.Views.TempViews;
 import org.witness.informa.utils.Constants.Search.Parameters;
 import org.witness.informa.utils.Constants.Search.Parameters.Keywords;
 import org.witness.informa.utils.Constants.Search.Parameters.Location;
 import org.witness.informa.utils.Constants.Search.Parameters.Timeframe;
 import org.witness.informa.utils.Constants.Search.Parameters.Type;
+import org.witness.informa.utils.CouchParser.User;
 
 public class InformaSearch implements Constants {
 	List<InformaTemporaryView> viewCache;
@@ -42,8 +44,8 @@ public class InformaSearch implements Constants {
 		this.db = db;
 	}
 	
-	private static Map<String, Object> parse(Map<String, Object> params) {
-		Map<String, Object> parsed = new HashMap<String, Object>();
+	private static Map<String,Object> parse(Map<String,Object> params) {
+		Map<String,Object> parsed = new HashMap<String,Object>();
 		List<String> kw = null;
 		List<Double[]> loc = null;
 		
@@ -54,13 +56,7 @@ public class InformaSearch implements Constants {
 			
 			switch(Search.Parameters.KEYS.get(param.getKey())) {
 			case Search.Parameters.Keywords.KEY:
-				if(kw == null)
-					kw = new ArrayList<String>();
-				
-				String[] keywords = value.subSequence(1, value.length() - 1).toString().split(",");
-				for(String k : keywords)
-					kw.add(k);
-				
+				kw = Arrays.asList(value.subSequence(1, value.length() - 1).toString().split(","));
 				parsed.put(param.getKey(), kw);
 				break;
 			case Search.Parameters.Type.KEY:
@@ -86,7 +82,8 @@ public class InformaSearch implements Constants {
 		return CouchParser.getRows(db, new ViewQuery().designDocId("_design/" + viewHash), "call", null);
 	}
 	
-	public ArrayList<JSONObject> query(Map<String, Object> params) {
+	@SuppressWarnings("unchecked")
+	public ArrayList<JSONObject> query(Map<String,Object> params) {
 		ArrayList<JSONObject> result = null;
 		Map<String, Object> parameters = parse(params);
 		
@@ -117,13 +114,14 @@ public class InformaSearch implements Constants {
 		query.append("var meetsCriteria = " + meetsCriteria + ";");
 		query.append("if(meetsCriteria==criteriaMet) {res['_id'] = doc._id; res['mediaType'] = doc.mediaType; res['dateCreated'] = doc.dateCreated; res['sourceId'] = doc.sourceId;emit(doc._id, res);}}}");
 		
-		InformaTemporaryView itv = new InformaTemporaryView(query.toString(), parameters);
+		InformaTemporaryView itv = new InformaTemporaryView(query.toString(), params);
 		result = itv.build();
 		
 		return result;
 	}
 	
 	private String setGeolocate() {
+		// TODO!
 		String template = readTemplate("geolocate.tmpl");
 		return "";
 		
@@ -131,29 +129,24 @@ public class InformaSearch implements Constants {
 	
 	private String setTimeframe(int timeframe) {
 		String template = readTemplate("timeframe.tmpl");
-		StringBuffer sb = new StringBuffer();
 		
-		long upperBound = System.currentTimeMillis();
-		long lowerBound = 0L;
+		int days = 0;
 		switch(timeframe) {
 		case Search.Parameters.Timeframe.PAST_24_HOURS:
-			lowerBound = upperBound - getDaysAsMillis(1);
+			days = 1;
 			break;
 		case Search.Parameters.Timeframe.PAST_WEEK:
-			lowerBound = upperBound - getDaysAsMillis(7);
+			days = 7;
 			break;
 		case Search.Parameters.Timeframe.PAST_MONTH:
-			lowerBound = upperBound - getDaysAsMillis(30);
+			days = 30;
 			break;
 		case Search.Parameters.Timeframe.PAST_YEAR:
-			lowerBound = upperBound - getDaysAsMillis(365);
+			days = 365;
 			break;
 		}
 		
-		sb.append("var upperBound = " + upperBound + ";");
-		sb.append("var lowerBound = " + lowerBound + ";");
-		
-		return template.replace(Couch.VAR_SENTINEL, sb.toString());
+		return template.replace(Couch.VAR_SENTINEL, ("var days= " + String.valueOf(days) + ";"));
 	}
 	
 	private static final long getDaysAsMillis(int days) {
@@ -206,23 +199,62 @@ public class InformaSearch implements Constants {
 		return results;
 	}
 	
-	public boolean saveSearch(String alias, Map<String, Object> params) {
-		boolean result = false;
-		JSONObject parameters = JSONObject.fromObject(parse(params));
-		CouchParser.Log(Couch.INFO, parameters.toString());
+	@SuppressWarnings("unchecked")
+	public List<JSONObject> saveSearch(String asAlias, Map<String,Object> params, JSONObject user) {
+		List<JSONObject> savedSearches = null;
+
+		if(viewCache != null && viewCache.size() > 0) {
+			JSONObject parameters = JSONObject.fromObject(parse(params));
+			savedSearches = user.getJSONArray("savedSearches");
+
+			for(InformaTemporaryView itv : viewCache) {
+				
+				// if the searches are the same, 
+				boolean itvHandled = false;
+				
+				if(itv.parameters.equals(params)) {					
+					boolean update = false;
+					if(savedSearches != null && savedSearches.size() > 0) {
+						for(JSONObject savedSearch : savedSearches) {
+							// is this search in here?
+							if(asAlias.equals((String) savedSearch.get(DC.Options.ALIAS))) {
+								// if so, update the new parameters and the new view hash
+								CouchParser.Log(Couch.INFO, "and the alias matches: " + asAlias);
+								savedSearch.put(Couch.Views.Admin.Keys.VIEW_HASH, itv.viewHash);
+								savedSearch.put(Couch.Views.Admin.Keys.PARAMETERS, parameters);
+								update = true;
+								break;
+							}
+						}
+					}
+					
+					if(!update) {
+						JSONObject searchDescription = new JSONObject();
+						searchDescription.put(Couch.Views.Admin.Keys.VIEW_HASH, itv.viewHash);
+						searchDescription.put(Couch.Views.Admin.Keys.ALIAS, asAlias);
+						searchDescription.put(Couch.Views.Admin.Keys.PARAMETERS, parameters);
+						savedSearches.add(searchDescription);
+					}
+					
+					itvHandled = true;
+					break;
+				}
+				
+				if(itvHandled)
+					break;
+			}
+		}
 		
-		// TODO: save for current user, checking to see if alias has been taken!...
-		
-		return result;
+		return savedSearches;
 	}
 	
 	public class InformaTemporaryView  {
 		DesignDocument.View view;
 		DesignDocument viewDoc;
-		String viewQuery, viewHash;
-		Map<String, Object> parameters;
+		String viewQuery, viewHash, alias;
+		Map<String,Object> parameters;
 				
-		public InformaTemporaryView(String viewQuery, Map<String, Object> parameters) {
+		public InformaTemporaryView(String viewQuery, Map<String,Object> parameters) {
 			this.viewQuery = viewQuery;
 			this.parameters = parameters;
 			viewHash = DigestUtils.md5Hex(viewQuery);
@@ -232,7 +264,7 @@ public class InformaSearch implements Constants {
 			view = new DesignDocument.View(viewQuery);
 			viewDoc = new DesignDocument("_design/" + viewHash);
 			viewDoc.addView("call", view);
-						
+									
 			try {
 				db.create(viewDoc);
 			} catch(UpdateConflictException e) {
@@ -249,10 +281,6 @@ public class InformaSearch implements Constants {
 			return result;
 		}
 		
-		
-		public void save() throws IOException {
-			
-		}
 		
 		@SuppressWarnings("unused")
 		private void log(Object msg) {

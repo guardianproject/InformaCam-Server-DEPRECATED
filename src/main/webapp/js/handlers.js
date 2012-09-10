@@ -61,6 +61,14 @@ function handleDesktopServiceMessage(data) {
 				if(data.metadata != null)
 					Media.rename.callback(data.metadata);
 				break;
+			case Command.SAVE_SEARCH:
+				removeSpinner();
+				if(data.metadata != null) {
+					console.info(data.metadata);
+					Search.saveSearch.callback(data.metadata);
+					
+				}
+				break;
 		}
 	}
 }

@@ -203,7 +203,7 @@
 									</script>
 								</a>
 								
-								<a onclick="clearOptions('search_refine_options');searchQuery.clear();">
+								<a onclick="Search.clear();">
 									<script type="text/javascript">
 										document.write(Search_STR.RESET);
 									</script>

@@ -1,1 +1,1 @@
-@VARSif(doc.dateCreated >= lowerBound && doc.dateCreated <= upperBound) {++criteriaMet;}
+@VARSvar day = 24 * 60 * 60 * 1000;var d = new Date().getTime();var upperBound = d;var lowerBound = upperBound - (days * day);if(doc.dateCreated >= lowerBound && doc.dateCreated <= upperBound) {++criteriaMet;res['timeOffset']=[lowerBound,upperBound];}

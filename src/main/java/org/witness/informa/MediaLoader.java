@@ -12,6 +12,7 @@ import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.ExecutionException;
@@ -29,6 +30,7 @@ import org.ektorp.impl.StdCouchDbInstance;
 
 import org.witness.informa.utils.Constants;
 import org.witness.informa.utils.CouchParser;
+import org.witness.informa.utils.CouchParser.User;
 import org.witness.informa.utils.LocalConstants;
 import org.witness.informa.utils.Constants.Couch;
 import org.witness.informa.utils.Constants.Couch.Views;
@@ -67,9 +69,30 @@ public class MediaLoader implements Constants {
 	public ArrayList<JSONObject> getDerivatives() {
 		ViewQuery getDerivatives = new ViewQuery().designDocId(Couch.Design.DERIVATIVES);
 		ArrayList<JSONObject> res = CouchParser.getRows(dbDerivatives, getDerivatives, Couch.Views.Derivatives.GET_ALL_SHORTENED, null);
+		/*
 		for(JSONObject j : res)
 			CouchParser.Log(Couch.INFO, j.toString());
+		*/
 		return res;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public Map<String, Object> saveSearch(Map<String, Object> saveRequest) {
+		
+		ViewQuery getUsers = new ViewQuery().designDocId(Couch.Design.ADMIN);
+		Map<String, Object> savedSearches = new HashMap<String, Object>();
+		savedSearches.put(Couch.Views.Admin.Keys.SAVED_SEARCHES, search.saveSearch((String) saveRequest.get(DC.Options.ALIAS), (Map<String, Object>) saveRequest.get(DC.Options.PARAMETERS), CouchParser.getRecord(dbUsers, getUsers, Couch.Views.Admin.GET_BY_ID, (String) saveRequest.get(DC.Options._ID), null)));
+		
+		Map<String, Object> savedSearchResult = new HashMap<String, Object>();
+		savedSearchResult.put(Couch.Views.Admin.Keys.SAVED_SEARCHES, (List<JSONObject>) savedSearches.get(Couch.Views.Admin.Keys.SAVED_SEARCHES));
+		
+		String newRev = CouchParser.updateRecord(User.class, dbUsers, (String) saveRequest.get(DC.Options._ID), (String) saveRequest.get(DC.Options._REV), savedSearches);
+		if(newRev != null) {
+			savedSearchResult.put(Couch.Views.Admin.Keys._REV, newRev);
+			return savedSearchResult;
+		} else
+			return null;
+		
 	}
 	
 	public ArrayList<JSONObject> getSources() {
