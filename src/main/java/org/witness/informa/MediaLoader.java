@@ -19,6 +19,7 @@ import java.util.concurrent.ExecutionException;
 
 import javax.swing.filechooser.FileFilter;
 
+import net.sf.json.JSONArray;
 import net.sf.json.JSONException;
 import net.sf.json.JSONObject;
 
@@ -81,8 +82,13 @@ public class MediaLoader implements Constants {
 		
 		ViewQuery getUsers = new ViewQuery().designDocId(Couch.Design.ADMIN);
 		Map<String, Object> savedSearches = new HashMap<String, Object>();
-		savedSearches.put(Couch.Views.Admin.Keys.SAVED_SEARCHES, search.saveSearch((String) saveRequest.get(DC.Options.ALIAS), (Map<String, Object>) saveRequest.get(DC.Options.PARAMETERS), CouchParser.getRecord(dbUsers, getUsers, Couch.Views.Admin.GET_BY_ID, (String) saveRequest.get(DC.Options._ID), null)));
 		
+		JSONArray searches = new JSONArray();
+		for(JSONObject s : search.saveSearch((String) saveRequest.get(DC.Options.ALIAS), (Map<String, Object>) saveRequest.get(DC.Options.PARAMETERS), CouchParser.getRecord(dbUsers, getUsers, Couch.Views.Admin.GET_BY_ID, (String) saveRequest.get(DC.Options._ID), null)))
+			searches.add(s);
+		
+		savedSearches.put(Couch.Views.Admin.Keys.SAVED_SEARCHES, searches);
+				
 		Map<String, Object> savedSearchResult = new HashMap<String, Object>();
 		savedSearchResult.put(Couch.Views.Admin.Keys.SAVED_SEARCHES, (List<JSONObject>) savedSearches.get(Couch.Views.Admin.Keys.SAVED_SEARCHES));
 		

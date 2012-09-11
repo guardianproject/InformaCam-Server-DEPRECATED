@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import net.sf.json.JSONException;
 import net.sf.json.JSONObject;
 
 import org.apache.commons.codec.digest.DigestUtils;
@@ -205,7 +206,14 @@ public class InformaSearch implements Constants {
 
 		if(viewCache != null && viewCache.size() > 0) {
 			JSONObject parameters = JSONObject.fromObject(parse(params));
-			savedSearches = user.getJSONArray("savedSearches");
+			try {
+				savedSearches = user.getJSONArray("savedSearches");
+			} catch(JSONException e) {
+				CouchParser.Log(Couch.ERROR, e.toString());
+				e.printStackTrace();
+				
+				savedSearches = new ArrayList<JSONObject>();
+			}
 
 			for(InformaTemporaryView itv : viewCache) {
 				
@@ -234,6 +242,7 @@ public class InformaSearch implements Constants {
 						searchDescription.put(Couch.Views.Admin.Keys.ALIAS, asAlias);
 						searchDescription.put(Couch.Views.Admin.Keys.PARAMETERS, parameters);
 						savedSearches.add(searchDescription);
+						CouchParser.Log(Couch.DEBUG, "adding new search:\n" + searchDescription.toString());
 					}
 					
 					itvHandled = true;
@@ -272,12 +281,10 @@ public class InformaSearch implements Constants {
 			}
 			
 			ArrayList<JSONObject> result = CouchParser.getRows(db, new ViewQuery().designDocId(viewDoc.getId()), "call", null);
-			if(result != null && result.size() > 0) {
-				if(viewCache == null)
-					viewCache = new ArrayList<InformaTemporaryView>();
-				
-				viewCache.add(this);
-			}
+			if(viewCache == null)
+				viewCache = new ArrayList<InformaTemporaryView>();
+			
+			viewCache.add(this);
 			return result;
 		}
 		
