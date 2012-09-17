@@ -1,3 +1,7 @@
+var PlayVideo_STR = {
+		label: '<span>This is no error</span><br>and something else again'
+};
+
 var TimeAndDate_STR = {
 	Days: {
 		SHORT: [
@@ -234,7 +238,7 @@ var Search_STR = {
 	Results: {
 		LABEL: "Results",
 		Fields: {
-		
+
 		}
 	},
 	SavedSearches: {

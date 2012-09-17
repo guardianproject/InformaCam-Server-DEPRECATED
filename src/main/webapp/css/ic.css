@@ -144,8 +144,14 @@ Layout*/
 	visibility:hidden;
 }
 
-#visualization_holder div.selected {
+#visualization_holder div.selected, #visualization_holder div.selected > div {
 	visibility:visible;
+}
+
+#visualization_holder div.selected > div {
+	background-color:transparent;
+	background-image:none;
+	padding:0;
 }
 
 #ui_submissions {
