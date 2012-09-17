@@ -20,14 +20,11 @@
     <script type="text/javascript" src="js/handlers.js"></script>
 	<script type="text/javascript" src="js/jquery.tmpl.js"></script>
 	<script type="text/javascript" src="js/sammy.js"></script>
-<script src="http://popcornjs.org/code/dist/popcorn-complete.js"></script>
 	<script type="text/javascript" src="js/ui.js"></script>
 	<script type="text/javascript" src="js/media.js"></script>
 	<script type="text/javascript" src="js/search.js"></script>
 	<script type="text/javascript" src="js/annotations.js"></script>
-	<link rel="stylesheet" type="text/css" href="css/jquery-ui.1.8.23.custom.css" />
 	<link rel="stylesheet" type="text/css" href="css/ic.css" />
-	<link rel="stylesheet" type="text/css" href="css/annotations.css" />
     <title>InformaCam - powered by The Guardian Project</title>
 </head>
 <body>
@@ -163,13 +160,12 @@
 							</div>
 							<!--end Add Annotation Dialog -->
 
-<video id="video_file" controls style="float: left"></video>
-<span id="active_anno" style="float: left">this is where active annos will go</span>
+							<div id="video_wrap"></div>
 
 							<canvas id="media_overlay" />
 						</div>
 
-
+					<div id="#video_annotations">Video annos here</div>
 
 					</td>
 					<td id="metadata_holder">
@@ -184,7 +180,6 @@
 					</td>
 				</tr>
 			</table>
-			<div id="video_annotations">This is where all annos will go</div>
 		</div>
 
 		<div id="ui_submissions">
