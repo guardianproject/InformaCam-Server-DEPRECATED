@@ -69,6 +69,31 @@ Layout*/
 	background-image:url('../images/ic_trans_blk.png');
 }
 
+#annotation_holder {
+	height:500px;
+	width:30%;
+	background-color:#c6ff00;
+	position:fixed;
+	z-index:98;
+	margin:0;
+	padding:10px;
+}
+
+#annotation_controls {
+	position:absolute;
+	float:right;
+	display:block;
+	right:5px;
+}
+
+#annotation_move {
+	cursor:move;
+}
+
+#annotation_close {
+	cursor:pointer;
+}
+
 #ic_header, #ic_main, #ic_footer {
 	margin:0;
 	padding:10px;
@@ -584,5 +609,14 @@ table.ic_search tr td {
 	background-color:#ffffff;
 	color:#999999;
 	font-size:0.7em;
+	cursor:pointer;
+}
+
+/*--------------------------------------
+MCX*/
+div.mcxDiv {
+	position:absolute;
+	background-color:transparent;
+	z-index:100;
 	cursor:pointer;
 }

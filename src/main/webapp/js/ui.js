@@ -8,6 +8,7 @@ function clearUi() {
 	alert_holder.css('display','none');
 	popup_holder.css('display','none');
 	spinner_holder.css('display','none');
+	annotation_holder.css('display','none');
 }
 
 function updateLoginUi() {
@@ -228,7 +229,7 @@ function setMedia() {
 	}
 	else {
 		setImageRatio();
-		$('#media_overlay').css('visibility','visible');
+		$('#media_overlay').css('display','block');
 		$('#video_file').css('display','none');
 	}
 }
@@ -260,11 +261,21 @@ function setImageRatio() {
 		displayHeight = displayWidth = maxHeight;
 	}
 
-	frameRatio = displayWidth/maxWidth;
-	console.info("frameRation is supposedly: " + frameRatio);
+	entity.frameRatio = displayWidth/maxWidth;
+	
 
-	var margLeft = (parseInt(maxWidth) - parseInt(displayWidth)) * 0.5;
-	var margTop = (parseInt(maxHeight) - parseInt(displayHeight)) * 0.5;
+	entity.displayBounds = {
+		displayWidth: displayWidth,
+		displayHeight: displayHeight
+	}
+
+	
+	console.info("frameRatio is supposedly: " + entity.frameRatio);
+	console.info("displayBounds is ");
+	console.info(entity.displayBounds);
+
+	entity.margLeft = (parseInt(maxWidth) - parseInt(displayWidth)) * 0.5;
+	entity.margTop = (parseInt(maxHeight) - parseInt(displayHeight)) * 0.5;
 
 	console.info("max width: " + media_frame.width());
 	console.info("max height: " + media_frame.height());
@@ -272,9 +283,8 @@ function setImageRatio() {
 	console.info("width: " + displayWidth);
 	console.info("height: " + displayHeight);
 
-	console.info("marLeft: " + margLeft);
-	console.info("margTop: " + margTop);
-
+	console.info("marLeft: " + entity.margLeft);
+	console.info("margTop: " + entity.margTop);
 
 	media_overlay.prop({
 			'width' : displayWidth,
@@ -282,8 +292,8 @@ function setImageRatio() {
 	});
 
 	media_overlay.css({
-		'margin-left': margLeft,
-		'margin-top': margTop,
+		'margin-left': entity.margLeft,
+		'margin-top': entity.margTop,
 		'background-image': "url('images/session_cache/" + entity.derivative.representation[0] + "')",
 		'background-repeat': 'no-repeat',
 		'background-size': 'contain',
@@ -292,11 +302,26 @@ function setImageRatio() {
 
 }
 
+function placeRegions() {
+	$.each(entity.derivative.discussions, function(idx, item) {
+		var _left = (item.regionBounds.regionCoordinates.region_left * entity.displayBounds.displayWidth)/entity.imageDimensions[1];
+		var _top = (item.regionBounds.regionCoordinates.region_top * entity.displayBounds.displayHeight)/entity.imageDimensions[0];
+		var _right = _left + ((item.regionBounds.regionDimensions.region_width * entity.displayBounds.displayWidth)/entity.imageDimensions[1]);
+		var _bottom = _top + ((item.regionBounds.regionDimensions.region_height * entity.displayBounds.displayHeight)/entity.imageDimensions[0]);
+		
+		console.info("region placed at: [" + _left + ", " + _top + ", " + _right + ", " + _bottom + "]");
+		
+		entity.regions.push(new InformaRegion(_left, _top, _right, _bottom, idx, false));
+	});
+	
+}
+
 function placeMedia() {
 	$("#media_title").html(entity.title);
 	setMedia();
 	loadMediaOptions();
 	setMetadata();
+	placeRegions();
 	toggleMediaView(true);
 }
 
@@ -320,28 +345,20 @@ function loadMediaOptions() {
 
 function traceRegions() {
 	regionsTraced = true;
+}
 
-	mcx.lineWidth = 4;
-	$.each(entity.derivative.j3m.data.annotations, function() {
-		if(this.obfuscationType == ImageRegions.IDENTIFY)
-			mcx.strokeStyle = Styles.Color.INACTIVE_TAGGED;
-		else
-			mcx.strokeStyle = Styles.Color.INACTIVE;
-
-		mcx.strokeRect(
-			this.regionBounds.regionCoordinates.region_left,
-			this.regionBounds.regionCoordinates.region_top,
-			this.regionBounds.regionDimensions.region_height,
-			this.regionBounds.regionDimensions.region_width
-		);
-
+function moveAnnotationHolder(e) {
+	$("#annotation_holder").css({
+		'top':  (e.clientY - annotation_move_offset),
+		'left': (e.clientX - $("#annotation_holder").width())
 	});
+	
+	
 }
 
 function hideRegions() {
 	regionsTraced = false;
 	mcx.clearRect(0, 0, $(media_overlay).width(), $(media_overlay).height());
-
 }
 
 function setMetadata() {
@@ -449,6 +466,15 @@ function removeAlert() {
 	alert_holder.css('display','none');
 }
 
+function showAnnotationHolder() {
+	$("#annotation_content").empty();
+	annotation_holder.css('display','block');
+}
+
+function removeAnnotationHolder() {
+	annotation_holder.css('display','none');
+}
+
 function populateTable(data, root) {
 	var table = $(root).children("table")[0];
 	$.each($($(table).children("tbody")[0]).children("tr"), function() {
@@ -505,6 +531,8 @@ function initLayout() {
 
 	spinner_holder = $("#spinner_holder");
 	spinner_holder.css('margin-top', $(window).height()/2 - 100);
+	
+	annotation_holder = $("#annotation_holder");
 
 	$("#search_refine_options").css('height', (($(window).height() - 100) - (header.height() + footer.height())));
 
@@ -616,6 +644,18 @@ function initLayout() {
 			if($(this).hasClass('ic_password')) {
 				$(this).prop('type','text');
 			}
+		});
+		
+		annotation_move_offset = $("#annotation_move").offset().top;
+		console.info(annotation_move_offset);
+		$("#annotation_move").live('mousedown', function() {
+			console.info("moving !");
+			$(document).bind('mousemove', moveAnnotationHolder);
+		});
+		
+		$("#annotation_move").live('mouseup', function() {
+			console.info("not moving...");
+			$(document).unbind('mousemove', moveAnnotationHolder);
 		});
 
 	});

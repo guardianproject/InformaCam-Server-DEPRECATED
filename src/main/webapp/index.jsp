@@ -43,6 +43,23 @@
 		<div id="popup_content"></div>
 	</div>
 
+	<div id="annotation_holder">
+		<div id="annotation_controls">
+			<span id="annotation_close" onclick="removeAnnotationHolder();">[x]</span>
+			<span id="annotation_move">[m]</span>
+		</div>
+		<h1>Annotations</h1>
+		<div id="annotation_content">blah blah</div>
+		<div id="annotation_append_holder">
+			<table>
+				<tr>
+					<td><input id="annotation_append_content" /></td>
+					<td><a id="annotation_append_submit">Add</a></td>
+				</tr>
+			</table>
+		</div>
+	</div>
+	
 	<div id="ic_header">
 		<div id="ic_logo">
 			<table>

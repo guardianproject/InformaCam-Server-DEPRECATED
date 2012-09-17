@@ -11,7 +11,9 @@ var Command = {
 	LOAD_SEARCH: 105,
 	ATTEMPT_LOGIN: 106,
 	LOGOUT: 107,
-	RENAME_MEDIA: 108
+	RENAME_MEDIA: 108,
+	ADD_ANNOTATION: 109,
+	APPEND_TO_ANNOTATION: 110
 };
 
 var entity;
@@ -27,6 +29,8 @@ var MediaTypes = {
 		400: Derivative_STR.UnaliasedTitle.IMAGE
 	}
 };
+
+var annotation_move_offset;
 
 var MediaPaths = {
 	LOCAL: 200,
@@ -87,8 +91,7 @@ var ImageRegions = {
 var Styles = {
 	Color: {
 		ACTIVE: "#C6FF00",
-		INACTIVE: "#999999",
-		INACTIVE_TAGGED: "#8FAE22"
+		INACTIVE: "#999999"
 	}
 };
 
@@ -123,7 +126,7 @@ var currentUser;
 
 var ic, ui;
 var header, nav, footer, main, alert_holder, popup_holder, spinner_holder;
-var metadata_readout, media_options, media_options_menu, media_frame, media_overlay, mcx;
+var metadata_readout, media_options, media_options_menu, media_frame, media_overlay, mcx, annotation_holder;
 var frameRatio;
 var regionsTraced = true;
 

@@ -98,6 +98,8 @@ public interface Constants {
 			public final static int ATTEMPT_LOGIN = 106;
 			public final static int LOGOUT = 107;
 			public final static int RENAME_MEDIA = 108;
+			public static final int ADD_ANNOTATION = 109;
+			public static final int APPEND_TO_ANNOTATION = 110;
 		}
 		
 		public final static class Commands {
@@ -111,6 +113,8 @@ public interface Constants {
 			public final static int ATTEMPT_LOGIN = DC.Attempts.ATTEMPT_LOGIN;
 			public final static int LOGOUT = DC.Attempts.LOGOUT;
 			public final static int RENAME_MEDIA = DC.Attempts.RENAME_MEDIA;
+			public final static int ADD_ANNOTATION = DC.Attempts.ADD_ANNOTATION;
+			public static final Object APPEND_TO_ANNOTATION = DC.Attempts.APPEND_TO_ANNOTATION;
 		}
 		
 		public final static class Keys {
@@ -130,6 +134,9 @@ public interface Constants {
 			public final static String ALIAS = "alias";
 			public final static String PARAMETERS = "parameters";
 			public final static String RESULT = "result";
+			public final static String ANNOTATION = "annotation";
+			public static final String USER = "user";
+			public static final String ENTITY = "entity";
 		}
 		
 	}

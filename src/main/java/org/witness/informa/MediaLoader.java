@@ -135,6 +135,7 @@ public class MediaLoader implements Constants {
 		if(!mediaCache.exists())
 			mediaCache.mkdir();
 		
+		// TODO: this should be streamed directly to the client, not dropped into the session_cache...
 		Iterator<String> rIt = derivative.getJSONArray("representation").iterator();
 		while(rIt.hasNext()) {
 			String repName = rIt.next();
@@ -161,5 +162,16 @@ public class MediaLoader implements Constants {
 		while((line = br.readLine()) != null)
 			fStrings.add(line);
 		return fStrings;
+	}
+
+	public Object addAnnotation(String string, String string2, String string3) {
+		// TODO THESE MUST CHECK FOR CONCURRENCY ISSUES!
+		return null;
+	}
+
+	public Object appendToAnnotation(Map<String, Object> map,
+			Map<String, Object> map2) {
+		// TODO THESE MUST CHECK FOR CONCURRENCY ISSUES!
+		return null;
 	}
 }

@@ -1,6 +1,94 @@
+var InformaRegion = function(left, top, right, bottom, discussionId, isNew) {
+	mcx.lineWidth = 2;
+	this.bounds = {
+		left: left,
+		top: top,
+		bottom: bottom,
+		right: right,
+		width: Math.abs(left - right),
+		height: Math.abs(top - bottom)
+	};
+	
+	this.container = $(document.createElement('div')).attr({
+		'class':'mcxDiv',
+		'id':'mcx_' + discussionId
+	});
+	
+	$(this.container).click(function() {
+		var r = entity.getActiveRegion(this);
+		$.each(entity.regions, function() {
+			if(this != r) {
+				this.isSelected = false;
+				this.isActive = false;
+			} else {
+				this.isSelected = true;
+				this.isActive = true;
+			}
+			this.update();
+		});
+		showAnnotationHolder();
+		entity.loadAnnotation(r.discussionId);
+		//loadAnnotations();
+	});
+	
+	$(this.container).mouseenter(function() {
+		var r = entity.getActiveRegion(this);
+		r.isSelected = true;
+		r.update();
+	});
+	
+	$(this.container).mouseout(function() {
+		var r = entity.getActiveRegion(this);
+		r.isSelected = false;
+		r.update();
+	});
+	
+	$("#media_overlay").before($(this.container));
+	
+	this.isNew = isNew;
+	this.discussionId = discussionId;
+	this.isActive = false;
+	this.isSelected = false;
+	
+	this.update = function() {
+		mcx.clearRect(this.bounds.left, this.bounds.top, this.bounds.height, this.bounds.width);
+		
+		if(this.isSelected) {
+			mcx.strokeStyle = Styles.Color.ACTIVE;
+		} else {
+			if(!this.isActive)
+				mcx.strokeStyle = Styles.Color.INACTIVE;
+		}
+		
+		mcx.strokeRect(
+			this.bounds.left,
+			this.bounds.top,
+			this.bounds.height,
+			this.bounds.width
+		);
+		
+		$(this.container).css({
+			'width' : this.bounds.width,
+			'height': this.bounds.height,
+			'top': this.bounds.top,
+			'left': this.bounds.left,
+			'margin-left': entity.margLeft,
+			'margin-top': $("#media_overlay").position().top
+		});
+		
+	};
+	
+	this.update();
+}
+
 var MediaEntity = function(data) {
 	this._id = data._id;
 	this._rev = data._rev;
+	
+	this.regions = new Array();
+	this.getActiveRegion = function(r) {
+		return entity.regions[$(r).attr('id').split("mcx_")[1]];
+	}
 
 	if(data.alias == undefined)
 		this.title = formatUnaliasedTitle(data.sourceId, data.mediaType);
@@ -23,7 +111,30 @@ var MediaEntity = function(data) {
 
 	this.setAlias = function() {
 		Media.rename.prompt();
-	}
+	};
+	
+	this.loadAnnotation = function(annotation) {
+		$("#annotation_append_submit").unbind();
+		var a = entity.derivative.discussions[annotation].annotations;
+		var aList = $(document.createElement('ol')).attr('class','annotation_list');
+		$.each(a, function() {
+			
+			console.info(this);
+			var aListItem = $(document.createElement('li'))
+				.append(
+					$(document.createElement('p')).attr('class','date')
+						.html(this.date)
+				)
+				.append(
+					$(document.createElement('p')).html(this.content)
+				);
+			aList.append(aListItem);
+		});
+		$("#annotation_content").append(aList);
+		$("#annotation_append_submit").bind('click', function() {
+			Media.appendToAnnotation.init(annotation);
+		});
+	};
 
 	if(data.discussions != undefined)
 		this.derivative.discussions = data.discussions;
