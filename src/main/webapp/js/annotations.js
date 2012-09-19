@@ -18,6 +18,7 @@ function loadAnnotationButtons() {
 	});
 
 	$('#add_anno').click(function(e) {
+		if(entity.mediaType == 401) {
 		$('#input_field').val('');
 		$('#output_field').val('');
 		$('#anno_field').val('');
@@ -29,6 +30,10 @@ function loadAnnotationButtons() {
 		$('#input_field').val(time);
 		$('#start_anno').removeAttr("disabled");
 		e.preventDefault();
+		}
+		else {
+			alert('double-click on desired location on the image to set a location-based annotation');
+		}
 	});
 
 $("#start_anno").click(function(e) {
@@ -79,6 +84,18 @@ $("#start_anno").click(function(e) {
 		sortAnnos('date', 1);
 		loadAnnotations();
 		addFootnote();
+	});
+
+
+	$('#media_overlay').dblclick(function(event) {
+   position = getPosition(event);
+		$('#input_field').val('');
+		$('#output_field').val('');
+		$('#anno_field').val('');
+		$annotation_dialog.dialog('open');
+		$('#input_field').val(position.x);
+		$('#output_field').val(position.y);
+		e.preventDefault();
 	});
 
 
@@ -175,3 +192,28 @@ else
 	{
 		return b[sortType] - a[sortType];
 	}
+
+
+
+// get x y coordinates of an element relative to document
+function getPosition(e) {
+
+    //this section is from http://www.quirksmode.org/js/events_properties.html
+    var targ;
+    if (!e)
+        e = window.event;
+    if (e.target)
+        targ = e.target;
+    else if (e.srcElement)
+        targ = e.srcElement;
+    if (targ.nodeType == 3) // defeat Safari bug
+        targ = targ.parentNode;
+
+    // jQuery normalizes the pageX and pageY
+    // pageX,Y are the mouse positions relative to the document
+    // offset() returns the position of the element relative to the document
+    var x = e.pageX - $(targ).offset().left;
+    var y = e.pageY - $(targ).offset().top;
+
+    return {"x": x, "y": y};
+};

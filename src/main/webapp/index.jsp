@@ -25,7 +25,9 @@
 	<script type="text/javascript" src="js/media.js"></script>
 	<script type="text/javascript" src="js/search.js"></script>
 	<script type="text/javascript" src="js/annotations.js"></script>
+	<link rel="stylesheet" type="text/css" href="css/jquery-ui.1.8.23.custom.css" />
 	<link rel="stylesheet" type="text/css" href="css/ic.css" />
+	<link rel="stylesheet" type="text/css" href="css/annotations.css" />
     <title>InformaCam - powered by The Guardian Project</title>
 </head>
 <body>
@@ -164,8 +166,6 @@
 <video id="video_file" controls style="float: left"></video>
 <span id="active_anno" style="float: left">this is where active annos will go</span>
 
-
-
 							<canvas id="media_overlay" />
 						</div>
 
@@ -184,6 +184,7 @@
 					</td>
 				</tr>
 			</table>
+			<div id="video_annotations">This is where all annos will go</div>
 		</div>
 
 		<div id="ui_submissions">
