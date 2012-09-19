@@ -45,6 +45,23 @@
 		<div id="popup_content"></div>
 	</div>
 
+	<div id="annotation_holder">
+		<div id="annotation_controls">
+			<span id="annotation_close" onclick="removeAnnotationHolder();">[x]</span>
+			<span id="annotation_move">[m]</span>
+		</div>
+		<h1>Annotations</h1>
+		<div id="annotation_content">blah blah</div>
+		<div id="annotation_append_holder">
+			<table>
+				<tr>
+					<td><input id="annotation_append_content" /></td>
+					<td><a id="annotation_append_submit">Add</a></td>
+				</tr>
+			</table>
+		</div>
+	</div>
+
 	<div id="ic_header">
 		<div id="ic_logo">
 			<table>
@@ -146,20 +163,18 @@
 
 							<!--start Add Annotation dialog -->
 							<div id="annotation_dialog" title="Add Annotation">
-								<video height="180" width="300" id="video_file2" controls>
-									<!--TO DO src from entity.derivative.representation when data is in-->
-									<source src="http://videos.mozilla.org/serv/webmademovies/popcornplug.mp4">
-									<source src="http://videos.mozilla.org/serv/webmademovies/popcornplug.ogv">
-									<source src="http://videos.mozilla.org/serv/webmademovies/popcornplug.webm">
+								<video height="180" width="300" id="video_file2" controls class="vio">
 								</video>
 								<span>Annotation</span>
 								<input type="text" name="anno_field" id="anno_field"><br />
-								<span>Input:</span>
+								<span class="vio">Input:</span>
+								<span class="pos_label">X Position:</span>
 								<input type="text" name="input" id="input_field"><br />
-								<span>Output:</span>
+								<span class="vio">Output:</span>
+								<span class="pos_label">Y Position:</span>
 								<input type="text" name="input" id="output_field"><br />
-								<button id="start_anno">Start</button>
-								<button id="end_anno" disabled="disabled">End</button><br />
+								<button id="start_anno" class="vio">Start</button>
+								<button id="end_anno" disabled="disabled" class="vio">End</button><br />
 							</div>
 							<!--end Add Annotation Dialog -->
 
