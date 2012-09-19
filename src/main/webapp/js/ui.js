@@ -221,7 +221,6 @@ function toggleMediaView(state) {
 
 function setMedia() {
 	if(entity.mediaType == 401) {
-		alert('this is a video');
 		setVideo();
 		$('#video_file').css('display','block');
 		$('#active_anno').css('display','inline');
@@ -238,9 +237,13 @@ function setMedia() {
 }
 
 function setVideo() {
-//just dummy video until video entity contains data of links to representations
-	$('#video_file').html('<source src="http://videos.mozilla.org/serv/webmademovies/popcornplug.mp4"><source src="http://videos.mozilla.org/serv/webmademovies/popcornplug.ogv"><source src="http://videos.mozilla.org/serv/webmademovies/popcornplug.webm">');
-//just dummy, set width/height when entity contains size info
+	representationsURL = entity.derivative.representation;
+	representations = '';
+	for(i=0; i<representationsURL.length; i++) {
+		representations = representations + '<source src="images/session_cache/' + representationsURL[i] + '">';
+	}
+	$('#video_file').html(representations);
+	//just dummy, set width/height when entity contains size info
 	$('#video_file').css({'width': '480', 'height': '320'});
 	//firstLoadAnnotations();
 }
