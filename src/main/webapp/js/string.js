@@ -64,7 +64,8 @@ var Alert_STR = {
 		NO_SAVED_SEARCHES: "You don't have any saved searches yet.",
 		EMPTY_SEARCH: "Please refine your search. If you'd like to see all submissions, visit the \"Submissions\" tab instead.",
 		LOGIN_PROMPT: "Please log in at the bottom of the screen to continue.",
-		RENAME_FAIL: "Could not change the media object's title."
+		RENAME_FAIL: "Could not change the media object's title.",
+		EMPTY_ANNOTATION: "Please enter some text for your annotation."
 	},
 	MediaLoading: {
 		MAIN_TITLE: "Media Loading...",

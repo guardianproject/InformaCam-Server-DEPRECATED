@@ -253,6 +253,33 @@ var Media = {
 		
 		}
 	},
+	appendToAnnotation: {
+		init: function(discussionId) {
+			alert('appending to annotation! ' + discussionId);
+			if($("#annotation_append_content").val() != "") {
+				broadcast({
+					attempt: Command.APPEND_TO_ANNOTATION,
+					opts: {
+						user: {
+							_id: currentUser._id,
+							_rev: currentUser._rev
+						},
+						entity: {
+							_id: entity._id,
+							_rev: entity._rev,
+							discussionId: discussionId,
+							content: $("#annotation_append_content").val()
+						}
+					}
+				});
+			} else {
+				showAlert(Alert_STR.Errors.MAIN_TITLE, Alert_STR.Errors.EMPTY_ANNOTATION, null, null, false);
+			}
+		},
+		callback: function() {
+		
+		}
+	},
 	sendMessage : {
 		init: function(content) {
 		

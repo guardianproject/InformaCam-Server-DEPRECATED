@@ -177,6 +177,9 @@ public class CouchParser implements Constants {
 		@JsonProperty("username")
 		private String username;
 		
+		@JsonProperty("currentSession")
+		private String currentSession;
+		
 		public String getId() {
 			return _id;
 		}
@@ -223,6 +226,14 @@ public class CouchParser implements Constants {
 
 		public void setUsername(String username) {
 			this.username = username;
+		}
+
+		public String getCurrentSession() {
+			return currentSession;
+		}
+
+		public void setCurrentSession(String currentSession) {
+			this.currentSession = currentSession;
 		}
 	}
 	
