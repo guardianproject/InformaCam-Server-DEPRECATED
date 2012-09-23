@@ -9,6 +9,7 @@ function clearUi() {
 	popup_holder.css('display','none');
 	spinner_holder.css('display','none');
 	annotation_holder.css('display','none');
+	$("#media_overlay").unbind();
 }
 
 function updateLoginUi() {
@@ -329,7 +330,48 @@ function placeMedia() {
 	loadMediaOptions();
 	setMetadata();
 	placeRegions();
+	$("#media_overlay").bind('mousedown', drawAnnotation);
+	$("#media_overlay").bind('mouseup', function() {
+		alert("unbinding!");
+		window.clearInterval(mcxAnnotation.draw);
+		$(document).unbind('mousemove', mcxAnnotation.update);
+	});
 	toggleMediaView(true);
+}
+
+function MCXAnnotation(x, y) {
+	this.base = $("#media_overlay").position();
+	console.info(this.base);
+	
+	this.bounds = {
+		top: x,
+		left: y
+	};
+	
+	mcx.strokeStyle = Styles.Color.DRAWING;
+	this.draw = window.setInterval(function() {
+		
+		mcx.strokeRect(
+			mcxAnnotation.bounds.left,
+			mcxAnnotation.bounds.top,
+			mcxAnnotation.bounds.height,
+			mcxAnnotation.bounds.width
+		);
+		console.info(rect);
+	}, 20);
+	
+	this.update = function(e) {
+		mcxAnnotation.bounds.width = Math.abs(e.clientX - mcxAnnotation.bounds.left);
+		mcxAnnotation.bounds.height = Math.abs(e.clientY - mcxAnnotation.bounds.top);
+		console.info(mcxAnnotation.bounds);
+	};
+	
+}
+
+function drawAnnotation(e) {
+	mcxAnnotation = new MCXAnnotation(e.clientX, e.clientY);
+	$(document).bind('mousemove', mcxAnnotation.update);
+	
 }
 
 function loadMediaOptions() {
@@ -656,7 +698,6 @@ function initLayout() {
 		annotation_move_offset = $("#annotation_move").offset().top;
 		console.info(annotation_move_offset);
 		$("#annotation_move").live('mousedown', function() {
-			console.info("moving !");
 			$(document).bind('mousemove', moveAnnotationHolder);
 		});
 		

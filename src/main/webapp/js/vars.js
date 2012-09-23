@@ -16,7 +16,7 @@ var Command = {
 	APPEND_TO_ANNOTATION: 110
 };
 
-var entity;
+var entity, mcxAnnotation;
 var MediaTypes = {
 	VIDEO: 401,
 	IMAGE: 400,
@@ -91,7 +91,8 @@ var ImageRegions = {
 var Styles = {
 	Color: {
 		ACTIVE: "#C6FF00",
-		INACTIVE: "#999999"
+		INACTIVE: "#999999",
+		DRAWING: "#ffffff"
 	}
 };
 

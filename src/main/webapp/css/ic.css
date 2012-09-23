@@ -5,9 +5,7 @@ body {
 	overflow:hidden;
 	font-size:24px;
 	color:#444;
-	background-image:url('../images/ic_bkg.jpg');
-	background-repeat:no-repeat;
-	background-size:cover;
+	background-color:#0a5587;
 }
 
 /*--------------------------------------
@@ -154,6 +152,10 @@ Layout*/
 	border:1px solid #c6ff00;
 	margin-top:31px;
 	z-index:0;
+}
+
+#media_overlay {
+	cursor:crosshair;
 }
 
 #visualization_holder {
