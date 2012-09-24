@@ -19,6 +19,7 @@ import java.util.concurrent.ExecutionException;
 
 import javax.swing.filechooser.FileFilter;
 
+import net.sf.json.JSONArray;
 import net.sf.json.JSONException;
 import net.sf.json.JSONObject;
 
@@ -31,6 +32,7 @@ import org.ektorp.impl.StdCouchDbInstance;
 import org.witness.informa.utils.Constants;
 import org.witness.informa.utils.CouchParser;
 import org.witness.informa.utils.CouchParser.User;
+import org.witness.informa.utils.InformaMessage;
 import org.witness.informa.utils.LocalConstants;
 import org.witness.informa.utils.Constants.Couch;
 import org.witness.informa.utils.Constants.Couch.Views;
@@ -69,10 +71,6 @@ public class MediaLoader implements Constants {
 	public ArrayList<JSONObject> getDerivatives() {
 		ViewQuery getDerivatives = new ViewQuery().designDocId(Couch.Design.DERIVATIVES);
 		ArrayList<JSONObject> res = CouchParser.getRows(dbDerivatives, getDerivatives, Couch.Views.Derivatives.GET_ALL_SHORTENED, null);
-		/*
-		for(JSONObject j : res)
-			CouchParser.Log(Couch.INFO, j.toString());
-		*/
 		return res;
 	}
 	
@@ -164,14 +162,44 @@ public class MediaLoader implements Constants {
 		return fStrings;
 	}
 
-	public Object addAnnotation(String string, String string2, String string3) {
+	public JSONObject addAnnotation(String string, String string2, String string3) {
 		// TODO THESE MUST CHECK FOR CONCURRENCY ISSUES!
 		return null;
 	}
 
-	public Object appendToAnnotation(Map<String, Object> map,
-			Map<String, Object> map2) {
-		// TODO THESE MUST CHECK FOR CONCURRENCY ISSUES!
-		return null;
+	@SuppressWarnings("unchecked")
+	public JSONObject appendToAnnotation(Map<String, Object> annotationPack) {
+		JSONObject result = new JSONObject();
+		result.put(DC.Keys.RESULT, DC.Results.FAIL);
+		
+		if(!CouchParser.validateUser(dbUsers, (Map<String, Object>) annotationPack.get(DC.Options.USER)))
+			return result;
+		
+		Map<String, Object> discussion = (Map<String, Object>) annotationPack.get(DC.Options.ENTITY);
+		String id = (String) discussion.remove(DC.Options._ID);
+		String rev = (String) discussion.remove(DC.Options._REV);
+		int discussionId = Integer.parseInt(String.valueOf(discussion.get(DC.Options.DISCUSSION_ID)));
+		
+		JSONObject derivative = CouchParser.getRecord(dbDerivatives, new ViewQuery().designDocId(Couch.Design.DERIVATIVES), Couch.Views.Derivatives.GET_BY_ID, id, new String[] {"j3m"});
+		JSONArray d = derivative.getJSONArray("discussions");
+		CouchParser.Log(Couch.INFO, derivative.toString());
+		
+		JSONObject annotation = new JSONObject();
+		annotation.put(Annotation.Keys.CONTENT, (String) discussion.remove(Annotation.Keys.CONTENT));
+		annotation.put(Annotation.Keys.SUBMITTED_BY, ((Map<String, Object>) annotationPack.get(DC.Options.USER)).get(DC.Options._ID));
+		annotation.put(Annotation.Keys.DATE, System.currentTimeMillis());
+		((JSONArray) ((JSONObject) d.get(discussionId)).get("annotations")).add(annotation);
+		
+		Map<String, Object> updateValues = new HashMap<String, Object>();
+		updateValues.put("discussions", d);
+		
+		CouchParser.updateRecord(Derivative.class, dbDerivatives, id, rev, updateValues);
+		JSONObject updatedDerivative = CouchParser.getRecord(dbDerivatives, new ViewQuery().designDocId(Couch.Design.DERIVATIVES), Couch.Views.Derivatives.GET_BY_ID, id, Annotation.OMIT_FOR_UPDATE);
+		result.put(DC.Options.RESULT, updatedDerivative);
+		result.put(DC.Options.DISCUSSION_ID, discussionId);
+		
+		InformaMessage.pushUpdate((String) updatedDerivative.get(DC.Options._ID));
+		
+		return result;
 	}
 }

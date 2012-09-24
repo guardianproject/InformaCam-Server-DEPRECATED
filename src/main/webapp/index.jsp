@@ -8,7 +8,6 @@
     <script type="text/javascript" src="${pageContext.request.contextPath}/jquery/json2.js"></script>
     <script type="text/javascript" src="${pageContext.request.contextPath}/org/cometd.js"></script>
     <script type="text/javascript" src="${pageContext.request.contextPath}/jquery/jquery.cometd.js"></script>
- 		<script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.8.23/jquery-ui.min.js"></script>
     <script type="text/javascript" src="js/application.js"></script>
     <script type="text/javascript" src="js/api.js"></script>
     <script type="text/javascript" src="js/formatter.js"></script>
@@ -20,11 +19,10 @@
     <script type="text/javascript" src="js/handlers.js"></script>
 	<script type="text/javascript" src="js/jquery.tmpl.js"></script>
 	<script type="text/javascript" src="js/sammy.js"></script>
-<script src="http://popcornjs.org/code/dist/popcorn-complete.js"></script>
+<!-- <script src="http://popcornjs.org/code/dist/popcorn-complete.js"></script> -->
 	<script type="text/javascript" src="js/ui.js"></script>
 	<script type="text/javascript" src="js/media.js"></script>
 	<script type="text/javascript" src="js/search.js"></script>
-	<script type="text/javascript" src="js/annotations.js"></script>
 	<link rel="stylesheet" type="text/css" href="css/jquery-ui.1.8.23.custom.css" />
 	<link rel="stylesheet" type="text/css" href="css/ic.css" />
 	<link rel="stylesheet" type="text/css" href="css/annotations.css" />
@@ -48,10 +46,10 @@
 	<div id="annotation_holder">
 		<div id="annotation_controls">
 			<span id="annotation_close" onclick="removeAnnotationHolder();">[x]</span>
-			<span id="annotation_move">[m]</span>
+			<span id="annotation_move">[&nbsp;&nbsp;&nbsp;]</span>
 		</div>
 		<h1>Annotations</h1>
-		<div id="annotation_content">blah blah</div>
+		<div id="annotation_content"></div>
 		<div id="annotation_append_holder">
 			<table width="100%">
 				<tr>
@@ -160,29 +158,7 @@
 							</ul>
 						</div>
 						<div id="media_frame">
-
-							<!--start Add Annotation dialog -->
-							<div id="annotation_dialog" title="Add Annotation">
-								<video height="180" width="300" id="video_file2" controls>
-									<!--TO DO src from entity.derivative.representation when data is in-->
-									<source src="http://videos.mozilla.org/serv/webmademovies/popcornplug.mp4">
-									<source src="http://videos.mozilla.org/serv/webmademovies/popcornplug.ogv">
-									<source src="http://videos.mozilla.org/serv/webmademovies/popcornplug.webm">
-								</video>
-								<span>Annotation</span>
-								<input type="text" name="anno_field" id="anno_field"><br />
-								<span>Input:</span>
-								<input type="text" name="input" id="input_field"><br />
-								<span>Output:</span>
-								<input type="text" name="input" id="output_field"><br />
-								<button id="start_anno">Start</button>
-								<button id="end_anno" disabled="disabled">End</button><br />
-							</div>
-							<!--end Add Annotation Dialog -->
-
-<video id="video_file" controls style="float: left"></video>
-<span id="active_anno" style="float: left">this is where active annos will go</span>
-
+							<video id="video_holder"></video>
 							<canvas id="media_overlay" />
 						</div>
 
@@ -201,7 +177,6 @@
 					</td>
 				</tr>
 			</table>
-			<div id="video_annotations">This is where all annos will go</div>
 		</div>
 
 		<div id="ui_submissions">

@@ -1,5 +1,6 @@
 var cometd;
 var dc = '/service/desktopConnection';
+var mcast = '/multicast';
 
 var Command = {
 	CHOOSE_MEDIA: 99,
@@ -13,7 +14,8 @@ var Command = {
 	LOGOUT: 107,
 	RENAME_MEDIA: 108,
 	ADD_ANNOTATION: 109,
-	APPEND_TO_ANNOTATION: 110
+	APPEND_TO_ANNOTATION: 110,
+	UPDATE_DERIVATIVES: 111
 };
 
 var entity, mcxAnnotation;

@@ -86,6 +86,8 @@ Layout*/
 
 #annotation_move {
 	cursor:move;
+	background-image:url('../images/ic_move.png');
+	background-size:contain;
 }
 
 #annotation_close {
@@ -96,6 +98,11 @@ Layout*/
 	position:absolute;
 	bottom:10px;
 	width:100%;
+}
+
+#annotation_content {
+	height:400px;
+	overflow:auto;
 }
 
 #ic_header, #ic_main, #ic_footer {
@@ -151,6 +158,11 @@ Layout*/
 
 #ic_uploader {
 	position:relative;
+}
+
+#video_holder {
+	position:absolute;
+	display:none;
 }
 
 #media_frame {

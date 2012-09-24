@@ -14,6 +14,11 @@ public interface Constants {
 	
 	public final static String DERIVATIVE_ROOT = LocalConstants.ENGINE_ROOT + "derivatives/";
 	
+	public final static class Channels {
+		public final static String SERVER = "/service/desktopConnection";
+		public final static String MULTICAST = "/multicast";
+	}
+	
 	public final static class Couch {
 		public static String ERROR = "COUCH ERROR";
 		public static String INFO = "COUCH INFO";
@@ -86,6 +91,10 @@ public interface Constants {
 	
 	public final static class DC {
 		public final static String RESPONSE = "response";
+		public static final class Results {
+			public static final int OK = 1;
+			public static final int FAIL = -1;
+		}
 		
 		public final static class Attempts {
 			public final static String TAG = "attempt";
@@ -125,6 +134,8 @@ public interface Constants {
 			public final static String WAIT_CODE = "waitCode";
 			public final static String MESSAGE = "message";
 			public final static String OPTIONS = "options";
+			public static final Object RESULT = "result";
+			public static final Object UPDATE_OBJECT = "updateObject";
 		}
 		
 		public final static class Options {
@@ -137,6 +148,7 @@ public interface Constants {
 			public final static String ANNOTATION = "annotation";
 			public static final String USER = "user";
 			public static final String ENTITY = "entity";
+			public static final Object DISCUSSION_ID = "discussionId";
 		}
 		
 	}
@@ -158,6 +170,26 @@ public interface Constants {
 			public final static String MEDIA_PICKER = "Jpeg or Movie";
 			public final static String MEDIA_LOADING = "Media Loading";
 		}
+	}
+	
+	public final static class Annotation {
+		public final static class Keys {
+			public final static String CONTENT = "content";
+			public final static String SUBMITTED_BY = "submittedBy";
+			public final static String DATE = "date";
+		}
+
+		public static final String[] OMIT_FOR_UPDATE = {
+			"j3m",
+			"location",
+			"dateCreated",
+			"keywords",
+			"locationOnSave",
+			"mediaType",
+			"representation",
+			"sourceId",
+			"timestampIndexed"
+		};
 	}
 	
 	public final static class Search {

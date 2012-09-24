@@ -14,6 +14,7 @@ import org.ektorp.ViewQuery;
 import org.ektorp.ViewResult;
 import org.ektorp.impl.StdCouchDbConnector;
 import org.ektorp.support.CouchDbDocument;
+import org.witness.informa.utils.Constants.Couch;
 
 import net.sf.json.JSONObject;
 
@@ -155,6 +156,20 @@ public class CouchParser implements Constants {
 	
 	public static void Log(String tag, String msg) {
 		System.out.println("*********** " + tag + " *************: " + msg);
+	}
+	
+	public static boolean validateUser(StdCouchDbConnector db, Map<String, Object> user) {
+		ViewQuery doc = new ViewQuery().designDocId(Couch.Design.ADMIN);
+		JSONObject u = CouchParser.getRecord(db, doc, Couch.Views.Admin.GET_BY_ID, user.get(DC.Options._ID), null);
+		
+		if(u == null)
+			return false;
+		
+		if(!u.getString(DC.Options._REV).equals(user.get(DC.Options._REV)))
+			return false;
+		
+		Log(Couch.INFO, "user rev matches");
+		return true;
 	}
 	
 	@SuppressWarnings("serial")

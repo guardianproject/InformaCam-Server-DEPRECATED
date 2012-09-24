@@ -2,15 +2,16 @@ package org.witness.informa;
 
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import org.cometd.bayeux.Message;
 import org.cometd.bayeux.server.BayeuxServer;
+import org.cometd.bayeux.server.ServerMessage.Mutable;
 import org.cometd.bayeux.server.ServerSession;
 import org.cometd.server.AbstractService;
 import org.witness.informa.utils.Constants.DC.Attempts;
 import org.witness.informa.utils.Constants;
-import org.witness.informa.utils.CouchParser;
 import org.witness.informa.utils.InformaMessage;
 
 public class DesktopService extends AbstractService implements Constants {
@@ -19,12 +20,16 @@ public class DesktopService extends AbstractService implements Constants {
 	public DesktopService(BayeuxServer bayeux) {
 		super(bayeux, "desktopConnection");
 		addService("/service/desktopConnection", "desktopResponse");
+		addService("/multicast", "multicastResponse");
 		
 		if(ml == null)
 			ml = new MediaLoader();		
 	}
 	
-	@SuppressWarnings("unchecked")
+	public void multicastResponse(ServerSession remote, Message message) {
+		Log("hello multicast");
+	}
+	
 	public void desktopResponse(ServerSession remote, Message message) {
 		// TODO: set client session id with remote.getId()
 		
@@ -80,12 +85,15 @@ public class DesktopService extends AbstractService implements Constants {
 			case Attempts.RENAME_MEDIA:
 				msg.put(DC.Keys.COMMAND, DC.Commands.RENAME_MEDIA);
 				msg.put(DC.Keys.METADATA, ml.renameMedia((String) msg.opts.get(DC.Options._ID), (String) msg.opts.get(DC.Options._REV), (String) msg.opts.get(DC.Options.ALIAS)));
+				break;
 			case Attempts.ADD_ANNOTATION:
 				msg.put(DC.Keys.COMMAND, DC.Commands.ADD_ANNOTATION);
 				msg.put(DC.Keys.METADATA, ml.addAnnotation((String) msg.opts.get(DC.Options._ID), (String) msg.opts.get(DC.Options._REV), (String) msg.opts.get(DC.Options.ANNOTATION)));
+				break;
 			case Attempts.APPEND_TO_ANNOTATION:
 				msg.put(DC.Keys.COMMAND, DC.Commands.APPEND_TO_ANNOTATION);
-				msg.put(DC.Keys.METADATA, ml.appendToAnnotation((Map<String, Object>) msg.opts.get(DC.Options.USER), (Map<String, Object>) msg.opts.get(DC.Options.ENTITY)));
+				msg.put(DC.Keys.METADATA, ml.appendToAnnotation(msg.opts));
+				break;
 			}
 		}
 		

@@ -255,16 +255,15 @@ var Media = {
 	},
 	appendToAnnotation: {
 		init: function(discussionId) {
-			alert('appending to annotation! ' + discussionId);
 			if($("#annotation_append_content").val() != "") {
 				showSpinner();
 				broadcast({
 					attempt: Command.APPEND_TO_ANNOTATION,
-					opts: {
+					options: {
 						user: {
 							_id: currentUser._id,
 							_rev: currentUser._rev
-						},
+						}, 
 						entity: {
 							_id: entity._id,
 							_rev: entity._rev,
@@ -273,12 +272,24 @@ var Media = {
 						}
 					}
 				});
+				$("#annotation_append_content").val("");
 			} else {
 				showAlert(Alert_STR.Errors.MAIN_TITLE, Alert_STR.Errors.EMPTY_ANNOTATION, null, null, false);
 			}
 		},
-		callback: function() {
-			removeSpinner();
+		callback: function(updatedMedia) {
+			entity._rev = updatedMedia.result._rev;
+			entity.derivative.discussions = updatedMedia.result.discussions;
+			entity.reloadAnnotation(updatedMedia.discussionId);
+			multicast({
+				attempt: Command.UPDATE_DERIVATIVES,
+				entity: {
+					_id: entity._id,
+					_rev: entity._rev,
+					discussions: entity.derivative.discussions,
+					messages: entity.derivative.messages
+				}
+			});
 		}
 	},
 	sendMessage : {
@@ -342,4 +353,36 @@ var Source = {
 		
 		return res;
 	}
+}
+
+function buildObjectAsString(object) {
+	var allProps = new Array;
+	for(prop in object) {
+		var s = "";
+		s += ('"' + prop + '":');
+		console.info(object[prop].constructor.toString());
+		if(object[prop].constructor == Object) {
+			s += buildObjectAsString(object[prop]);
+		} else if(object[prop].constructor.toString().match(/String/i)) {
+			s += '"' + object[prop] + '"';
+		} else if(object[prop].constructor.toString().match(/Array/i)) {
+			var sArray = new Array;
+			for(a in option[prop]) {
+				var aVal = option[prop][a];
+				if(aVal.constructor.toString().match(/String/i))
+					aVal = '"' + val + '"';
+				else if(aVal.constructor == Object)
+					aVal = buildObjectAsString(aVal);
+					
+				sArray.push(aVal);
+			}
+			s += "[" + sArray.join(",") + "]"; 
+		} else {
+			s += object[prop];
+		}
+		console.info(prop);
+		allProps.push(s);
+	}
+		
+	return '"{' + allProps.join(",") + '}"';
 }

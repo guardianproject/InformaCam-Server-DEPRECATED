@@ -58,7 +58,9 @@
                     {
                         handleDesktopServiceMessage(message.data.response);
                     });
-                    cometd.publish(dc, { name: 'InformaCam Desktop Server started' });
+                    cometd.subscribe('/multicast', function(message) {
+                    	handleMulticast(message.data);
+                    });
                 });
             }
         }

@@ -222,32 +222,33 @@ function toggleMediaView(state) {
 }
 
 function setMedia() {
+	setImageRatio();
 	if(entity.mediaType == 401) {
 		setVideo();
-		$('#video_file').css('display','block');
-		$('#active_anno').css('display','inline');
-		$("#video_annotations").css('display','block');
-		$("#media_overlay").css('display','none');
-	}
-	else {
-		setImageRatio();
+		$('#video_holder').css('display','block');
+		$("#media_overlay").css('display','block');
+	} else {
+		setImage();
 		$('#media_overlay').css('display','block');
-		$('#video_file').css('display','none');
-		$('#active_anno').css('display','none');
-		$("#video_annotations").css('display','none');
+		$('#video_holder').css('display','none');
 	}
 }
 
 function setVideo() {
-	representationsURL = entity.derivative.representation;
-	representations = '';
-	for(i=0; i<representationsURL.length; i++) {
-		representations = representations + '<source src="images/session_cache/' + representationsURL[i] + '">';
-	}
-	$('#video_file').html(representations);
-	//just dummy, set width/height when entity contains size info
-	$('#video_file').css({'width': '480', 'height': '320'});
-	//firstLoadAnnotations();
+	$("#video_holder").css({
+		'width': entity.displayBounds.displayWidth,
+		'height': entity.displayBounds.displayHeight,
+		'marginLeft': entity.margLeft
+	});
+}
+
+function setImage() {
+	media_overlay.css({
+		'background-image': "url('images/session_cache/" + entity.derivative.representation[0] + "')",
+		'background-repeat': 'no-repeat',
+		'background-size': 'contain',
+		'background-position': 'center'
+	});
 }
 
 function setImageRatio() {
@@ -271,19 +272,17 @@ function setImageRatio() {
 
 	entity.frameRatio = displayWidth/maxWidth;
 	
-
 	entity.displayBounds = {
 		displayWidth: displayWidth,
 		displayHeight: displayHeight
 	}
-
 	
 	console.info("frameRatio is supposedly: " + entity.frameRatio);
 	console.info("displayBounds is ");
 	console.info(entity.displayBounds);
 
-	entity.margLeft = (parseInt(maxWidth) - parseInt(displayWidth)) * 0.5;
-	entity.margTop = (parseInt(maxHeight) - parseInt(displayHeight)) * 0.5;
+	entity.margLeft = Math.abs(parseInt(maxWidth) - parseInt(displayWidth)) * 0.5;
+	entity.margTop = Math.abs(parseInt(maxHeight) - parseInt(displayHeight)) * 0.5;
 
 	console.info("max width: " + media_frame.width());
 	console.info("max height: " + media_frame.height());
@@ -298,16 +297,11 @@ function setImageRatio() {
 			'width' : displayWidth,
 			'height' : displayHeight
 	});
-
+	
 	media_overlay.css({
 		'margin-left': entity.margLeft,
 		'margin-top': entity.margTop,
-		'background-image': "url('images/session_cache/" + entity.derivative.representation[0] + "')",
-		'background-repeat': 'no-repeat',
-		'background-size': 'contain',
-		'background-position': 'center'
 	});
-
 }
 
 function placeRegions() {
@@ -332,7 +326,6 @@ function placeMedia() {
 	placeRegions();
 	$("#media_overlay").bind('mousedown', drawAnnotation);
 	$("#media_overlay").bind('mouseup', function() {
-		alert("unbinding!");
 		window.clearInterval(mcxAnnotation.draw);
 		$(document).unbind('mousemove', mcxAnnotation.update);
 	});
@@ -716,5 +709,4 @@ function initLayout() {
 
 $(document).ready(function() {
 	initLayout();
-	loadAnnotationButtons();
 });

@@ -1,3 +1,21 @@
+function handleMulticast(data) {
+	console.info(data);
+	if(data.attempt) {
+		switch(data.attempt) {
+			case Command.UPDATE_DERIVATIVES:
+				var entityId = data.entity._id;
+				if(entity._id == entityId) {
+					entity.refresh(
+						data.entity._rev,
+						data.entity.discussions,
+						data.entity.messages
+					);
+				}
+				break;
+		}
+	}
+}
+
 function handleDesktopServiceMessage(data) {
 	if(data.command) {
 		switch(data.command) {
@@ -74,12 +92,21 @@ function handleDesktopServiceMessage(data) {
 					
 				}
 				break;
+			case Command.APPEND_TO_ANNOTATION:
+				removeSpinner();
+				if(data.metadata != null)
+					Media.appendToAnnotation.callback(data.metadata);
+				break;
 		}
 	}
 }
 
 function broadcast(obj) {
 	cometd.publish(dc, obj);
+}
+
+function multicast(obj) {
+	cometd.publish(mcast, obj);
 }
 
 function isEmptyObject(obj) {

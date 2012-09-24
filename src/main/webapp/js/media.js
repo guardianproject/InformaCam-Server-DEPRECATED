@@ -112,6 +112,20 @@ var MediaEntity = function(data) {
 		Media.rename.prompt();
 	};
 	
+	this.refresh = function(_rev, discussions, messages) {
+		entity._rev = _rev;
+		entity.derivative.discussions = discussions;
+		entity.derivative.messages = messages;
+		
+		if(entity.currentAnnotation != null && entity.currentAnnotation != undefined)
+			entity.reloadAnnotation(entity.currentAnnotation);
+	}
+	
+	this.reloadAnnotation = function(annotationId) {
+		$("#annotation_content").empty();
+		entity.loadAnnotation(annotationId);
+	}
+	
 	this.loadAnnotation = function(annotation) {
 		$("#annotation_append_submit").unbind();
 		var a = entity.derivative.discussions[annotation].annotations;
@@ -122,7 +136,7 @@ var MediaEntity = function(data) {
 			var aListItem = $(document.createElement('li'))
 				.append(
 					$(document.createElement('p')).attr('class','date')
-						.html(this.date)
+						.html(formatTimestampForHumans(this.date))
 				)
 				.append(
 					$(document.createElement('p')).html(this.content)
@@ -133,6 +147,7 @@ var MediaEntity = function(data) {
 		$("#annotation_append_submit").bind('click', function() {
 			Media.appendToAnnotation.init(annotation);
 		});
+		entity.currentAnnotation = annotation;
 	};
 
 	if(data.discussions != undefined)
