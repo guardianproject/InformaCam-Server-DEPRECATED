@@ -70,7 +70,7 @@ Layout*/
 #annotation_holder {
 	height:500px;
 	width:30%;
-	background-color:#c6ff00;
+	background-color:#ffffff;
 	position:fixed;
 	z-index:98;
 	margin:0;
@@ -90,6 +90,12 @@ Layout*/
 
 #annotation_close {
 	cursor:pointer;
+}
+
+#annotation_append_holder {
+	position:absolute;
+	bottom:10px;
+	width:100%;
 }
 
 #ic_header, #ic_main, #ic_footer {
@@ -313,11 +319,15 @@ p {
 	color:#fff;
 }
 
-#ic_login a, a.ic_inner_option, a.ic_inner_option:link, a.ic_inner_option:visited, a.ic_inner_option:hover {
+#ic_login a, a.ic_inner_option, a.ic_inner_option:link, a.ic_inner_option:visited, a.ic_inner_option:hover, #annotation_append_submit, #annotation_append_submit:link, #annotation_append_submit:visited, #annotation_append_submit:hover {
 	padding:4px 5px;
 	background-color:#8fae22;
 	cursor:pointer;
 	color:#ffffff;
+}
+
+#annotation_append_submit {
+	font-size:0.6em;
 }
 
 a.ic_inner_option, a.ic_inner_option:link, a.ic_inner_option:visited, a.ic_inner_option:hover {
@@ -497,6 +507,10 @@ div.ic_toggle a.selected {
 	color:#fff;
 	background-color:#c6ff00;
 	background-image:none;
+}
+
+#annotation_append_holder input {
+	width:96%;
 }
 
 #search_refine_options ul li.selected a {

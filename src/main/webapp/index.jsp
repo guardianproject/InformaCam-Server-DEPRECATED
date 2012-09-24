@@ -53,9 +53,9 @@
 		<h1>Annotations</h1>
 		<div id="annotation_content">blah blah</div>
 		<div id="annotation_append_holder">
-			<table>
+			<table width="100%">
 				<tr>
-					<td><input id="annotation_append_content" /></td>
+					<td width="85%"><input id="annotation_append_content" /></td>
 					<td><a id="annotation_append_submit">Add</a></td>
 				</tr>
 			</table>

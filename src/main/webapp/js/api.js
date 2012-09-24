@@ -257,6 +257,7 @@ var Media = {
 		init: function(discussionId) {
 			alert('appending to annotation! ' + discussionId);
 			if($("#annotation_append_content").val() != "") {
+				showSpinner();
 				broadcast({
 					attempt: Command.APPEND_TO_ANNOTATION,
 					opts: {
@@ -277,7 +278,7 @@ var Media = {
 			}
 		},
 		callback: function() {
-		
+			removeSpinner();
 		}
 	},
 	sendMessage : {

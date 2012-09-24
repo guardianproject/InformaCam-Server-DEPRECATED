@@ -28,7 +28,6 @@ var InformaRegion = function(left, top, right, bottom, discussionId, isNew) {
 		});
 		showAnnotationHolder();
 		entity.loadAnnotation(r.discussionId);
-		//loadAnnotations();
 	});
 	
 	$(this.container).mouseenter(function() {

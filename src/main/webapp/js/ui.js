@@ -351,12 +351,14 @@ function MCXAnnotation(x, y) {
 	mcx.strokeStyle = Styles.Color.DRAWING;
 	this.draw = window.setInterval(function() {
 		
+		/*
 		mcx.strokeRect(
 			mcxAnnotation.bounds.left,
 			mcxAnnotation.bounds.top,
 			mcxAnnotation.bounds.height,
 			mcxAnnotation.bounds.width
 		);
+		*/
 		console.info(rect);
 	}, 20);
 	
