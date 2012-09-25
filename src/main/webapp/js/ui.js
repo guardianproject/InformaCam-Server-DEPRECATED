@@ -220,27 +220,58 @@ function toggleMediaView(state) {
 }
 
 function setMedia() {
+	$("#media_frame").css('visibility','visible');
 	$.each($("#media_frame").children('div'), function() {
 		$(this).remove();
 	});
 	
 	media_overlay.css({'background-image':'none'});
 	setImageRatio();
-	placeRegions();
+	
 	$("#media_overlay").bind('mousedown', drawAnnotation);
 	$("#media_overlay").bind('mouseup', function() {
 		window.clearInterval(mcxAnnotation.draw);
 		$(document).unbind('mousemove', mcxAnnotation.update);
 	});
 	if(entity.mediaType == MediaTypes.VIDEO) {
+		// sort the regions!
+		$.each(entity.derivative.discussions, function(idx, item) {
+			// place the first div as a region
+			var firstRegion = placeRegion(idx, {
+				regionBounds: item['regionBounds'][0]
+			});
+			firstRegion.timeIn = item['timeIn'];
+			firstRegion.timeOut = item['timeOut'];
+			firstRegion.videoTrail = sortByTimeline(item['regionBounds']);
+			entity.regions.push(firstRegion);
+			
+		});
+		
 		setVideo();
 		$('#video_holder').css('display','block');
 		$("#media_overlay").css('display','block');
 	} else {
+		$.each(entity.derivative.discussions, function(idx, item) {
+			entity.regions.push(placeRegion(idx, item));
+		});
+		
 		setImage();
 		$('#media_overlay').css('display','block');
 		$('#video_holder').css('display','none');
 	}
+}
+
+var sortByTimeline = function(arr) {
+	arr.sort(function(a,b) {
+		if(a.timestamp < b.timestamp)
+			return -1;
+		else if(a.timestamp > b.timestamp)
+			return 1;
+		else
+			return 0;
+	});
+	
+	return arr;
 }
 
 function setVideo() {
@@ -320,41 +351,48 @@ function setImageRatio() {
 	});
 }
 
-function placeRegions() {
-	$.each(entity.derivative.discussions, function(idx, item) {
-		var _left = (item.regionBounds.regionCoordinates.region_left * entity.displayBounds.displayWidth)/entity.imageDimensions[0];
-		var _top = (item.regionBounds.regionCoordinates.region_top * entity.displayBounds.displayHeight)/entity.imageDimensions[1];
-		var _right = _left + ((item.regionBounds.regionDimensions.region_width * entity.displayBounds.displayWidth)/entity.imageDimensions[0]);
-		var _bottom = _top + ((item.regionBounds.regionDimensions.region_height * entity.displayBounds.displayHeight)/entity.imageDimensions[1]);
-		
-		console.info("region placed at: [" + _left + ", " + _top + ", " + _right + ", " + _bottom + "]");
-		
-		entity.regions.push(new InformaRegion(_left, _top, _right, _bottom, idx, false));
-	});
+function placeRegion(idx, item) {
+	var _left = (item.regionBounds.regionCoordinates.region_left * entity.displayBounds.displayWidth)/entity.imageDimensions[0];
+	var _top = (item.regionBounds.regionCoordinates.region_top * entity.displayBounds.displayHeight)/entity.imageDimensions[1];
+	var _right = _left + ((item.regionBounds.regionDimensions.region_width * entity.displayBounds.displayWidth)/entity.imageDimensions[0]);
+	var _bottom = _top + ((item.regionBounds.regionDimensions.region_height * entity.displayBounds.displayHeight)/entity.imageDimensions[1]);
 	
+	console.info("region placed at: [" + _left + ", " + _top + ", " + _right + ", " + _bottom + "]");
+	
+	return new InformaRegion(_left, _top, _right, _bottom, idx, false);	
 }
 
 function initRegionsImage() {
 	$.each(entity.derivative.discussions, function(idx, item) {
-		// TODO: add a pop!
 		var container = $(entity.regions[idx].container);
 		$(container).addClass("mcxActive");
 	});
 }
 
+var videoRegionTrails = new Array;
 function initRegionsVideo() {
+	
 	$.each(entity.derivative.discussions, function(idx, item) {
-		// TODO: add a pop!
-		var container = $(entity.regions[idx].container);
+		var region = entity.regions[idx];
+		var container = $(region.container);
 		pop.footnote({
-			start: 0,
-			end: 2,
+			start: millisToSeconds(region.timeIn),
+			end: millisToSeconds(region.timeOut),
 			text:"",
 			target: container.attr('id'),
 			effect: "applyclass",
 			applyclass: "mcxActive"
 		});
-		console.info("pop #" + idx);
+		pop.listen("timeupdate", function() {
+			// get regionbounds at about this time
+			var time = secondsToMillis(this.currentTime());
+			for(var vt=0; vt<region.videoTrail.length; vt++) {
+				if(time <= region.videoTrail[vt].timestamp) {
+					region.update(region.videoTrail[vt]);
+					break;
+				}
+			}
+		});
 	});
 }
 

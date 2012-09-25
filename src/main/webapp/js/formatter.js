@@ -87,6 +87,14 @@ function formatSavedSearchesForList() {
 	return content;
 }
 
+function secondsToMillis(sec) {
+	return sec * 1000;
+}
+
+function millisToSeconds(millis) {
+	return millis/1000;
+}
+
 function parseForReplacementMetadata(item) {
 	var mod = '<h3>' + item + '</h3>';
 	

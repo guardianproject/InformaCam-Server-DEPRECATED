@@ -66,12 +66,19 @@ var InformaRegion = function(left, top, right, bottom, discussionId, isNew) {
 	this.isActive = false;
 	this.isSelected = false;
 	
-	this.update = function() {
+	this.update = function(trail) {
 		if(this.isSelected) {
 			$(this.container).addClass('selected');
 		} else {
 			if(!this.isActive)
 				$(this.container).removeClass('selected');
+		}
+		
+		if(trail != null && trail != undefined) {
+			this.bounds.left = (trail.regionCoordinates.region_left * entity.displayBounds.displayWidth)/entity.imageDimensions[0];
+			this.bounds.top = (trail.regionCoordinates.region_top * entity.displayBounds.displayHeight)/entity.imageDimensions[1];
+			this.bounds.right = this.bounds.left + ((trail.regionDimensions.region_width * entity.displayBounds.displayWidth)/entity.imageDimensions[0]);
+			this.bounds.bottom = this.bounds.top + ((trail.regionDimensions.region_height * entity.displayBounds.displayHeight)/entity.imageDimensions[1]);
 		}
 		
 		$(this.container).css({
