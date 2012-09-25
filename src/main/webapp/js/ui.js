@@ -222,6 +222,7 @@ function toggleMediaView(state) {
 }
 
 function setMedia() {
+	media_overlay.css({'background-image':'none'});
 	setImageRatio();
 	if(entity.mediaType == 401) {
 		setVideo();
@@ -240,6 +241,8 @@ function setVideo() {
 		'height': entity.displayBounds.displayHeight,
 		'marginLeft': entity.margLeft
 	});
+	
+	//var video = $("#video_holder").get(0);
 }
 
 function setImage() {
@@ -265,7 +268,8 @@ function setImageRatio() {
 		displayHeight = displayWidth * ratio;
 	} else if(entity.imageDimensions[1] >= maxHeight) {
 		displayHeight = maxHeight;
-		displayWidth = displayHeight/ratio;
+		console.info('this height is larger than maxheight');
+		displayWidth = (displayHeight * entity.imageDimensions[0])/entity.imageDimensions[1];
 	} else if(entity.imageDimensions[0] == entity.imageDimensions[1]) {
 		displayHeight = displayWidth = maxHeight;
 	}
