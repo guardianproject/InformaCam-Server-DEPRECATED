@@ -97,8 +97,8 @@ var Styles = {
 		DRAWING: "#ffffff"
 	}
 };
-
-var searchQuery, searchAlias;
+var mapViewMap, mapViewMap_opts;
+var searchQuery, searchAlias, searchMap, searchMap_opts;
 var SearchParameters = {
 	KEYWORDS: 299,
 	Type: {
@@ -130,8 +130,8 @@ var currentUser;
 var ic, ui;
 var header, nav, footer, main, alert_holder, popup_holder, spinner_holder;
 var metadata_readout, media_options, media_options_menu, media_frame, media_overlay, mcx, annotation_holder;
-var frameRatio;
 var regionsTraced = true;
+var pop;
 
 function isArray(object) {
 	if(typeof object == 'object') {

@@ -1,5 +1,22 @@
+var InformaLocationMarker = function(coords, text) {
+	this.lat = coords[0];
+	this.lng = coords[1];
+	this.text = text;
+	
+	this.label = "[" + coords[0] + ", " + coords[1] + "]";
+	
+	this.build = function() {
+		var a = locationMarker = $(document.createElement('a'))
+			.html(this.label)
+			.attr('class','informaLocationMarker')
+			.live('click', function() {
+				zoomOnMap(this.lat, this.lng, null, this.label, this.text, mapViewMap);
+			});
+		return a;
+	};
+};
+
 var InformaRegion = function(left, top, right, bottom, discussionId, isNew) {
-	mcx.lineWidth = 2;
 	this.bounds = {
 		left: left,
 		top: top,
@@ -50,21 +67,12 @@ var InformaRegion = function(left, top, right, bottom, discussionId, isNew) {
 	this.isSelected = false;
 	
 	this.update = function() {
-		mcx.clearRect(this.bounds.left, this.bounds.top, this.bounds.height, this.bounds.width);
-		
 		if(this.isSelected) {
-			mcx.strokeStyle = Styles.Color.ACTIVE;
+			$(this.container).addClass('selected');
 		} else {
 			if(!this.isActive)
-				mcx.strokeStyle = Styles.Color.INACTIVE;
+				$(this.container).removeClass('selected');
 		}
-		
-		mcx.strokeRect(
-			this.bounds.left,
-			this.bounds.top,
-			this.bounds.height,
-			this.bounds.width
-		);
 		
 		$(this.container).css({
 			'width' : this.bounds.width,
@@ -97,7 +105,7 @@ var MediaEntity = function(data) {
 	this.dateCreated = data.dateCreated;
 	this.sourceId = data.sourceId;
 	this.mediaType = data.mediaType;
-	this.imageDimensions = [data.j3m.data.exif.imageLength, data.j3m.data.exif.imageWidth];
+	this.imageDimensions = [data.j3m.data.exif.imageWidth, data.j3m.data.exif.imageLength];
 
 	this.derivative = {
 		dateSavedAsDerivative: data.timestampIndexed,
@@ -132,7 +140,6 @@ var MediaEntity = function(data) {
 		var aList = $(document.createElement('ol')).attr('class','annotation_list');
 		$.each(a, function() {
 			
-			console.info(this);
 			var aListItem = $(document.createElement('li'))
 				.append(
 					$(document.createElement('p')).attr('class','date')
@@ -231,7 +238,12 @@ var MediaEntity = function(data) {
 	this.sendMessage = function() {
 		alert("view submission info");
 	};
-
+	
+	this.location = {
+		locationOnSave: data.locationOnSave,
+		locations: data.location
+	};
+	
 	this.informa = {
 		intent: {
 			label: Metadata_STR.Intent.label,

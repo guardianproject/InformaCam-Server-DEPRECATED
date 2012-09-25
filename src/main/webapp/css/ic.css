@@ -176,6 +176,14 @@ Layout*/
 	cursor:crosshair;
 }
 
+#media_frame div {
+	border:2px solid #999999;
+}
+
+#media_frame div.selected {
+	border:2px solid #C6FF00;
+}
+
 #visualization_holder {
 	margin:0;
 	overflow:auto;
@@ -187,6 +195,8 @@ Layout*/
 	padding:0 5px;
 	border-top:1px solid #c6ff00;
 	visibility:hidden;
+	padding:10px;
+	margin:0;
 }
 
 #visualization_holder div.selected, #visualization_holder div.selected > div {
@@ -196,7 +206,6 @@ Layout*/
 #visualization_holder div.selected > div {
 	background-color:transparent;
 	background-image:none;
-	padding:0;
 }
 
 #ui_submissions {
@@ -346,7 +355,7 @@ a.ic_inner_option, a.ic_inner_option:link, a.ic_inner_option:visited, a.ic_inner
 	font-size:0.6em;
 }
 
-#metadata_readout ul li {
+#metadata_readout ul li, #map_view_annotations p, #map_view_annotations ul li {
 	font-size:0.6em;
 }
 
@@ -358,10 +367,15 @@ a.ic_inner_option, a.ic_inner_option:link, a.ic_inner_option:visited, a.ic_inner
 	padding:0;
 }
 
-#metadata_readout ul li a, #metadata_readout ul li a:link, #metadata_readout ul li a:visited, #metadata_readout ul li a:hover {
+#metadata_readout ul li a, #metadata_readout ul li a:link, #metadata_readout ul li a:visited, #metadata_readout ul li a:hover, body a.informaLocationMarker, body a.informaLocationMarker:hover {
 	color:#ffffff;
 	text-decoration:underline;
 	cursor:pointer;
+}
+
+#map_view_annotations p {
+	margin:0;
+	padding:0;
 }
 
 #ui_submissions table td {
@@ -411,7 +425,7 @@ Lists & Tables*/
 	list-style-type:none;
 }
 
-#metadata_readout ul li {
+#metadata_readout ul li, #map_view_annotations p {
 	padding:1px 0;
 	color:#ccc;
 }
@@ -489,6 +503,26 @@ ul.ic_menu_button li.ic_menu_buttonOverride {
 
 td.ic_toMedia {
 	cursor:pointer;
+}
+
+#annotation_content ol {
+	font-size:0.74em;
+}
+
+#annotation_content ol li p {
+	font-size:1.1em;
+}
+
+#annotation_content ol li p.date {
+	font-size:0.7em;
+	font-style:italic;
+	color:#999999;
+}
+
+#map_view_annotations ul {
+	list-style-type:none;
+	padding:0;
+	margin: 5px 0;
 }
 
 /*--------------------------------------
@@ -640,6 +674,15 @@ table.ic_search tr td {
 	cursor:pointer;
 }
 
+span.underConstruction {
+	padding:10px;
+	margin:10px;
+	background-color:#8FAE22;
+	color:#ffffff;
+	display:inherit;
+	font-size:0.8em;
+}
+
 /*--------------------------------------
 MCX*/
 div.mcxDiv {
@@ -647,4 +690,39 @@ div.mcxDiv {
 	background-color:transparent;
 	z-index:100;
 	cursor:pointer;
+	visibility:hidden;
+}
+
+#media_frame div.mcxDiv div {
+	border:none;
+	width:0px;
+	height:0px;
+}
+
+div.mcxActive {
+	visibility:visible;
+}
+
+/*--------------------------------------
+MAPS*/
+#map_view_readout {
+	height:275px;
+}
+
+#map_view_map {
+	height:40%;
+	border:1px solid #fff;
+	width:92%;
+}
+
+#map_view_readout.selected div {
+	visibility:visible;
+	background-image:none;
+	border:none;
+}
+
+#map_view_annotation_holder {
+	position:relative;
+	top:45%;
+	width:92%;
 }

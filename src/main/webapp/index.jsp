@@ -1,4 +1,4 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<!DOCTYPE html>
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
@@ -19,10 +19,11 @@
     <script type="text/javascript" src="js/handlers.js"></script>
 	<script type="text/javascript" src="js/jquery.tmpl.js"></script>
 	<script type="text/javascript" src="js/sammy.js"></script>
-<!-- <script src="http://popcornjs.org/code/dist/popcorn-complete.js"></script> -->
+	<script type="text/javascript" src="js/popcorn-complete.min.js"></script>
 	<script type="text/javascript" src="js/ui.js"></script>
 	<script type="text/javascript" src="js/media.js"></script>
 	<script type="text/javascript" src="js/search.js"></script>
+	<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDCQXtJ3fqhsPP2K3TUVI6kJhmJDCzVZOI&sensor=false"></script>
 	<link rel="stylesheet" type="text/css" href="css/jquery-ui.1.8.23.custom.css" />
 	<link rel="stylesheet" type="text/css" href="css/ic.css" />
 	<link rel="stylesheet" type="text/css" href="css/annotations.css" />
@@ -158,10 +159,9 @@
 							</ul>
 						</div>
 						<div id="media_frame">
-							<video id="video_holder"></video>
-							<canvas id="media_overlay" />
+							<video id="video_holder" controls></video>
+							<canvas id="media_overlay"></canvas>
 						</div>
-
 
 
 					</td>
@@ -169,9 +169,27 @@
 						<h2 id="media_title"></h2>
 						<div id="visualization_holder">
 							<div id="metadata_readout"></div>
-							<div id="map_view_readout">hi  this is map view</div>
-							<div id="motion_view_readout">In here??<div id="test">something else in here??</div></div>
-							<div id="network_view_readout">hi this is network view</div>
+							<div id="map_view_readout">
+								<div id="map_view_map"></div>
+								<div id="map_view_annotation_holder">
+									<h2>
+										<script type="text/javascript">
+											document.write(Metadata_STR.Locations.LABEL);
+										</script>
+									</h2>
+									<div id="map_view_annotations">here go annos</div>
+								</div>
+							</div>
+							<div id="motion_view_readout">
+								<span class="underConstruction">
+									Motion View coming soon...
+								</span>
+							</div>
+							<div id="network_view_readout">
+								<span class="underConstruction">
+									Network View coming soon...
+								</span>
+							</div>
 						</div>
 
 					</td>

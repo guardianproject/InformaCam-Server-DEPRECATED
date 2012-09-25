@@ -164,6 +164,15 @@ var ImageRegion_STR = {
 }
 
 var Metadata_STR = {
+	Locations: {
+		LABEL: "Location History",
+		ON_SAVE: "Saved at this location: ",
+		EDITS: "Edited at the following locations:",
+		Markers: {
+			ON_SAVE: "Location on Save",
+			EDITED: "Edits made at this location"
+		}
+	},
 	Intent: {
 		label: "Intent",
 		SUBMITTED_BY: "Submitted by: %=sigKeyId",

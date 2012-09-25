@@ -89,11 +89,9 @@ function doGet(el) {
 function setOptions(elName, options) {
 	var el = $("#" + elName);
 	for(option in options) {
-		console.info(option + " = " + options[option]);
 
 		if(options[option].constructor.toString().match(/Array/i)) {
 			var listHolder = "#" + option + "_holder";
-			console.info(listHolder);
 			$.each(options[option], function() {
 				val = this;
 				$(listHolder).append(
@@ -222,9 +220,19 @@ function toggleMediaView(state) {
 }
 
 function setMedia() {
+	$.each($("#media_frame").children('div'), function() {
+		$(this).remove();
+	});
+	
 	media_overlay.css({'background-image':'none'});
 	setImageRatio();
-	if(entity.mediaType == 401) {
+	placeRegions();
+	$("#media_overlay").bind('mousedown', drawAnnotation);
+	$("#media_overlay").bind('mouseup', function() {
+		window.clearInterval(mcxAnnotation.draw);
+		$(document).unbind('mousemove', mcxAnnotation.update);
+	});
+	if(entity.mediaType == MediaTypes.VIDEO) {
 		setVideo();
 		$('#video_holder').css('display','block');
 		$("#media_overlay").css('display','block');
@@ -242,7 +250,18 @@ function setVideo() {
 		'marginLeft': entity.margLeft
 	});
 	
-	//var video = $("#video_holder").get(0);
+	$.each(entity.derivative.representation, function() {
+		var representation = this;
+		if(!representation.match(/.mkv/i)) {
+			$("#video_holder").append(
+				$(document.createElement('source'))
+					.attr('src', "images/session_cache/" + representation)
+			);
+		}
+	});
+	
+	pop = Popcorn("#video_holder");
+	initRegionsVideo();
 }
 
 function setImage() {
@@ -252,6 +271,7 @@ function setImage() {
 		'background-size': 'contain',
 		'background-position': 'center'
 	});
+	initRegionsImage();
 }
 
 function setImageRatio() {
@@ -259,43 +279,35 @@ function setImageRatio() {
 	var displayWidth, displayHeight;
 	var maxWidth = media_frame.width() * 0.9;
 	var maxHeight = media_frame.height() * 0.9;
-
-	if(
-		entity.imageDimensions[0] > entity.imageDimensions[1] &&
-		ratio <= 1
-	) {
+	console.info("width: " + entity.imageDimensions[0]);
+	console.info("height: " + entity.imageDimensions[1]);
+	console.info("maxWidth: " + maxWidth);
+	console.info("maxHeight: " + maxHeight);
+	
+	if(entity.imageDimensions[0] > entity.imageDimensions[1]) {
 		displayWidth = maxWidth;
-		displayHeight = displayWidth * ratio;
-	} else if(entity.imageDimensions[1] >= maxHeight) {
+		displayHeight = ((displayWidth * entity.imageDimensions[1])/entity.imageDimensions[0]);
+		
+	} else if(entity.imageDimensions[1] > entity.imageDimensions[0]) {
 		displayHeight = maxHeight;
-		console.info('this height is larger than maxheight');
-		displayWidth = (displayHeight * entity.imageDimensions[0])/entity.imageDimensions[1];
+		console.info('this height is larger than the width');
+		displayWidth = ((displayHeight * entity.imageDimensions[0])/entity.imageDimensions[1]);
 	} else if(entity.imageDimensions[0] == entity.imageDimensions[1]) {
 		displayHeight = displayWidth = maxHeight;
 	}
-
-	entity.frameRatio = displayWidth/maxWidth;
 	
 	entity.displayBounds = {
 		displayWidth: displayWidth,
 		displayHeight: displayHeight
 	}
 	
-	console.info("frameRatio is supposedly: " + entity.frameRatio);
 	console.info("displayBounds is ");
 	console.info(entity.displayBounds);
 
-	entity.margLeft = Math.abs(parseInt(maxWidth) - parseInt(displayWidth)) * 0.5;
-	entity.margTop = Math.abs(parseInt(maxHeight) - parseInt(displayHeight)) * 0.5;
-
-	console.info("max width: " + media_frame.width());
-	console.info("max height: " + media_frame.height());
-
-	console.info("width: " + displayWidth);
-	console.info("height: " + displayHeight);
-
-	console.info("marLeft: " + entity.margLeft);
-	console.info("margTop: " + entity.margTop);
+	entity.margLeft = Math.abs(maxWidth - displayWidth) * 0.5;
+	entity.margTop = Math.abs(maxHeight - displayHeight) * 0.5;
+	console.info("margeTop: " + entity.margTop);
+	console.info("margeLeft: " + entity.margLeft); 
 
 	media_overlay.prop({
 			'width' : displayWidth,
@@ -310,10 +322,10 @@ function setImageRatio() {
 
 function placeRegions() {
 	$.each(entity.derivative.discussions, function(idx, item) {
-		var _left = (item.regionBounds.regionCoordinates.region_left * entity.displayBounds.displayWidth)/entity.imageDimensions[1];
-		var _top = (item.regionBounds.regionCoordinates.region_top * entity.displayBounds.displayHeight)/entity.imageDimensions[0];
-		var _right = _left + ((item.regionBounds.regionDimensions.region_width * entity.displayBounds.displayWidth)/entity.imageDimensions[1]);
-		var _bottom = _top + ((item.regionBounds.regionDimensions.region_height * entity.displayBounds.displayHeight)/entity.imageDimensions[0]);
+		var _left = (item.regionBounds.regionCoordinates.region_left * entity.displayBounds.displayWidth)/entity.imageDimensions[0];
+		var _top = (item.regionBounds.regionCoordinates.region_top * entity.displayBounds.displayHeight)/entity.imageDimensions[1];
+		var _right = _left + ((item.regionBounds.regionDimensions.region_width * entity.displayBounds.displayWidth)/entity.imageDimensions[0]);
+		var _bottom = _top + ((item.regionBounds.regionDimensions.region_height * entity.displayBounds.displayHeight)/entity.imageDimensions[1]);
 		
 		console.info("region placed at: [" + _left + ", " + _top + ", " + _right + ", " + _bottom + "]");
 		
@@ -322,17 +334,35 @@ function placeRegions() {
 	
 }
 
+function initRegionsImage() {
+	$.each(entity.derivative.discussions, function(idx, item) {
+		// TODO: add a pop!
+		var container = $(entity.regions[idx].container);
+		$(container).addClass("mcxActive");
+	});
+}
+
+function initRegionsVideo() {
+	$.each(entity.derivative.discussions, function(idx, item) {
+		// TODO: add a pop!
+		var container = $(entity.regions[idx].container);
+		pop.footnote({
+			start: 0,
+			end: 2,
+			text:"",
+			target: container.attr('id'),
+			effect: "applyclass",
+			applyclass: "mcxActive"
+		});
+		console.info("pop #" + idx);
+	});
+}
+
 function placeMedia() {
 	$("#media_title").html(entity.title);
 	setMedia();
 	loadMediaOptions();
 	setMetadata();
-	placeRegions();
-	$("#media_overlay").bind('mousedown', drawAnnotation);
-	$("#media_overlay").bind('mouseup', function() {
-		window.clearInterval(mcxAnnotation.draw);
-		$(document).unbind('mousemove', mcxAnnotation.update);
-	});
 	toggleMediaView(true);
 }
 
@@ -412,7 +442,6 @@ function hideRegions() {
 function setMetadata() {
 	$("#metadata_readout").empty();
 	$.each(entity.informa, function() {
-		console.info(this);
 		var dataGroup = this;
 		var dataPoints = dataGroup.loads;
 
@@ -431,6 +460,30 @@ function setMetadata() {
 
 		$("#metadata_readout").append(readout);
 	});
+	
+	$("#map_view_annotations").empty();
+	var ilm = new InformaLocationMarker(entity.location.locationOnSave);
+	var newLatLng = new google.maps.LatLng(ilm.lat, ilm.lng);
+	mapViewMap.setCenter(newLatLng);
+	
+	var editLocationMarkerHolder = $(document.createElement('ul'));
+	$("#map_view_annotations")
+		.append(
+			$(document.createElement('p'))
+				.html(Metadata_STR.Locations.ON_SAVE + " ")
+				.append(ilm.build())
+		)
+		.append($(document.createElement('p')).html(Metadata_STR.Locations.EDITS))
+		.append(editLocationMarkerHolder);
+
+	$.each(entity.location.locations, function(idx, item) {
+		var eilm = new InformaLocationMarker(item, Metadata_STR.Locations.Markers.EDITED);
+		$(editLocationMarkerHolder).append(
+			$(document.createElement('li'))
+				.append(eilm.build())
+		);
+	});
+	
 }
 
 function showSpinner() {
@@ -581,6 +634,12 @@ function initLayout() {
 	spinner_holder.css('margin-top', $(window).height()/2 - 100);
 	
 	annotation_holder = $("#annotation_holder");
+	
+	console.info($(window).width());
+	$("#map_view_readout").css({
+		'width': Math.abs(metadata_readout.position().left - $(window).width()) - 60,
+		'height': (($(window).height() - 100) - (header.height() + footer.height()))
+	});
 
 	$("#search_refine_options").css('height', (($(window).height() - 100) - (header.height() + footer.height())));
 
@@ -695,13 +754,11 @@ function initLayout() {
 		});
 		
 		annotation_move_offset = $("#annotation_move").offset().top;
-		console.info(annotation_move_offset);
 		$("#annotation_move").live('mousedown', function() {
 			$(document).bind('mousemove', moveAnnotationHolder);
 		});
 		
 		$("#annotation_move").live('mouseup', function() {
-			console.info("not moving...");
 			$(document).unbind('mousemove', moveAnnotationHolder);
 		});
 
@@ -709,6 +766,34 @@ function initLayout() {
 
 	ic.run('#submissions/');
 	updateLoginUi();
+	initMapViewMap();
+}
+
+function initMapViewMap() {
+	mapViewMap_opts = {
+		center: new google.maps.LatLng(0, 0),
+		zoom: 12,
+		mapTypeId: google.maps.MapTypeId.ROADMAP
+	};
+	
+	mapViewMap = new google.maps.Map(document.getElementById("map_view_map"), mapViewMap_opts);
+}
+
+function zoomOnMap(lat, lng, marker, mainLabel, displayText, mapToUse) {
+	var newLatLng = new google.maps.LatLng(lat, lng);
+	mapToUse.setCenter(newLatLng);
+	if(marker == null || marker == undefined) {
+		marker = new google.maps.Marker({
+			position: new google.maps.LatLng(lat, lng),
+			map: mapToUse,
+			title: mainLabel
+		});
+	}
+	
+	var infoWindow = new google.maps.InfoWindow({
+		content: displayText
+	});
+	infoWindow.open(mapToUse, marker);
 }
 
 $(document).ready(function() {
