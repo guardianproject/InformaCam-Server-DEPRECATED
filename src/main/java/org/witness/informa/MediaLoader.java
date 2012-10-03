@@ -164,8 +164,11 @@ public class MediaLoader implements Constants {
 			if(!msgFile.getName().equals(".DS_Store")) {
 				JSONObject message = new JSONObject();
 				try {
+					String ts = msgFile.getName().split("_")[0];
+					if(ts.length() == 10)
+						ts += "000";
 					message.put(DC.Options.CONTENT, fileToString(msgFile));
-					message.put(DC.Options.TIMESTAMP, Long.parseLong(msgFile.getName().split("_")[0]));
+					message.put(DC.Options.TIMESTAMP, Long.parseLong(ts));
 					message.put(DC.Options.FROM_CLIENT, (msgFile.getName().split(".txt")[0] + ".").contains("_R.") ? true : false);
 					messages.add(message);
 				} catch (IOException e) {
