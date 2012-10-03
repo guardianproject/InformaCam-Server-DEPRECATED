@@ -4,6 +4,7 @@ function handleMulticast(data) {
 		switch(data.attempt) {
 			case Command.UPDATE_DERIVATIVES:
 				var entityId = data.entity._id;
+				console.info(data);
 				if(entity._id == entityId) {
 					entity.refresh(
 						data.entity._rev,
@@ -96,6 +97,11 @@ function handleDesktopServiceMessage(data) {
 				removeSpinner();
 				if(data.metadata != null)
 					Media.appendToAnnotation.callback(data.metadata);
+				break;
+			case Command.SEND_MESSAGE:
+				removeSpinner();
+				if(data.metadata != null)
+					Media.sendMessage.callback(data.metadata);
 				break;
 		}
 	}

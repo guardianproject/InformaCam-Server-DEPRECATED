@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.MalformedURLException;
@@ -23,6 +24,7 @@ import net.sf.json.JSONArray;
 import net.sf.json.JSONException;
 import net.sf.json.JSONObject;
 
+import org.apache.commons.codec.digest.DigestUtils;
 import org.ektorp.*;
 import org.ektorp.http.HttpClient;
 import org.ektorp.http.StdHttpClient;
@@ -135,9 +137,10 @@ public class MediaLoader implements Constants {
 		
 		// TODO: this should be streamed directly to the client, not dropped into the session_cache...
 		Iterator<String> rIt = derivative.getJSONArray("representation").iterator();
+		String path = "";
 		while(rIt.hasNext()) {
 			String repName = rIt.next();
-			String path = repName.substring(0, repName.length() - 4);
+			path = repName.substring(0, repName.length() - 4);
 			File original = new File(DERIVATIVE_ROOT + path, repName);
 			File representation = new File(MEDIA_CACHE, original.getName());
 			try {
@@ -149,7 +152,39 @@ public class MediaLoader implements Constants {
 				e.printStackTrace();
 			}
 		}
+		
+		derivative.put(DC.Options.MESSAGES, getMessages(path).toString());
 		return derivative;
+	}
+	
+	private JSONArray getMessages(String path) {
+		JSONArray messages = new JSONArray();
+		File dir = new File(DERIVATIVE_ROOT + path + "/messages");
+		for(File msgFile : dir.listFiles()) {
+			if(!msgFile.getName().equals(".DS_Store")) {
+				JSONObject message = new JSONObject();
+				try {
+					message.put(DC.Options.CONTENT, fileToString(msgFile));
+					message.put(DC.Options.TIMESTAMP, Long.parseLong(msgFile.getName().split("_")[0]));
+					message.put(DC.Options.FROM_CLIENT, (msgFile.getName().split(".txt")[0] + ".").contains("_R.") ? true : false);
+					messages.add(message);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+			
+		return messages;
+	}
+	
+	public static String fileToString(File file) throws IOException {
+		StringBuffer sb = new StringBuffer();
+		FileInputStream fis = new FileInputStream(file);
+		BufferedReader br = new BufferedReader(new InputStreamReader(fis, Charset.forName("UTF-8")));
+		String line;
+		while((line = br.readLine()) != null)
+			sb.append(line + "<br />");
+		return sb.toString();
 	}
 	
 	public static ArrayList<String> fileToStrings(File file) throws IOException {
@@ -195,11 +230,53 @@ public class MediaLoader implements Constants {
 		
 		CouchParser.updateRecord(Derivative.class, dbDerivatives, id, rev, updateValues);
 		JSONObject updatedDerivative = CouchParser.getRecord(dbDerivatives, new ViewQuery().designDocId(Couch.Design.DERIVATIVES), Couch.Views.Derivatives.GET_BY_ID, id, Annotation.OMIT_FOR_UPDATE);
+		
+		Iterator<String> rIt = updatedDerivative.getJSONArray("representation").iterator();
+		String repName = rIt.next();
+		String path = repName.substring(0, repName.length() - 4);
+		
+		updatedDerivative.put(DC.Options.MESSAGES, getMessages(path));
+		
 		result.put(DC.Options.RESULT, updatedDerivative);
 		result.put(DC.Options.DISCUSSION_ID, discussionId);
 		
-		InformaMessage.pushUpdate((String) updatedDerivative.get(DC.Options._ID));
+		return result;
+	}
+
+	@SuppressWarnings("unchecked")
+	public Object sendMessage(Map<String, Object> messagePack) {
+		JSONObject result = new JSONObject();
+		result.put(DC.Keys.RESULT, DC.Results.FAIL);
 		
+		if(!CouchParser.validateUser(dbUsers, (Map<String, Object>) messagePack.get(DC.Options.USER)))
+				return result;
+		
+		Map<String, Object> entity = (Map<String, Object>) messagePack.get(DC.Options.ENTITY);
+		JSONObject derivative = CouchParser.getRecord(dbDerivatives, new ViewQuery().designDocId(Couch.Design.DERIVATIVES), Couch.Views.Derivatives.GET_BY_ID, entity.get(DC.Options._ID), new String[] {"j3m"});
+		
+		Iterator<String> rIt = derivative.getJSONArray("representation").iterator();
+		String repName = rIt.next();
+		String path = repName.substring(0, repName.length() - 4);
+		
+		String messagePath = DERIVATIVE_ROOT + path + 
+				"/messages/" + 
+				System.currentTimeMillis() + "_" +
+				DigestUtils.md5Hex((String) entity.get(DC.Options.CONTENT)) +
+				".txt";
+		CouchParser.Log(Couch.INFO, messagePath);
+		
+		try {
+			FileWriter fw = new FileWriter(messagePath);
+			fw.write((String) entity.get(DC.Options.CONTENT));
+			fw.flush();
+			fw.close();
+			derivative.put(DC.Options.MESSAGES, getMessages(path));
+			result.put(DC.Keys.RESULT, derivative);
+		} catch (IOException e) {
+			CouchParser.Log(Couch.ERROR, e.toString());
+			e.printStackTrace();
+		}
+
 		return result;
 	}
 }

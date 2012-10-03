@@ -65,7 +65,8 @@ var Alert_STR = {
 		EMPTY_SEARCH: "Please refine your search. If you'd like to see all submissions, visit the \"Submissions\" tab instead.",
 		LOGIN_PROMPT: "Please log in at the bottom of the screen to continue.",
 		RENAME_FAIL: "Could not change the media object's title.",
-		EMPTY_ANNOTATION: "Please enter some text for your annotation."
+		EMPTY_ANNOTATION: "Please enter some text for your annotation.",
+		EMPTY_MESSAGE_CONTENT: "Please enter a message to send."
 	},
 	MediaLoading: {
 		MAIN_TITLE: "Media Loading...",
@@ -131,7 +132,7 @@ var Menu_STR = {
 		},
 		RENAME: "Rename File",
 		EXPORT_METADATA: "Export Metadata As...",
-		SEND_MESSAGE: "Send Message..."
+		VIEW_MESSAGES: "View Messages..."
 	},
 	Main: {
 		SEARCH: "SEARCH",

@@ -15,7 +15,8 @@ var Command = {
 	RENAME_MEDIA: 108,
 	ADD_ANNOTATION: 109,
 	APPEND_TO_ANNOTATION: 110,
-	UPDATE_DERIVATIVES: 111
+	UPDATE_DERIVATIVES: 111,
+	SEND_MESSAGE: 112
 };
 
 var entity, mcxAnnotation;
@@ -32,7 +33,7 @@ var MediaTypes = {
 	}
 };
 
-var annotation_move_offset;
+var annotation_move_offset, messages_move_offset;
 
 var MediaPaths = {
 	LOCAL: 200,

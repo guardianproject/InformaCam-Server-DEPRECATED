@@ -49,9 +49,4 @@ public class InformaMessage implements Constants {
 			this.opts = null;
 		System.out.println("INPUT: " + this.in.toString());
 	}
-
-	public static void pushUpdate(String _id) {
-		// TODO: push this update to all users
-		
-	}
 }

@@ -17,7 +17,6 @@
         };
     </script>
     <script type="text/javascript" src="js/handlers.js"></script>
-	<script type="text/javascript" src="js/jquery.tmpl.js"></script>
 	<script type="text/javascript" src="js/sammy.js"></script>
 	<script type="text/javascript" src="js/popcorn-complete.min.js"></script>
 	<script type="text/javascript" src="js/ui.js"></script>
@@ -56,6 +55,23 @@
 				<tr>
 					<td width="85%"><input id="annotation_append_content" /></td>
 					<td><a id="annotation_append_submit">Add</a></td>
+				</tr>
+			</table>
+		</div>
+	</div>
+	
+	<div id="messages_holder">
+		<div id="messages_controls">
+			<span id="messages_close" onclick="removeMessagesHolder();">[x]</span>
+			<span id="messages_move">[&nbsp;&nbsp;&nbsp;]</span>
+		</div>
+		<h1>Messages</h1>
+		<div id="messages_content"></div>
+		<div id="messages_append_holder">
+			<table width="100%">
+				<tr>
+					<td width="85%"><input id="messages_append_content" /></td>
+					<td><a id="messages_append_submit">Send</a></td>
 				</tr>
 			</table>
 		</div>

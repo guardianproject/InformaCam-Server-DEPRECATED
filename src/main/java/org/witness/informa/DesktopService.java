@@ -93,6 +93,10 @@ public class DesktopService extends AbstractService implements Constants {
 				msg.put(DC.Keys.COMMAND, DC.Commands.APPEND_TO_ANNOTATION);
 				msg.put(DC.Keys.METADATA, ml.appendToAnnotation(msg.opts));
 				break;
+			case Attempts.SEND_MESSAGE:
+				msg.put(DC.Keys.COMMAND, DC.Commands.SEND_MESSAGE);
+				msg.put(DC.Keys.METADATA, ml.sendMessage(msg.opts));
+				break;
 			}
 		}
 		

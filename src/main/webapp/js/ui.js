@@ -9,6 +9,7 @@ function clearUi() {
 	popup_holder.css('display','none');
 	spinner_holder.css('display','none');
 	annotation_holder.css('display','none');
+	messages_holder.css('display','none');
 	$("#media_overlay").unbind();
 }
 
@@ -468,8 +469,13 @@ function moveAnnotationHolder(e) {
 		'top':  (e.clientY - annotation_move_offset),
 		'left': (e.clientX - $("#annotation_holder").width())
 	});
-	
-	
+}
+
+function moveMessagesHolder(e) {
+	$("#messages_holder").css({
+		'top':  (e.clientY - messages_move_offset),
+		'left': (e.clientX - $("#messages_holder").width())
+	});
 }
 
 function hideRegions() {
@@ -610,8 +616,17 @@ function showAnnotationHolder() {
 	annotation_holder.css('display','block');
 }
 
+function showMessagesHolder() {
+	$("#messages_content").empty();
+	messages_holder.css('display','block');
+}
+
 function removeAnnotationHolder() {
 	annotation_holder.css('display','none');
+}
+
+function removeMessagesHolder() {
+	messages_holder.css('display','none');
 }
 
 function populateTable(data, root) {
@@ -672,6 +687,7 @@ function initLayout() {
 	spinner_holder.css('margin-top', $(window).height()/2 - 100);
 	
 	annotation_holder = $("#annotation_holder");
+	messages_holder = $("#messages_holder");
 	
 	console.info($(window).width());
 	$("#map_view_readout").css({
@@ -798,6 +814,15 @@ function initLayout() {
 		
 		$("#annotation_move").live('mouseup', function() {
 			$(document).unbind('mousemove', moveAnnotationHolder);
+		});
+		
+		messages_move_offset = $("#messages_move").offset().top;
+		$("#messages_move").live('mousedown', function() {
+			$(document).bind('mousemove', moveMessagesHolder);
+		});
+		
+		$("#messages_move").live('mouseup', function() {
+			$(document).unbind('mousemove', moveMessagesHolder);
 		});
 
 	});

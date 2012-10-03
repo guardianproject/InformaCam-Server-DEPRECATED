@@ -286,18 +286,47 @@ var Media = {
 				entity: {
 					_id: entity._id,
 					_rev: entity._rev,
-					discussions: entity.derivative.discussions,
-					messages: entity.derivative.messages
+					discussions: entity.derivative.discussions
 				}
 			});
 		}
 	},
 	sendMessage : {
-		init: function(content) {
-		
+		init: function() {
+			if($("#messages_append_content").val() != "") {
+				showSpinner();
+				broadcast({
+					attempt: Command.SEND_MESSAGE,
+					options: {
+						user: {
+							_id: currentUser._id,
+							_rev: currentUser._rev
+						},
+						entity: {
+							_id: entity._id,
+							_rev: entity._rev,
+							messageContent: $("#messages_append_content").val()
+						}
+					}
+				});
+			} else {
+				showAlert(Alert_STR.Errors.MAIN_TITLE, Alert_STR.Errors.EMPTY_MESSAGE_CONTENT, null, null, false);
+			}
 		},
-		callback: function() {
-		
+		callback: function(updatedMedia) {
+			entity._rev = updatedMedia.result._rev;
+			entity.derivative.discussions = updatedMedia.result.discussions;
+			entity.messages = updatedMedia.result.messages;
+			entity.loadMessages(entity.messages);
+			multicast({
+				attempt: Command.UPDATE_DERIVATIVES,
+				entity: {
+					_id: entity._id,
+					_rev: entity._rev,
+					discussions: entity.derivative.discussions,
+					messages: entity.messages
+				}
+			});
 		}
 	},
 	rename: {

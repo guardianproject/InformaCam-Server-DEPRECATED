@@ -114,12 +114,13 @@ var MediaEntity = function(data) {
 	this.mediaType = data.mediaType;
 	this.imageDimensions = [data.j3m.data.exif.imageWidth, data.j3m.data.exif.imageLength];
 
+	this.messages = new Array();
+
 	this.derivative = {
 		dateSavedAsDerivative: data.timestampIndexed,
 		representation: data.representation,
 		j3m: data.j3m,
 		discussions: new Array(),
-		messages: new Array(),
 		keywords: data.keywords
 	}
 
@@ -130,7 +131,7 @@ var MediaEntity = function(data) {
 	this.refresh = function(_rev, discussions, messages) {
 		entity._rev = _rev;
 		entity.derivative.discussions = discussions;
-		entity.derivative.messages = messages;
+		entity.messages = messages;
 		
 		if(entity.currentAnnotation != null && entity.currentAnnotation != undefined)
 			entity.reloadAnnotation(entity.currentAnnotation);
@@ -163,11 +164,35 @@ var MediaEntity = function(data) {
 		});
 		entity.currentAnnotation = annotation;
 	};
+	
+	this.loadMessages = function(messages) {
+		$("#messages_content").empty();
+		showMessagesHolder();
+		$("#messages_append_submit").unbind();
+		var mList = $(document.createElement('ol')).attr('class','messages_list');
+		$.each(messages, function() {
+			var mListItem = $(document.createElement('li'))
+				.append(
+					$(document.createElement('p')).attr('class','date')
+						.html(formatTimestampForHumans(this.date))
+				)
+				.append(
+					$(document.createElement('p')).html(this.messageContent)
+				);
+			
+			mList.append(mListItem);
+		});
+		$("#messages_content").append(mList);
+		$("#messages_append_submit").bind('click',function() {
+			Media.sendMessage.init();
+		});
+		
+	};
 
 	if(data.discussions != undefined)
 		this.derivative.discussions = data.discussions;
 	if(data.messages != undefined)
-		this.derivative.messages = data.messages;
+		this.messages = data.messages;
 
 	this.options = new Array();
 
@@ -211,9 +236,9 @@ var MediaEntity = function(data) {
 	});
 
 	this.options.push({
-		label: Menu_STR.Media.SEND_MESSAGE,
+		label: Menu_STR.Media.VIEW_MESSAGES,
 		action: function() {
-			entity.sendMessage();
+			entity.loadMessages(entity.messages);
 		}
 	});
 

@@ -109,6 +109,8 @@ public interface Constants {
 			public final static int RENAME_MEDIA = 108;
 			public static final int ADD_ANNOTATION = 109;
 			public static final int APPEND_TO_ANNOTATION = 110;
+			public static final int UPDATE_DERIVATIVES = 111; // not used?
+			public static final int SEND_MESSAGE = 112;
 		}
 		
 		public final static class Commands {
@@ -123,7 +125,8 @@ public interface Constants {
 			public final static int LOGOUT = DC.Attempts.LOGOUT;
 			public final static int RENAME_MEDIA = DC.Attempts.RENAME_MEDIA;
 			public final static int ADD_ANNOTATION = DC.Attempts.ADD_ANNOTATION;
-			public static final Object APPEND_TO_ANNOTATION = DC.Attempts.APPEND_TO_ANNOTATION;
+			public static final int APPEND_TO_ANNOTATION = DC.Attempts.APPEND_TO_ANNOTATION;
+			public static final int SEND_MESSAGE = DC.Attempts.SEND_MESSAGE;
 		}
 		
 		public final static class Keys {
@@ -134,8 +137,8 @@ public interface Constants {
 			public final static String WAIT_CODE = "waitCode";
 			public final static String MESSAGE = "message";
 			public final static String OPTIONS = "options";
-			public static final Object RESULT = "result";
-			public static final Object UPDATE_OBJECT = "updateObject";
+			public static final String RESULT = "result";
+			public static final String UPDATE_OBJECT = "updateObject";
 		}
 		
 		public final static class Options {
@@ -148,7 +151,13 @@ public interface Constants {
 			public final static String ANNOTATION = "annotation";
 			public static final String USER = "user";
 			public static final String ENTITY = "entity";
-			public static final Object DISCUSSION_ID = "discussionId";
+			public static final String DISCUSSION_ID = "discussionId";
+			public static final String MESSAGE = "informaMessage";
+			public static final String BASE = "derivativeBase";
+			public static final String CONTENT = "messageContent";
+			public static final String MESSAGES = "messages";
+			public static final String TIMESTAMP = "date";
+			public static final String FROM_CLIENT = "fromClient";
 		}
 		
 	}

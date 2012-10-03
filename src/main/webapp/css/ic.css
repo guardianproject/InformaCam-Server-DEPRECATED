@@ -67,7 +67,7 @@ Layout*/
 	background-image:url('../images/ic_trans_blk.png');
 }
 
-#annotation_holder {
+#annotation_holder, #messages_holder {
 	height:500px;
 	width:30%;
 	background-color:#ffffff;
@@ -77,30 +77,30 @@ Layout*/
 	padding:10px;
 }
 
-#annotation_controls {
+#annotation_controls, #messages_controls {
 	position:absolute;
 	float:right;
 	display:block;
 	right:5px;
 }
 
-#annotation_move {
+#annotation_move, #messages_move {
 	cursor:move;
 	background-image:url('../images/ic_move.png');
 	background-size:contain;
 }
 
-#annotation_close {
+#annotation_close, #messages_close {
 	cursor:pointer;
 }
 
-#annotation_append_holder {
+#annotation_append_holder, #messages_append_holder {
 	position:absolute;
 	bottom:10px;
 	width:100%;
 }
 
-#annotation_content {
+#annotation_content, #messages_content {
 	height:400px;
 	overflow:auto;
 }
@@ -340,14 +340,14 @@ p {
 	color:#fff;
 }
 
-#ic_login a, a.ic_inner_option, a.ic_inner_option:link, a.ic_inner_option:visited, a.ic_inner_option:hover, #annotation_append_submit, #annotation_append_submit:link, #annotation_append_submit:visited, #annotation_append_submit:hover {
+#ic_login a, a.ic_inner_option, a.ic_inner_option:link, a.ic_inner_option:visited, a.ic_inner_option:hover, #annotation_append_submit, #annotation_append_submit:link, #annotation_append_submit:visited, #annotation_append_submit:hover, #messages_append_submit, #messages_append_submit:link, #messages_append_submit:visited, #messages_append_submit:hover {
 	padding:4px 5px;
 	background-color:#8fae22;
 	cursor:pointer;
 	color:#ffffff;
 }
 
-#annotation_append_submit {
+#annotation_append_submit, #messages_append_submit {
 	font-size:0.6em;
 }
 
@@ -505,15 +505,15 @@ td.ic_toMedia {
 	cursor:pointer;
 }
 
-#annotation_content ol {
+#annotation_content ol, #messages_content ol {
 	font-size:0.74em;
 }
 
-#annotation_content ol li p {
+#annotation_content ol li p, #messages_content ol li p {
 	font-size:1.1em;
 }
 
-#annotation_content ol li p.date {
+#annotation_content ol li p.date, #messages_content ol li p.date {
 	font-size:0.7em;
 	font-style:italic;
 	color:#999999;
@@ -555,7 +555,7 @@ div.ic_toggle a.selected {
 	background-image:none;
 }
 
-#annotation_append_holder input {
+#annotation_append_holder input, #messages_append_holder input {
 	width:96%;
 }
 
