@@ -145,7 +145,7 @@ var MediaEntity = function(data) {
 	this.loadAnnotation = function(annotation) {
 		$("#annotation_append_submit").unbind();
 		var a = entity.derivative.discussions[annotation].annotations;
-		var aList = $(document.createElement('ol')).attr('class','annotation_list');
+		var aList = $(document.createElement('ul')).attr('class','annotation_list');
 		$.each(a, function() {
 			
 			var aListItem = $(document.createElement('li'))
@@ -169,7 +169,7 @@ var MediaEntity = function(data) {
 		$("#messages_content").empty();
 		showMessagesHolder();
 		$("#messages_append_submit").unbind();
-		var mList = $(document.createElement('ol')).attr('class','messages_list');
+		var mList = $(document.createElement('ul')).attr('class','messages_list');
 		$.each(messages, function() {
 			var mListItem = $(document.createElement('li'))
 				.append(
@@ -180,6 +180,8 @@ var MediaEntity = function(data) {
 					$(document.createElement('p')).html(this.messageContent)
 				);
 			
+			if(this.fromClient == true)
+				mListItem.attr('class','from_client');
 			mList.append(mListItem);
 		});
 		$("#messages_content").append(mList);

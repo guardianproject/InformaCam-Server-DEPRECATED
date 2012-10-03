@@ -70,7 +70,6 @@ Layout*/
 #annotation_holder, #messages_holder {
 	height:500px;
 	width:30%;
-	background-color:#ffffff;
 	position:fixed;
 	z-index:98;
 	margin:0;
@@ -96,13 +95,18 @@ Layout*/
 
 #annotation_append_holder, #messages_append_holder {
 	position:absolute;
-	bottom:10px;
+	bottom:22px;
 	width:100%;
+	background-color:#cccccc;
+	margin: 0 -20px 0 -30px;
+    padding: 10px 0 10px 10px;
 }
 
 #annotation_content, #messages_content {
 	height:400px;
 	overflow:auto;
+	background-image:url('../images/ic_trans_blk.png');
+	margin: 0 0 10px -30px;
 }
 
 #ic_header, #ic_main, #ic_footer {
@@ -252,6 +256,16 @@ h1 {
 	font-size:1em;
 	margin:0;
 	padding:0;
+}
+
+#annotation_holder h1, #messages_holder h1 {
+	font-weight:normal;
+	text-transform:uppercase;
+	font-size:0.85em;
+	color:#8fae22;
+	background-color:#c6ff00;
+	padding:4px;
+	margin: 0 0 0 -30px;
 }
 
 h2 {
@@ -505,18 +519,38 @@ td.ic_toMedia {
 	cursor:pointer;
 }
 
-#annotation_content ol, #messages_content ol {
+#annotation_content ul, #messages_content ul {
 	font-size:0.74em;
+	list-style-type:none;
+	padding:10px;
+	margin:0;
 }
 
-#annotation_content ol li p, #messages_content ol li p {
-	font-size:1.1em;
+#annotation_content ul li, #messages_content ul li {
+	padding:0 6px;
+	background-color:#ffffff;
+	border:1px solid #C6FF00;
+	margin:6px 0;
+	border-radius:5px;
+	-moz-border-radius:5px;
+	-webkit-border-radius:5px;
 }
 
-#annotation_content ol li p.date, #messages_content ol li p.date {
+#annotation_content ul li p, #messages_content ul li p {
+	font-size:0.85em;
+}
+
+#annotation_content ul li p.date, #messages_content ul li p.date {
 	font-size:0.7em;
 	font-style:italic;
+}
+
+#annotation_content ul li p.date, #messages_content ul li p.date {
 	color:#999999;
+}
+
+#annotation_content ul li.from_client p.date, #messages_content ul li.from_client p.date {
+	color:#ffffff;
 }
 
 #map_view_annotations ul {
@@ -630,6 +664,11 @@ a.smallList {
 	font-size:0.5em;
 	padding:2px 5px;
 	margin:0 5px;
+}
+
+#messages_content ul li.from_client {
+	background-color:#8FAE22;
+	color:#ffffff;
 }
 
 /*--------------------------------------
