@@ -76,20 +76,29 @@ Layout*/
 	padding:10px;
 }
 
-#annotation_controls, #messages_controls {
+#expandedView_holder {
+	height:600px;
+	width:80%;
+	position:fixed;
+	z-index:98;
+	margin:0;
+	padding:10px;
+}
+
+#annotation_controls, #messages_controls, #expandedView_controls {
 	position:absolute;
 	float:right;
 	display:block;
 	right:5px;
 }
 
-#annotation_move, #messages_move {
+#annotation_move, #messages_move, #expandedView_move {
 	cursor:move;
 	background-image:url('../images/ic_move.png');
 	background-size:contain;
 }
 
-#annotation_close, #messages_close {
+#annotation_close, #messages_close, #expandedView_close {
 	cursor:pointer;
 }
 
@@ -102,7 +111,7 @@ Layout*/
     padding: 10px 0 10px 10px;
 }
 
-#annotation_content, #messages_content {
+#annotation_content, #messages_content, #expandedView_content {
 	height:400px;
 	overflow:auto;
 	background-image:url('../images/ic_trans_blk.png');
@@ -258,7 +267,7 @@ h1 {
 	padding:0;
 }
 
-#annotation_holder h1, #messages_holder h1 {
+#annotation_holder h1, #messages_holder h1, #expandedView_holder h1 {
 	font-weight:normal;
 	text-transform:uppercase;
 	font-size:0.85em;
@@ -764,4 +773,23 @@ MAPS*/
 	position:relative;
 	top:45%;
 	width:92%;
+}
+
+#ev_map_holder {
+	width:100%;
+	padding:0;
+	margin:0;
+	height:400px;
+	position:absolute;
+	border:1px solid #fff;
+}
+
+#ev_map {
+	width:100%;
+	height:400px;
+	margin:0;
+	padding:0;
+	position:relative;
+	top:0;
+	left:0;
 }

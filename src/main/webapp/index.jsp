@@ -77,6 +77,20 @@
 		</div>
 	</div>
 	
+	<div id="expandedView_holder">
+		<div id="expandedView_controls">
+			<span id="expandedView_close" onclick="removeExpandedViewHolder();">[x]</span>
+			<span id="expandedView_move">[&nbsp;&nbsp;&nbsp;]</span>
+		</div>
+		<h1 id="expandedView_title">View Name</h1>
+		<div id="expandedView_content">
+			<div id="ev_map_holder">
+				<div id="ev_map"></div>
+			</div>
+			<div id="ev_x">Here is something else...</div>
+		</div>
+	</div>
+	
 	<div id="ic_header">
 		<div id="ic_logo">
 			<table>
@@ -340,7 +354,7 @@
 									document.write(Search_STR.By_Location.LABEL);
 								</script>
 							</h3>
-							<input optionKey="location" id="location"  type="text" class="ic_smallListInput" style="width:72%;" /> <a class="ic_inner_option" onclick="">
+							<input optionKey="location" id="location"  type="text" class="ic_smallListInput" style="width:72%;" /> <a class="ic_inner_option" onclick="showExpandedViewHolder(ev.map);">
 								<script type="text/javascript">
 									document.write(Search_STR.By_Location.Fields.MAP);
 								</script>

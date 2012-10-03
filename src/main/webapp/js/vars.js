@@ -33,7 +33,7 @@ var MediaTypes = {
 	}
 };
 
-var annotation_move_offset, messages_move_offset;
+var annotation_move_offset, messages_move_offset, expandedView_offset;
 
 var MediaPaths = {
 	LOCAL: 200,
@@ -98,7 +98,7 @@ var Styles = {
 		DRAWING: "#ffffff"
 	}
 };
-var mapViewMap, mapViewMap_opts;
+var mapViewMap, mapViewMap_opts, extendedViewMap, extendedViewMap_opts;
 var searchQuery, searchAlias, searchMap, searchMap_opts;
 var SearchParameters = {
 	KEYWORDS: 299,
@@ -128,9 +128,9 @@ var SearchParameters = {
 
 var currentUser;
 
-var ic, ui;
+var ic, ui, ev;
 var header, nav, footer, main, alert_holder, popup_holder, spinner_holder;
-var metadata_readout, media_options, media_options_menu, media_frame, media_overlay, mcx, annotation_holder;
+var metadata_readout, media_options, media_options_menu, media_frame, media_overlay, mcx, annotation_holder, expandedView_holder, messages_holder;
 var regionsTraced = true;
 var pop;
 

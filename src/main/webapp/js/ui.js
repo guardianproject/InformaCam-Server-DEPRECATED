@@ -10,6 +10,7 @@ function clearUi() {
 	spinner_holder.css('display','none');
 	annotation_holder.css('display','none');
 	messages_holder.css('display','none');
+	expandedView_holder.css('display','none');
 	$("#media_overlay").unbind();
 }
 
@@ -478,6 +479,13 @@ function moveMessagesHolder(e) {
 	});
 }
 
+function moveExpandedViewHolder(e) {
+	$("#expandedView_holder").css({
+		'top':  (e.clientY - expandedView_move_offset),
+		'left': (e.clientX - $("#expandedView_holder").width())
+	});
+}
+
 function hideRegions() {
 	regionsTraced = false;
 	mcx.clearRect(0, 0, $(media_overlay).width(), $(media_overlay).height());
@@ -621,12 +629,34 @@ function showMessagesHolder() {
 	messages_holder.css('display','block');
 }
 
+function showExpandedViewHolder(showAs) {
+	expandedView_holder.css('display','block');
+
+	if(showAs != null && showAs != undefined) {
+		$("#expandedView_title").html(showAs.label);
+		$.each($("#expandedView_content").children('div'), function() {
+			$(this).css('display','none');
+		});
+		$.each(ev, function() {
+			if(this.root == showAs.root) {
+				$(this.root).css('display','block');
+				
+			}
+			
+		});
+	}
+}
+
 function removeAnnotationHolder() {
 	annotation_holder.css('display','none');
 }
 
 function removeMessagesHolder() {
 	messages_holder.css('display','none');
+}
+
+function removeExpandedViewHolder() {
+	expandedView_holder.css('display','none');
 }
 
 function populateTable(data, root) {
@@ -688,6 +718,7 @@ function initLayout() {
 	
 	annotation_holder = $("#annotation_holder");
 	messages_holder = $("#messages_holder");
+	expandedView_holder = $("#expandedView_holder");
 	
 	console.info($(window).width());
 	$("#map_view_readout").css({
@@ -726,6 +757,13 @@ function initLayout() {
 			tab: $(nav.children()[1])
 		}
 	};
+	
+	ev = {
+		map: {
+			label: Search_STR.By_Location.Map.LABEL,
+			root: $("#ev_map_holder")
+		}
+	}
 
 	$.each(ui, function(item) {
 		this.root.css({
@@ -824,12 +862,22 @@ function initLayout() {
 		$("#messages_move").live('mouseup', function() {
 			$(document).unbind('mousemove', moveMessagesHolder);
 		});
+		
+		expandedView_move_offset = $("#expandedView_move").offset().top;
+		$("#expandedView_move").live('mousedown', function() {
+			$(document).bind('mousemove', moveExpandedViewHolder);
+		});
+		
+		$("#expandedView_move").live('mouseup', function() {
+			$(document).unbind('mousemove', moveExpandedViewHolder);
+		});
 
 	});
 
 	ic.run('#submissions/');
 	updateLoginUi();
 	initMapViewMap();
+	initExtendedViewMap();
 }
 
 function initMapViewMap() {
@@ -840,6 +888,16 @@ function initMapViewMap() {
 	};
 	
 	mapViewMap = new google.maps.Map(document.getElementById("map_view_map"), mapViewMap_opts);
+}
+
+function initExtendedViewMap() {
+	extendedViewMap_opts = {
+		center: new google.maps.LatLng(0, 0),
+		zoom: 1,
+		mapTypeId: google.maps.MapTypeId.ROADMAP
+	};
+	
+	extendedViewMap = new google.maps.Map(document.getElementById("ev_map"), extendedViewMap_opts);
 }
 
 function zoomOnMap(lat, lng, marker, mainLabel, displayText, mapToUse) {

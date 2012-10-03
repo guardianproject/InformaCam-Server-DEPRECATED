@@ -244,6 +244,9 @@ var Search_STR = {
 		Fields: {
 			HINT: "enter coordinates, city, or country",
 			MAP: "Map..."
+		},
+		Map: {
+			LABEL: "Refine your search by location..."
 		}
 	},
 	Results: {
