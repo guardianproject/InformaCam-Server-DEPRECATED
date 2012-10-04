@@ -102,7 +102,6 @@ var InformaRegion = function(left, top, right, bottom, discussionId, isNew) {
 	this.move = function(e) {
 		this.bounds.top = (((e.clientY - media_frame.offset().top) - (2 * entity.margTop)) - (this.bounds.height/4));
 		this.bounds.left = (((e.clientX - media_frame.offset().left) - (2 * entity.margLeft)) + (this.bounds.width/4));
-		console.info(this.bounds);
 		this.update();
 	}
 	
@@ -177,25 +176,31 @@ var MediaEntity = function(data) {
 	
 	this.loadAnnotation = function(annotation) {
 		$("#annotation_append_submit").unbind();
-		var a = entity.derivative.discussions[annotation].annotations;
+
 		var aList = $(document.createElement('ul')).attr('class','annotation_list');
-		$.each(a, function() {
-			
-			var aListItem = $(document.createElement('li'))
-				.append(
-					$(document.createElement('p')).attr('class','date')
-						.html(formatTimestampForHumans(this.date))
-				)
-				.append(
-					$(document.createElement('p')).html(this.content)
-				);
-			aList.append(aListItem);
-		});
+		
+		
 		$("#annotation_content").append(aList);
 		$("#annotation_append_submit").bind('click', function() {
 			Media.appendToAnnotation.init(annotation);
 		});
 		entity.currentAnnotation = annotation;
+		
+		var a = entity.derivative.discussions[annotation].annotations;
+		if(a != undefined && a != null) {
+			$.each(a, function() {
+				
+				var aListItem = $(document.createElement('li'))
+					.append(
+						$(document.createElement('p')).attr('class','date')
+							.html(formatTimestampForHumans(this.date))
+					)
+					.append(
+						$(document.createElement('p')).html(this.content)
+					);
+				aList.append(aListItem);
+			});
+		}
 	};
 	
 	this.loadMessages = function(messages) {
