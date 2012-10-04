@@ -195,7 +195,6 @@ public interface Constants {
 			"keywords",
 			"locationOnSave",
 			"mediaType",
-			"representation",
 			"sourceId",
 			"timestampIndexed"
 		};
