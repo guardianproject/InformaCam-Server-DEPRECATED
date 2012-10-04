@@ -230,11 +230,6 @@ function setMedia() {
 	media_overlay.css({'background-image':'none'});
 	setImageRatio();
 	
-	$("#media_overlay").bind('mousedown', drawAnnotation);
-	$("#media_overlay").bind('mouseup', function() {
-		window.clearInterval(mcxAnnotation.draw);
-		$(document).unbind('mousemove', mcxAnnotation.update);
-	});
 	if(entity.mediaType == MediaTypes.VIDEO) {
 		// sort the regions!
 		$.each(entity.derivative.discussions, function(idx, item) {
@@ -379,7 +374,8 @@ function setImageRatio() {
 	console.info("margeLeft: " + entity.margLeft); 
 }
 
-function placeRegion(idx, item) {
+function placeRegion(idx, item, isNew) {
+	console.info(item);
 	var _left = (item.regionBounds.regionCoordinates.region_left * entity.displayBounds.displayWidth)/entity.imageDimensions[0];
 	var _top = (item.regionBounds.regionCoordinates.region_top * entity.displayBounds.displayHeight)/entity.imageDimensions[1];
 	var _right = _left + ((item.regionBounds.regionDimensions.region_width * entity.displayBounds.displayWidth)/entity.imageDimensions[0]);
@@ -387,7 +383,10 @@ function placeRegion(idx, item) {
 	
 	console.info("region placed at: [" + _left + ", " + _top + ", " + _right + ", " + _bottom + "]");
 	
-	return new InformaRegion(_left, _top, _right, _bottom, idx, false);	
+	if(isNew == null || isNew == undefined)
+		isNew = false;
+			
+	return new InformaRegion(_left, _top, _right, _bottom, idx, isNew);	
 }
 
 function initRegionsImage() {
@@ -430,43 +429,6 @@ function placeMedia() {
 	loadMediaOptions();
 	setMetadata();
 	toggleMediaView(true);
-}
-
-function MCXAnnotation(x, y) {
-	this.base = $("#media_overlay").position();
-	console.info(this.base);
-	
-	this.bounds = {
-		top: x,
-		left: y
-	};
-	
-	mcx.strokeStyle = Styles.Color.DRAWING;
-	this.draw = window.setInterval(function() {
-		
-		/*
-		mcx.strokeRect(
-			mcxAnnotation.bounds.left,
-			mcxAnnotation.bounds.top,
-			mcxAnnotation.bounds.height,
-			mcxAnnotation.bounds.width
-		);
-		*/
-		console.info(rect);
-	}, 20);
-	
-	this.update = function(e) {
-		mcxAnnotation.bounds.width = Math.abs(e.clientX - mcxAnnotation.bounds.left);
-		mcxAnnotation.bounds.height = Math.abs(e.clientY - mcxAnnotation.bounds.top);
-		console.info(mcxAnnotation.bounds);
-	};
-	
-}
-
-function drawAnnotation(e) {
-	mcxAnnotation = new MCXAnnotation(e.clientX, e.clientY);
-	$(document).bind('mousemove', mcxAnnotation.update);
-	
 }
 
 function loadMediaOptions() {
@@ -649,11 +611,13 @@ function removeAlert() {
 function showAnnotationHolder() {
 	$("#annotation_content").empty();
 	annotation_holder.css('display','block');
+	listenForEscapeButton(annotation_holder, removeAnnotationHolder);
 }
 
 function showMessagesHolder() {
 	$("#messages_content").empty();
 	messages_holder.css('display','block');
+	listenForEscapeButton(messages_holder, removeMessagesHolder);
 }
 
 function showExpandedViewHolder(showAs) {
@@ -747,7 +711,6 @@ function initLayout() {
 	messages_holder = $("#messages_holder");
 	expandedView_holder = $("#expandedView_holder");
 	
-	console.info($(window).width());
 	$("#map_view_readout").css({
 		'width': Math.abs(metadata_readout.position().left - $(window).width()) - 60,
 		'height': (($(window).height() - 100) - (header.height() + footer.height()))
@@ -817,6 +780,22 @@ function initLayout() {
 
 	$(".ic_menu_button li div ul li").mouseleave(function() {
 		$(this).removeClass('hover');
+	});
+	
+	$("#add_anno").live('click', function() {
+		switch(entity.mediaType) {
+			case MediaTypes.IMAGE:
+				var region = placeRegion(entity.regions.length, entity.newAnnotation, true);
+				entity.regions.push(region);
+				
+				var container = entity.regions[entity.regions.length - 1].container;
+				$(container).addClass("mcxActive");
+				$(container).addClass("mcxEditable");
+				break;
+			case MediaTypes.VIDEO:
+				console.info('adding video region');
+				break;
+		}
 	});
 
 	$(".tr_header td").click(function() {
@@ -898,6 +877,13 @@ function initLayout() {
 		$("#expandedView_move").live('mouseup', function() {
 			$(document).unbind('mousemove', moveExpandedViewHolder);
 		});
+		
+		$(".mcxEditable").live('mousedown', function(e) {
+			movingAnnotation = entity.getActiveRegion(e.currentTarget);
+			$(document).bind('mousemove', moveAnnotation);
+			$(document).bind('mouseup', setAnnotation);
+		});
+		
 
 	});
 
@@ -907,6 +893,15 @@ function initLayout() {
 	initExtendedViewMap();
 }
 
+function moveAnnotation(e) {
+	movingAnnotation.move(e);
+}
+
+function setAnnotation() {
+	$(document).unbind('mousemove', moveAnnotation);
+}
+
+var movingAnnotation;
 function initMapViewMap() {
 	mapViewMap_opts = {
 		center: new google.maps.LatLng(0, 0),

@@ -31,9 +31,16 @@ var InformaRegion = function(left, top, right, bottom, discussionId, isNew) {
 		'id':'mcx_' + discussionId
 	});
 	
+	if(isNew) {
+		$(this.container).addClass('mcxNew');
+	}
+	
 	$(this.container).click(function() {
 		var r = entity.getActiveRegion(this);
 		$.each(entity.regions, function() {
+			if($(this.container).hasClass("mcxNew"))
+				$(this.container).removeClass("mcxNew");
+				
 			if(this != r) {
 				this.isSelected = false;
 				this.isActive = false;
@@ -92,6 +99,13 @@ var InformaRegion = function(left, top, right, bottom, discussionId, isNew) {
 		
 	};
 	
+	this.move = function(e) {
+		this.bounds.top = (((e.clientY - media_frame.offset().top) - (2 * entity.margTop)) - (this.bounds.height/4));
+		this.bounds.left = (((e.clientX - media_frame.offset().left) - (2 * entity.margLeft)) + (this.bounds.width/4));
+		console.info(this.bounds);
+		this.update();
+	}
+	
 	this.update();
 }
 
@@ -137,10 +151,29 @@ var MediaEntity = function(data) {
 			entity.reloadAnnotation(entity.currentAnnotation);
 	}
 	
+	this.newAnnotation = {
+		annotations: new Array(),
+		date: new Date().getTime(),
+		duration: 0,
+		originatedBy: currentUser._id,
+		timeIn:0,
+		timeOut:0,
+		regionBounds: {
+			regionCoordinates: {
+				region_top: 0,
+				region_left: 0
+			},
+			regionDimensions: {
+				region_height: 500,
+				region_width: 500
+			}
+		}
+	};
+	
 	this.reloadAnnotation = function(annotationId) {
 		$("#annotation_content").empty();
 		entity.loadAnnotation(annotationId);
-	}
+	};
 	
 	this.loadAnnotation = function(annotation) {
 		$("#annotation_append_submit").unbind();

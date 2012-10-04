@@ -751,6 +751,14 @@ div.mcxActive {
 	visibility:visible;
 }
 
+#media_frame div.mcxNew {
+	border:4px solid #C6FF00;
+}
+
+#media_frame div.mcxEditable {
+	cursor:move;
+}
+
 /*--------------------------------------
 MAPS*/
 #map_view_readout {
