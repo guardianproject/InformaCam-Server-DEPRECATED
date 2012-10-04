@@ -181,12 +181,13 @@ Layout*/
 #media_frame {
 	position:relative;
 	border:1px solid #c6ff00;
-	margin-top:31px;
+	top:31px;
 	z-index:0;
 }
 
 #media_overlay {
-	cursor:crosshair;
+	position:absolute;
+	margin:0;
 }
 
 #media_frame div {
@@ -571,8 +572,7 @@ td.ic_toMedia {
 /*--------------------------------------
 Misc UI Elements*/
 ul.ic_menu_button li.ic_menu_buttonOverride div.ic_toggle {
-	display:-moz-grid-line;
-	border:1px solid #444;
+	display:inline-table;
 	margin:-2px 0;
 	padding:2px 0;
 	position:relative;
@@ -785,7 +785,7 @@ MAPS*/
 }
 
 #ev_map {
-	width:100%;
+	width:99%;
 	height:400px;
 	margin:0;
 	padding:0;

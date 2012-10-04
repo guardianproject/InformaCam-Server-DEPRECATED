@@ -280,10 +280,13 @@ function setVideo() {
 	$("#video_holder").css({
 		'width': entity.displayBounds.displayWidth,
 		'height': entity.displayBounds.displayHeight,
-		'marginLeft': entity.margLeft
+		'margin-top': entity.margTop,
+		'margin-left': entity.margLeft
 	});
 	
 	$.each(entity.derivative.representation, function() {
+		$("#video_holder").empty();
+		
 		var representation = this;
 		if(!representation.match(/.mkv/i)) {
 			$("#video_holder").append(
@@ -302,32 +305,63 @@ function setImage() {
 		'background-image': "url('images/session_cache/" + entity.derivative.representation[0] + "')",
 		'background-repeat': 'no-repeat',
 		'background-size': 'contain',
-		'background-position': 'center'
+		'background-position': 'center',
+		'margin-left': entity.margLeft,
+		'margin-top': entity.margTop
 	});
+	media_overlay.prop({
+			'width' : entity.displayBounds.displayWidth,
+			'height' : entity.displayBounds.displayHeight
+	});
+	
 	initRegionsImage();
 }
 
 function setImageRatio() {
 	var ratio = entity.imageDimensions[0]/entity.imageDimensions[1];
 	var displayWidth, displayHeight;
-	var maxWidth = media_frame.width() * 0.9;
-	var maxHeight = media_frame.height() * 0.9;
+	var maxWidth = media_frame.width();
+	var maxHeight = media_frame.height();
 	console.info("width: " + entity.imageDimensions[0]);
 	console.info("height: " + entity.imageDimensions[1]);
 	console.info("maxWidth: " + maxWidth);
 	console.info("maxHeight: " + maxHeight);
 	
+
 	if(entity.imageDimensions[0] > entity.imageDimensions[1]) {
-		displayWidth = maxWidth;
-		displayHeight = ((displayWidth * entity.imageDimensions[1])/entity.imageDimensions[0]);
+		// if it's landscape, let height set the ratio...
+		console.info('this width is larger than the height');
+		displayHeight = maxHeight;
+		displayWidth = ((displayHeight * entity.imageDimensions[0])/entity.imageDimensions[1]);
 		
 	} else if(entity.imageDimensions[1] > entity.imageDimensions[0]) {
-		displayHeight = maxHeight;
+		// if it's portrait, let width set the ratio... ?
 		console.info('this height is larger than the width');
-		displayWidth = ((displayHeight * entity.imageDimensions[0])/entity.imageDimensions[1]);
+		displayWidth = maxWidth;
+		displayHeight = ((displayWidth * entity.imageDimensions[1])/entity.imageDimensions[0]);
 	} else if(entity.imageDimensions[0] == entity.imageDimensions[1]) {
 		displayHeight = displayWidth = maxHeight;
 	}
+	
+	if(displayWidth > maxWidth) {
+		console.info('still needs to resize');
+		displayHeight = (maxWidth * displayHeight)/displayWidth;
+		displayWidth = maxWidth;
+	} else if(displayHeight > maxHeight) {
+		console.info('still needs to resize');
+		displayWidth = (maxHeight * displayWidth)/displayHeight;
+		displayHeight = maxHeight;
+	}
+
+	
+	/*
+	if(entity.imageDimensions[0] == entity.imageDimensions[1]) {
+		displayHeight = displayWidth = maxHeight;
+	} else {
+		displayHeight = maxHeight;
+		displayWidth = ((displayHeight * entity.imageDimensions[0])/entity.imageDimensions[1]);
+	}
+	*/
 	
 	entity.displayBounds = {
 		displayWidth: displayWidth,
@@ -341,16 +375,6 @@ function setImageRatio() {
 	entity.margTop = Math.abs(maxHeight - displayHeight) * 0.5;
 	console.info("margeTop: " + entity.margTop);
 	console.info("margeLeft: " + entity.margLeft); 
-
-	media_overlay.prop({
-			'width' : displayWidth,
-			'height' : displayHeight
-	});
-	
-	media_overlay.css({
-		'margin-left': entity.margLeft,
-		'margin-top': entity.margTop,
-	});
 }
 
 function placeRegion(idx, item) {
@@ -463,6 +487,7 @@ function loadMediaOptions() {
 
 function traceRegions() {
 	regionsTraced = true;
+	$(".mcxActive").css('visibility','visible');
 }
 
 function moveAnnotationHolder(e) {
@@ -488,7 +513,7 @@ function moveExpandedViewHolder(e) {
 
 function hideRegions() {
 	regionsTraced = false;
-	mcx.clearRect(0, 0, $(media_overlay).width(), $(media_overlay).height());
+	$(".mcxActive").css('visibility','hidden');
 }
 
 function setMetadata() {
