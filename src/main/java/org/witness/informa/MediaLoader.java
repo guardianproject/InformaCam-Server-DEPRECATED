@@ -220,7 +220,6 @@ public class MediaLoader implements Constants {
 		
 		JSONObject derivative = CouchParser.getRecord(dbDerivatives, new ViewQuery().designDocId(Couch.Design.DERIVATIVES), Couch.Views.Derivatives.GET_BY_ID, id, new String[] {"j3m"});
 		JSONArray d = derivative.getJSONArray("discussions");
-		CouchParser.Log(Couch.INFO, derivative.toString());
 		
 		JSONObject annotation = new JSONObject();
 		annotation.put(Annotation.Keys.CONTENT, (String) discussion.remove(Annotation.Keys.CONTENT));

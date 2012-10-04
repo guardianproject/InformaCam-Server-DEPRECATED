@@ -277,6 +277,7 @@ var sortByTimeline = function(arr) {
 }
 
 function setVideo() {
+	media_overlay.css('display','none');
 	$("#video_holder").css({
 		'width': entity.displayBounds.displayWidth,
 		'height': entity.displayBounds.displayHeight,
@@ -307,7 +308,8 @@ function setImage() {
 		'background-size': 'contain',
 		'background-position': 'center',
 		'margin-left': entity.margLeft,
-		'margin-top': entity.margTop
+		'margin-top': entity.margTop,
+		'display':'block'
 	});
 	media_overlay.prop({
 			'width' : entity.displayBounds.displayWidth,
