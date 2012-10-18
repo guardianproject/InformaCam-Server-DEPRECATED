@@ -223,14 +223,20 @@ function toggleMediaView(state) {
 
 function setMedia() {
 	$("#media_frame").css('visibility','visible');
-	$.each($("#media_frame").children('div'), function() {
-		$(this).remove();
-	});
-	
+	//$.each($("#media_frame").children('div'), function() {
+	$('.mcxDiv').remove();
+	//});
+
 	media_overlay.css({'background-image':'none'});
-	setImageRatio();
-	
+
+
+
 	if(entity.mediaType == MediaTypes.VIDEO) {
+
+		setVideo();
+
+		setVideoSize();
+
 		// sort the regions!
 		$.each(entity.derivative.discussions, function(idx, item) {
 			// place the first div as a region
@@ -241,17 +247,23 @@ function setMedia() {
 			firstRegion.timeOut = item['timeOut'];
 			firstRegion.videoTrail = sortByTimeline(item['regionBounds']);
 			entity.regions.push(firstRegion);
-			
+
 		});
-		
-		setVideo();
+
 		$('#video_holder').css('display','block');
 		$("#media_overlay").css('display','block');
+
+		initRegionsVideo();
+
 	} else {
+
+		setImageRatio();
+
 		$.each(entity.derivative.discussions, function(idx, item) {
 			entity.regions.push(placeRegion(idx, item));
 		});
-		
+
+
 		setImage();
 		$('#media_overlay').css('display','block');
 		$('#video_holder').css('display','none');
@@ -267,22 +279,28 @@ var sortByTimeline = function(arr) {
 		else
 			return 0;
 	});
-	
+
 	return arr;
 }
 
 function setVideo() {
+
+	var maxWidth = media_frame.width();
+	var maxHeight = media_frame.height();
+
 	media_overlay.css('display','none');
 	$("#video_holder").css({
-		'width': entity.displayBounds.displayWidth,
-		'height': entity.displayBounds.displayHeight,
-		'margin-top': entity.margTop,
-		'margin-left': entity.margLeft
+		'max-height': maxHeight,
+		'max-width' : maxWidth,
+		'height': 'auto',
+		'width' : '100%',
+		'margin': '0 auto'
 	});
-	
+
+
 	$.each(entity.derivative.representation, function() {
 		$("#video_holder").empty();
-		
+
 		var representation = this;
 		if(!representation.match(/.mkv/i)) {
 			$("#video_holder").append(
@@ -291,9 +309,9 @@ function setVideo() {
 			);
 		}
 	});
-	
+
 	pop = Popcorn("#video_holder");
-	initRegionsVideo();
+
 }
 
 function setImage() {
@@ -310,12 +328,24 @@ function setImage() {
 			'width' : entity.displayBounds.displayWidth,
 			'height' : entity.displayBounds.displayHeight
 	});
-	
+
 	initRegionsImage();
 }
 
+function setVideoSize() {
+	var displayWidth;
+	var displayHeight;
+	displayWidth = media_frame.width();
+	displayHeight = media_frame.height();
+	entity.displayBounds = {
+		displayWidth: displayWidth,
+		displayHeight: displayHeight
+	}
+
+}
+
 function setImageRatio() {
-	var ratio = entity.imageDimensions[0]/entity.imageDimensions[1];
+//	var ratio = entity.imageDimensions[0]/entity.imageDimensions[1];
 	var displayWidth, displayHeight;
 	var maxWidth = media_frame.width();
 	var maxHeight = media_frame.height();
@@ -323,14 +353,13 @@ function setImageRatio() {
 	console.info("height: " + entity.imageDimensions[1]);
 	console.info("maxWidth: " + maxWidth);
 	console.info("maxHeight: " + maxHeight);
-	
 
 	if(entity.imageDimensions[0] > entity.imageDimensions[1]) {
 		// if it's landscape, let height set the ratio...
 		console.info('this width is larger than the height');
 		displayHeight = maxHeight;
 		displayWidth = ((displayHeight * entity.imageDimensions[0])/entity.imageDimensions[1]);
-		
+
 	} else if(entity.imageDimensions[1] > entity.imageDimensions[0]) {
 		// if it's portrait, let width set the ratio... ?
 		console.info('this height is larger than the width');
@@ -339,7 +368,7 @@ function setImageRatio() {
 	} else if(entity.imageDimensions[0] == entity.imageDimensions[1]) {
 		displayHeight = displayWidth = maxHeight;
 	}
-	
+
 	if(displayWidth > maxWidth) {
 		console.info('still needs to resize');
 		displayHeight = (maxWidth * displayHeight)/displayWidth;
@@ -350,7 +379,8 @@ function setImageRatio() {
 		displayHeight = maxHeight;
 	}
 
-	
+
+
 	/*
 	if(entity.imageDimensions[0] == entity.imageDimensions[1]) {
 		displayHeight = displayWidth = maxHeight;
@@ -359,19 +389,19 @@ function setImageRatio() {
 		displayWidth = ((displayHeight * entity.imageDimensions[0])/entity.imageDimensions[1]);
 	}
 	*/
-	
+
 	entity.displayBounds = {
 		displayWidth: displayWidth,
 		displayHeight: displayHeight
 	}
-	
+
 	console.info("displayBounds is ");
 	console.info(entity.displayBounds);
 
 	entity.margLeft = Math.abs(maxWidth - displayWidth) * 0.5;
 	entity.margTop = Math.abs(maxHeight - displayHeight) * 0.5;
 	console.info("margeTop: " + entity.margTop);
-	console.info("margeLeft: " + entity.margLeft); 
+	console.info("margeLeft: " + entity.margLeft);
 }
 
 function placeRegion(idx, item, isNew) {
@@ -380,13 +410,13 @@ function placeRegion(idx, item, isNew) {
 	var _top = (item.regionBounds.regionCoordinates.region_top * entity.displayBounds.displayHeight)/entity.imageDimensions[1];
 	var _right = _left + ((item.regionBounds.regionDimensions.region_width * entity.displayBounds.displayWidth)/entity.imageDimensions[0]);
 	var _bottom = _top + ((item.regionBounds.regionDimensions.region_height * entity.displayBounds.displayHeight)/entity.imageDimensions[1]);
-	
+
 	console.info("region placed at: [" + _left + ", " + _top + ", " + _right + ", " + _bottom + "]");
-	
+
 	if(isNew == null || isNew == undefined)
 		isNew = false;
-			
-	return new InformaRegion(_left, _top, _right, _bottom, idx, isNew);	
+
+	return new InformaRegion(_left, _top, _right, _bottom, idx, isNew);
 }
 
 function initRegionsImage() {
@@ -398,7 +428,7 @@ function initRegionsImage() {
 
 var videoRegionTrails = new Array;
 function initRegionsVideo() {
-	
+
 	$.each(entity.derivative.discussions, function(idx, item) {
 		var region = entity.regions[idx];
 		var container = $(region.container);
@@ -501,12 +531,13 @@ function setMetadata() {
 
 		$("#metadata_readout").append(readout);
 	});
-	
+
 	$("#map_view_annotations").empty();
 	var ilm = new InformaLocationMarker(entity.location.locationOnSave);
 	var newLatLng = new google.maps.LatLng(ilm.lat, ilm.lng);
 	mapViewMap.setCenter(newLatLng);
-	
+	google.maps.event.trigger(mapViewMap, 'resize');
+
 	var editLocationMarkerHolder = $(document.createElement('ul'));
 	$("#map_view_annotations")
 		.append(
@@ -524,7 +555,7 @@ function setMetadata() {
 				.append(eilm.build())
 		);
 	});
-	
+
 }
 
 function showSpinner() {
@@ -610,7 +641,12 @@ function removeAlert() {
 
 function showAnnotationHolder() {
 	$("#annotation_content").empty();
-	annotation_holder.css('display','block');
+	leftmargin = media_frame.width() + 'px';
+	annotation_holder.css({
+		'display':'block',
+		'margin-top': '25px',
+		'margin-left': leftmargin
+	});
 	listenForEscapeButton(annotation_holder, removeAnnotationHolder);
 }
 
@@ -631,9 +667,9 @@ function showExpandedViewHolder(showAs) {
 		$.each(ev, function() {
 			if(this.root == showAs.root) {
 				$(this.root).css('display','block');
-				
+
 			}
-			
+
 		});
 	}
 }
@@ -706,11 +742,11 @@ function initLayout() {
 
 	spinner_holder = $("#spinner_holder");
 	spinner_holder.css('margin-top', $(window).height()/2 - 100);
-	
+
 	annotation_holder = $("#annotation_holder");
 	messages_holder = $("#messages_holder");
 	expandedView_holder = $("#expandedView_holder");
-	
+
 	$("#map_view_readout").css({
 		'width': Math.abs(metadata_readout.position().left - $(window).width()) - 60,
 		'height': (($(window).height() - 100) - (header.height() + footer.height()))
@@ -747,7 +783,7 @@ function initLayout() {
 			tab: $(nav.children()[1])
 		}
 	};
-	
+
 	ev = {
 		map: {
 			label: Search_STR.By_Location.Map.LABEL,
@@ -781,13 +817,13 @@ function initLayout() {
 	$(".ic_menu_button li div ul li").mouseleave(function() {
 		$(this).removeClass('hover');
 	});
-	
+
 	$("#add_anno").live('click', function() {
 		switch(entity.mediaType) {
 			case MediaTypes.IMAGE:
 				var region = placeRegion(entity.regions.length, entity.newAnnotation, true);
 				entity.regions.push(region);
-				
+
 				var container = entity.regions[entity.regions.length - 1].container;
 				$(container).addClass("mcxActive");
 				$(container).addClass("mcxEditable");
@@ -850,40 +886,40 @@ function initLayout() {
 				$(this).prop('type','text');
 			}
 		});
-		
+
 		annotation_move_offset = $("#annotation_move").offset().top;
 		$("#annotation_move").live('mousedown', function() {
 			$(document).bind('mousemove', moveAnnotationHolder);
 		});
-		
+
 		$("#annotation_move").live('mouseup', function() {
 			$(document).unbind('mousemove', moveAnnotationHolder);
 		});
-		
+
 		messages_move_offset = $("#messages_move").offset().top;
 		$("#messages_move").live('mousedown', function() {
 			$(document).bind('mousemove', moveMessagesHolder);
 		});
-		
+
 		$("#messages_move").live('mouseup', function() {
 			$(document).unbind('mousemove', moveMessagesHolder);
 		});
-		
+
 		expandedView_move_offset = $("#expandedView_move").offset().top;
 		$("#expandedView_move").live('mousedown', function() {
 			$(document).bind('mousemove', moveExpandedViewHolder);
 		});
-		
+
 		$("#expandedView_move").live('mouseup', function() {
 			$(document).unbind('mousemove', moveExpandedViewHolder);
 		});
-		
+
 		$(".mcxEditable").live('mousedown', function(e) {
 			movingAnnotation = entity.getActiveRegion(e.currentTarget);
 			$(document).bind('mousemove', moveAnnotation);
 			$(document).bind('mouseup', setAnnotation);
 		});
-		
+
 
 	});
 
@@ -908,7 +944,7 @@ function initMapViewMap() {
 		zoom: 12,
 		mapTypeId: google.maps.MapTypeId.ROADMAP
 	};
-	
+
 	mapViewMap = new google.maps.Map(document.getElementById("map_view_map"), mapViewMap_opts);
 }
 
@@ -918,7 +954,7 @@ function initExtendedViewMap() {
 		zoom: 1,
 		mapTypeId: google.maps.MapTypeId.ROADMAP
 	};
-	
+
 	extendedViewMap = new google.maps.Map(document.getElementById("ev_map"), extendedViewMap_opts);
 }
 
@@ -932,7 +968,7 @@ function zoomOnMap(lat, lng, marker, mainLabel, displayText, mapToUse) {
 			title: mainLabel
 		});
 	}
-	
+
 	var infoWindow = new google.maps.InfoWindow({
 		content: displayText
 	});

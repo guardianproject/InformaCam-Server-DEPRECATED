@@ -2,15 +2,20 @@ var InformaLocationMarker = function(coords, text) {
 	this.lat = coords[0];
 	this.lng = coords[1];
 	this.text = text;
-	
+
 	this.label = "[" + coords[0] + ", " + coords[1] + "]";
-	
+
 	this.build = function() {
 		var a = locationMarker = $(document.createElement('a'))
 			.html(this.label)
 			.attr('class','informaLocationMarker')
+			.attr('id', this.lat + ','+this.lng)
 			.live('click', function() {
-				zoomOnMap(this.lat, this.lng, null, this.label, this.text, mapViewMap);
+				var latlng = $(".informaLocationMarker").attr("id");
+				lat = latlng.substr(0,10);
+				lng = latlng.substr(11);
+				zoomOnMap(lat, lng, null, this.label, this.text, mapViewMap);
+				google.maps.event.trigger(mapViewMap, 'resize');
 			});
 		return a;
 	};
@@ -25,22 +30,22 @@ var InformaRegion = function(left, top, right, bottom, discussionId, isNew) {
 		width: Math.abs(left - right),
 		height: Math.abs(top - bottom)
 	};
-	
+
 	this.container = $(document.createElement('div')).attr({
 		'class':'mcxDiv',
 		'id':'mcx_' + discussionId
 	});
-	
+
 	if(isNew) {
 		$(this.container).addClass('mcxNew');
 	}
-	
+
 	$(this.container).click(function() {
 		var r = entity.getActiveRegion(this);
 		$.each(entity.regions, function() {
 			if($(this.container).hasClass("mcxNew"))
 				$(this.container).removeClass("mcxNew");
-				
+
 			if(this != r) {
 				this.isSelected = false;
 				this.isActive = false;
@@ -53,26 +58,26 @@ var InformaRegion = function(left, top, right, bottom, discussionId, isNew) {
 		showAnnotationHolder();
 		entity.loadAnnotation(r.discussionId);
 	});
-	
+
 	$(this.container).mouseenter(function() {
 		var r = entity.getActiveRegion(this);
 		r.isSelected = true;
 		r.update();
 	});
-	
+
 	$(this.container).mouseout(function() {
 		var r = entity.getActiveRegion(this);
 		r.isSelected = false;
 		r.update();
 	});
-	
+
 	$("#media_overlay").before($(this.container));
-	
+
 	this.isNew = isNew;
 	this.discussionId = discussionId;
 	this.isActive = false;
 	this.isSelected = false;
-	
+
 	this.update = function(trail) {
 		if(this.isSelected) {
 			$(this.container).addClass('selected');
@@ -80,14 +85,14 @@ var InformaRegion = function(left, top, right, bottom, discussionId, isNew) {
 			if(!this.isActive)
 				$(this.container).removeClass('selected');
 		}
-		
+
 		if(trail != null && trail != undefined) {
 			this.bounds.left = (trail.regionCoordinates.region_left * entity.displayBounds.displayWidth)/entity.imageDimensions[0];
 			this.bounds.top = (trail.regionCoordinates.region_top * entity.displayBounds.displayHeight)/entity.imageDimensions[1];
 			this.bounds.right = this.bounds.left + ((trail.regionDimensions.region_width * entity.displayBounds.displayWidth)/entity.imageDimensions[0]);
 			this.bounds.bottom = this.bounds.top + ((trail.regionDimensions.region_height * entity.displayBounds.displayHeight)/entity.imageDimensions[1]);
 		}
-		
+
 		$(this.container).css({
 			'width' : this.bounds.width,
 			'height': this.bounds.height,
@@ -96,22 +101,22 @@ var InformaRegion = function(left, top, right, bottom, discussionId, isNew) {
 			'margin-left': entity.margLeft,
 			'margin-top': $("#media_overlay").position().top
 		});
-		
+
 	};
-	
+
 	this.move = function(e) {
 		this.bounds.top = (((e.clientY - media_frame.offset().top) - (2 * entity.margTop)) - (this.bounds.height/4));
 		this.bounds.left = (((e.clientX - media_frame.offset().left) - (2 * entity.margLeft)) + (this.bounds.width/4));
 		this.update();
 	}
-	
+
 	this.update();
 }
 
 var MediaEntity = function(data) {
 	this._id = data._id;
 	this._rev = data._rev;
-	
+
 	this.regions = new Array();
 	this.getActiveRegion = function(r) {
 		return entity.regions[$(r).attr('id').split("mcx_")[1]];
@@ -140,16 +145,16 @@ var MediaEntity = function(data) {
 	this.setAlias = function() {
 		Media.rename.prompt();
 	};
-	
+
 	this.refresh = function(_rev, discussions, messages) {
 		entity._rev = _rev;
 		entity.derivative.discussions = discussions;
 		entity.messages = messages;
-		
+
 		if(entity.currentAnnotation != null && entity.currentAnnotation != undefined)
 			entity.reloadAnnotation(entity.currentAnnotation);
 	}
-	
+
 	this.newAnnotation = {
 		annotations: new Array(),
 		date: new Date().getTime(),
@@ -168,28 +173,28 @@ var MediaEntity = function(data) {
 			}
 		}
 	};
-	
+
 	this.reloadAnnotation = function(annotationId) {
 		$("#annotation_content").empty();
 		entity.loadAnnotation(annotationId);
 	};
-	
+
 	this.loadAnnotation = function(annotation) {
 		$("#annotation_append_submit").unbind();
 
 		var aList = $(document.createElement('ul')).attr('class','annotation_list');
-		
-		
+
+
 		$("#annotation_content").append(aList);
 		$("#annotation_append_submit").bind('click', function() {
 			Media.appendToAnnotation.init(annotation);
 		});
 		entity.currentAnnotation = annotation;
-		
+
 		var a = entity.derivative.discussions[annotation].annotations;
 		if(a != undefined && a != null) {
 			$.each(a, function() {
-				
+
 				var aListItem = $(document.createElement('li'))
 					.append(
 						$(document.createElement('p')).attr('class','date')
@@ -202,7 +207,7 @@ var MediaEntity = function(data) {
 			});
 		}
 	};
-	
+
 	this.loadMessages = function(messages) {
 		$("#messages_content").empty();
 		showMessagesHolder();
@@ -217,7 +222,7 @@ var MediaEntity = function(data) {
 				.append(
 					$(document.createElement('p')).html(this.messageContent)
 				);
-			
+
 			if(this.fromClient == true)
 				mListItem.attr('class','from_client');
 			mList.append(mListItem);
@@ -226,7 +231,7 @@ var MediaEntity = function(data) {
 		$("#messages_append_submit").bind('click',function() {
 			Media.sendMessage.init();
 		});
-		
+
 	};
 
 	if(data.discussions != undefined)
@@ -310,12 +315,12 @@ var MediaEntity = function(data) {
 	this.sendMessage = function() {
 		alert("view submission info");
 	};
-	
+
 	this.location = {
 		locationOnSave: data.locationOnSave,
 		locations: data.location
 	};
-	
+
 	this.informa = {
 		intent: {
 			label: Metadata_STR.Intent.label,

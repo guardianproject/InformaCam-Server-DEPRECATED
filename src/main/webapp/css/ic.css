@@ -198,6 +198,10 @@ Layout*/
 	border:2px solid #C6FF00;
 }
 
+#metadata_readout, #map_view_readout {
+	padding: 10px;
+}
+
 #visualization_holder {
 	margin:0;
 	overflow:auto;
@@ -206,10 +210,8 @@ Layout*/
 #visualization_holder div {
 	position:absolute;
 	background-image:url('../images/ic_trans_blk.png');
-	padding:0 5px;
 	border-top:1px solid #c6ff00;
 	visibility:hidden;
-	padding:10px;
 	margin:0;
 }
 
@@ -481,7 +483,7 @@ ul.ic_menu_button li div {
 	position:absolute;
 	margin:6px 0 0 -6px;
 	padding:0;
-	
+
 }
 
 ul.ic_menu_button li div ul {
