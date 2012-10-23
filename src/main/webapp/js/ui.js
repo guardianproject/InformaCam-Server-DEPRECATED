@@ -304,7 +304,8 @@ function setImage() {
 		'background-position': 'center',
 		'margin-left': entity.margLeft,
 		'margin-top': entity.margTop,
-		'display':'block'
+		'display':'block',
+		'position':'absolute'
 	});
 	media_overlay.prop({
 			'width' : entity.displayBounds.displayWidth,
@@ -783,9 +784,10 @@ function initLayout() {
 	});
 	
 	$("#add_anno").live('click', function() {
+		var region;
 		switch(entity.mediaType) {
 			case MediaTypes.IMAGE:
-				var region = placeRegion(entity.regions.length, entity.newAnnotation, true);
+				region = placeRegion(entity.regions.length, entity.newAnnotation, true);
 				entity.regions.push(region);
 				
 				var container = entity.regions[entity.regions.length - 1].container;
@@ -796,6 +798,8 @@ function initLayout() {
 				console.info('adding video region');
 				break;
 		}
+		
+		Media.annotate.init(entity.newAnnotation);
 	});
 
 	$(".tr_header td").click(function() {
@@ -883,8 +887,6 @@ function initLayout() {
 			$(document).bind('mousemove', moveAnnotation);
 			$(document).bind('mouseup', setAnnotation);
 		});
-		
-
 	});
 
 	ic.run('#submissions/');
@@ -894,14 +896,31 @@ function initLayout() {
 }
 
 function moveAnnotation(e) {
+	mcx_move = 1;
 	movingAnnotation.move(e);
 }
 
 function setAnnotation() {
 	$(document).unbind('mousemove', moveAnnotation);
+
+	if(mcx_move == 1) {	
+		var realRegion = entity.derivative.discussions[movingAnnotation.discussionId];
+		
+		realRegion.regionBounds.regionCoordinates = {
+			region_left : (movingAnnotation.bounds.left * entity.imageDimensions[0])/entity.displayBounds.displayWidth,
+			region_top : (movingAnnotation.bounds.top * entity.imageDimensions[1])/entity.displayBounds.displayHeight
+		};
+		
+		realRegion.regionBounds.regionDimensions = {
+			region_height: (movingAnnotation.bounds.height * entity.imageDimensions[1])/entity.displayBounds.displayHeight,
+			region_width: (movingAnnotation.bounds.width * entity.imageDimensions[0])/entity.displayBounds.displayWidth
+		};
+		
+		Media.editAnnotation.init(movingAnnotation.discussionId, EditTypes.MOVE, realRegion);
+		mcx_move = 0;
+	}
 }
 
-var movingAnnotation;
 function initMapViewMap() {
 	mapViewMap_opts = {
 		center: new google.maps.LatLng(0, 0),

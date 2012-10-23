@@ -1,20 +1,21 @@
 package org.witness.informa;
 
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.cometd.bayeux.Message;
 import org.cometd.bayeux.server.BayeuxServer;
+import org.cometd.bayeux.server.ServerChannel;
 import org.cometd.bayeux.server.ServerSession;
 import org.cometd.server.AbstractService;
 import org.witness.informa.utils.Constants.DC.Attempts;
 import org.witness.informa.utils.Constants;
+import org.witness.informa.utils.CouchParser;
 import org.witness.informa.utils.InformaMessage;
 
 public class DesktopService extends AbstractService implements Constants {
 	MediaLoader ml = null;
+	boolean cFlag = false;
 	
 	public DesktopService(BayeuxServer bayeux) {
 		super(bayeux, "desktopConnection");
@@ -87,7 +88,7 @@ public class DesktopService extends AbstractService implements Constants {
 				break;
 			case Attempts.ADD_ANNOTATION:
 				msg.put(DC.Keys.COMMAND, DC.Commands.ADD_ANNOTATION);
-				msg.put(DC.Keys.METADATA, ml.addAnnotation((String) msg.opts.get(DC.Options._ID), (String) msg.opts.get(DC.Options._REV), (String) msg.opts.get(DC.Options.ANNOTATION)));
+				msg.put(DC.Keys.METADATA, ml.addAnnotation(msg.opts));
 				break;
 			case Attempts.APPEND_TO_ANNOTATION:
 				msg.put(DC.Keys.COMMAND, DC.Commands.APPEND_TO_ANNOTATION);
@@ -96,6 +97,10 @@ public class DesktopService extends AbstractService implements Constants {
 			case Attempts.SEND_MESSAGE:
 				msg.put(DC.Keys.COMMAND, DC.Commands.SEND_MESSAGE);
 				msg.put(DC.Keys.METADATA, ml.sendMessage(msg.opts));
+				break;
+			case Attempts.EDIT_ANNOTATION:
+				msg.put(DC.Keys.COMMAND, DC.Commands.EDIT_ANNOTATION);
+				msg.put(DC.Keys.METADATA, ml.modifyAnnotation(msg.opts));
 				break;
 			}
 		}

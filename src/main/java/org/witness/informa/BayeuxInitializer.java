@@ -25,6 +25,7 @@ import javax.servlet.ServletResponse;
 
 import org.cometd.bayeux.server.BayeuxServer;
 
+@SuppressWarnings("serial")
 public class BayeuxInitializer extends GenericServlet
 {
     public void init() throws ServletException

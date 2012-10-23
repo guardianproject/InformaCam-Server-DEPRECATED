@@ -91,6 +91,11 @@ public interface Constants {
 	
 	public final static class DC {
 		public final static String RESPONSE = "response";
+		public static final class EditType {
+			public static final int MOVE = 500;
+			public static final int DELETE = 501;
+		}
+		
 		public static final class Results {
 			public static final int OK = 1;
 			public static final int FAIL = -1;
@@ -98,6 +103,7 @@ public interface Constants {
 		
 		public final static class Attempts {
 			public final static String TAG = "attempt";
+			public final static int UNLOAD = 98;
 			public final static int CHOOSE_MEDIA = 99;
 			public final static int LOAD_MEDIA = 100;
 			public final static int VIEW_DERIVATIVES = 102;
@@ -111,9 +117,11 @@ public interface Constants {
 			public static final int APPEND_TO_ANNOTATION = 110;
 			public static final int UPDATE_DERIVATIVES = 111; // not used?
 			public static final int SEND_MESSAGE = 112;
+			public static final int EDIT_ANNOTATION = 113;
 		}
 		
 		public final static class Commands {
+			public final static int UNLOAD = DC.Attempts.UNLOAD;
 			public final static int CHOOSE_MEDIA = DC.Attempts.CHOOSE_MEDIA;
 			public final static int LOAD_MEDIA = DC.Attempts.LOAD_MEDIA;
 			public final static int WAIT_FOR_PROCESS = 101;
@@ -127,6 +135,7 @@ public interface Constants {
 			public final static int ADD_ANNOTATION = DC.Attempts.ADD_ANNOTATION;
 			public static final int APPEND_TO_ANNOTATION = DC.Attempts.APPEND_TO_ANNOTATION;
 			public static final int SEND_MESSAGE = DC.Attempts.SEND_MESSAGE;
+			public static final int EDIT_ANNOTATION = DC.Attempts.EDIT_ANNOTATION;
 		}
 		
 		public final static class Keys {
@@ -139,6 +148,11 @@ public interface Constants {
 			public final static String OPTIONS = "options";
 			public static final String RESULT = "result";
 			public static final String UPDATE_OBJECT = "updateObject";
+			public static final String EDITY_TYPE = "editType";
+			public static final class EditTypes {
+				public final static int DELETE = 500;
+				public final static int MOVE = 501;
+			}
 		}
 		
 		public final static class Options {
@@ -158,6 +172,14 @@ public interface Constants {
 			public static final String MESSAGES = "messages";
 			public static final String TIMESTAMP = "date";
 			public static final String FROM_CLIENT = "fromClient";
+			public static final String EDIT_TYPE = "editType";
+			public static final String ORIGINATED_BY = "originatedBy";
+			public static final String DURATION = "duration";
+			public static final String TIME_IN = "timeIn";
+			public static final String TIME_OUT = "timeOut";
+			public static final String REGION_BOUNDS = "regionBounds";
+			public static final String ANNOTATIONS = "annotations";
+			public static final String DELETE_FLAG = "isDeleted";
 		}
 		
 	}

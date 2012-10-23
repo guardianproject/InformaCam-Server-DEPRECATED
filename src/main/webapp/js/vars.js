@@ -3,6 +3,7 @@ var dc = '/service/desktopConnection';
 var mcast = '/multicast';
 
 var Command = {
+	UNLOAD: 98,
 	CHOOSE_MEDIA: 99,
 	LOAD_MEDIA: 100,
 	WAIT_FOR_PROCESS: 101,
@@ -16,10 +17,11 @@ var Command = {
 	ADD_ANNOTATION: 109,
 	APPEND_TO_ANNOTATION: 110,
 	UPDATE_DERIVATIVES: 111,
-	SEND_MESSAGE: 112
+	SEND_MESSAGE: 112,
+	EDIT_ANNOTATION: 113
 };
 
-var entity, mcxAnnotation;
+var entity, mcxAnnotation, movingAnnotation;
 var MediaTypes = {
 	VIDEO: 401,
 	IMAGE: 400,
@@ -34,6 +36,14 @@ var MediaTypes = {
 };
 
 var annotation_move_offset, messages_move_offset, expandedView_offset;
+var EditTypes = {
+	MOVE: 500,
+	DELETE: 501,
+	Names: {
+		500: EditTypes_STR.MOVE,
+		501: EditTypes_STR.DELETE
+	}
+};
 
 var MediaPaths = {
 	LOCAL: 200,
@@ -133,6 +143,7 @@ var header, nav, footer, main, alert_holder, popup_holder, spinner_holder;
 var metadata_readout, media_options, media_options_menu, media_frame, media_overlay, mcx, annotation_holder, expandedView_holder, messages_holder;
 var regionsTraced = true;
 var pop;
+var mcx_move = 0;
 
 function isArray(object) {
 	if(typeof object == 'object') {

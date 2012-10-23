@@ -41,6 +41,7 @@ public class InformaMessage implements Constants {
 		return output;
 	}
 	
+	@SuppressWarnings("unchecked")
 	public InformaMessage(Message msg) {
 		this.in = in(msg);
 		if(this.in.containsKey(DC.Keys.OPTIONS))

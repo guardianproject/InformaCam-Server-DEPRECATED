@@ -1,12 +1,8 @@
 package org.witness.informa;
 
 import java.io.BufferedReader;
-import java.io.DataInputStream;
-import java.io.File;
 import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -21,21 +17,10 @@ import net.sf.json.JSONObject;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.ektorp.UpdateConflictException;
 import org.ektorp.ViewQuery;
-import org.ektorp.ViewResult;
 import org.ektorp.impl.StdCouchDbConnector;
 import org.ektorp.support.DesignDocument;
-import org.ektorp.support.DesignDocument.View;
 import org.witness.informa.utils.Constants;
 import org.witness.informa.utils.CouchParser;
-import org.witness.informa.utils.Constants.Couch;
-import org.witness.informa.utils.Constants.DC;
-import org.witness.informa.utils.Constants.Search;
-import org.witness.informa.utils.Constants.Search.Parameters;
-import org.witness.informa.utils.Constants.Search.Parameters.Keywords;
-import org.witness.informa.utils.Constants.Search.Parameters.Location;
-import org.witness.informa.utils.Constants.Search.Parameters.Timeframe;
-import org.witness.informa.utils.Constants.Search.Parameters.Type;
-import org.witness.informa.utils.CouchParser.User;
 
 public class InformaSearch implements Constants {
 	List<InformaTemporaryView> viewCache;
@@ -121,6 +106,7 @@ public class InformaSearch implements Constants {
 		return result;
 	}
 	
+	@SuppressWarnings("unused")
 	private String setGeolocate() {
 		// TODO!
 		String template = readTemplate("geolocate.tmpl");
@@ -150,6 +136,7 @@ public class InformaSearch implements Constants {
 		return template.replace(Couch.VAR_SENTINEL, ("var days= " + String.valueOf(days) + ";"));
 	}
 	
+	@SuppressWarnings("unused")
 	private static final long getDaysAsMillis(int days) {
 		long day = 24 * 60 * 60 * 1000;
 		CouchParser.Log(Couch.INFO, "days: " + days + " x day: " + day + " = " + (days * day));

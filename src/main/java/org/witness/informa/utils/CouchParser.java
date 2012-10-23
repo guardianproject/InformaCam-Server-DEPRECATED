@@ -14,15 +14,16 @@ import org.ektorp.ViewQuery;
 import org.ektorp.ViewResult;
 import org.ektorp.impl.StdCouchDbConnector;
 import org.ektorp.support.CouchDbDocument;
-import org.witness.informa.utils.Constants.Couch;
 
 import net.sf.json.JSONObject;
 
 public class CouchParser implements Constants {
+	@SuppressWarnings("unused")
 	private static String Quotify(String str) {
 		return "%22" + str + "%22";
 	}
 	
+	@SuppressWarnings("unused")
 	private static String Arrayify(String str) {
 		return "%5B" + str + "%5D";
 	}
@@ -114,6 +115,7 @@ public class CouchParser implements Constants {
 		return result;
 	}	
 	
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public static String updateRecord(Class c, StdCouchDbConnector db, String id, String rev, Map<String, Object> updateValues) {
 		// ugh i can't believe i had to do this... use reflection to get the function to set the new value!
 		List<Method> methods = new ArrayList<Method>();

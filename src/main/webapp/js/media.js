@@ -26,6 +26,11 @@ var InformaRegion = function(left, top, right, bottom, discussionId, isNew) {
 		height: Math.abs(top - bottom)
 	};
 	
+	if(isNew)
+		this.isEditable = true;
+	else
+		this.isEditable = currentUser._id == entity.derivative.discussions[discussionId].originatedBy ? true : false;
+	
 	this.container = $(document.createElement('div')).attr({
 		'class':'mcxDiv',
 		'id':'mcx_' + discussionId
@@ -35,7 +40,49 @@ var InformaRegion = function(left, top, right, bottom, discussionId, isNew) {
 		$(this.container).addClass('mcxNew');
 	}
 	
+	if(this.isEditable) {
+		$(this.container).addClass("mcxEditable");
+		$(this.container).append(
+			$(document.createElement('div'))
+				.attr('class','mcxDelete')
+				.click(function() {
+					var r = entity.getActiveRegion($($(this).parent()));
+					console.info(r);
+					var opts = [
+						{
+							label: Alert_STR.Basic.YES,
+							action: function() {
+								removeAlert();
+								Media.editAnnotation.init(r.discussionId, EditTypes.DELETE, entity.derivative.discussions[r.discussionId]);
+							}
+						},
+						{
+							label: Alert_STR.Basic.NO,
+							action: removeAlert
+						}
+					];
+					showAlert(Alert_STR.Region.Delete.MAIN_TITLE, Alert_STR.Region.Delete.TEXT, true, null, opts); 
+				})
+		);
+		$(this.container).append(
+			$(document.createElement('div'))
+				.attr('class','mcxResize')
+		);
+	}
+	
+	this.displayAsDeleted = function() {
+		$(this.container).removeClass('mcxNew');
+		$(this.container).removeClass('mcxEditable');
+		$(this.container).removeClass('mcxActive');
+		$(this.container).addClass('mcxDeleted');		
+	}
+	
+	if(!isNew && entity.derivative.discussions[discussionId].isDeleted != undefined && entity.derivative.discussions[discussionId].isDeleted == true) {
+		this.displayAsDeleted();
+	}
+	
 	$(this.container).click(function() {
+		mcx_move = 0;
 		var r = entity.getActiveRegion(this);
 		$.each(entity.regions, function() {
 			if($(this.container).hasClass("mcxNew"))
@@ -73,6 +120,14 @@ var InformaRegion = function(left, top, right, bottom, discussionId, isNew) {
 	this.isActive = false;
 	this.isSelected = false;
 	
+	this.recalculate = function(realRegion) {
+		this.bounds.left = (realRegion.regionBounds.regionCoordinates.region_left * entity.displayBounds.displayWidth)/entity.imageDimensions[0];
+		this.bounds.top = (realRegion.regionBounds.regionCoordinates.region_top * entity.displayBounds.displayHeight)/entity.imageDimensions[1];
+		this.bounds.right = this.bounds.left + ((realRegion.regionBounds.regionDimensions.region_width * entity.displayBounds.displayWidth)/entity.imageDimensions[0]);
+		this.bounds.bottom = this.bounds.top + ((realRegion.regionBounds.regionDimensions.region_height * entity.displayBounds.displayHeight)/entity.imageDimensions[1]);
+		this.update();
+	};
+	
 	this.update = function(trail) {
 		if(this.isSelected) {
 			$(this.container).addClass('selected');
@@ -80,6 +135,7 @@ var InformaRegion = function(left, top, right, bottom, discussionId, isNew) {
 			if(!this.isActive)
 				$(this.container).removeClass('selected');
 		}
+		
 		
 		if(trail != null && trail != undefined) {
 			this.bounds.left = (trail.regionCoordinates.region_left * entity.displayBounds.displayWidth)/entity.imageDimensions[0];
@@ -148,6 +204,25 @@ var MediaEntity = function(data) {
 		
 		if(entity.currentAnnotation != null && entity.currentAnnotation != undefined)
 			entity.reloadAnnotation(entity.currentAnnotation);
+			
+		// make sure user has all the regions!
+		var missingRegions = Math.abs(entity.derivative.discussions.length - entity.regions.length);
+		console.info(missingRegions);
+		if(missingRegions > 0) {
+			var pickup = entity.derivative.discussions.length - 1;
+			alert("adding a new thing from " + pickup);
+			for(var mr=0; mr<missingRegions; mr++) {
+				// get derivative at (len -1) + mr and add as region
+				placeRegion((pickup + mr), entity.derivative.discussions[pickup + mr]);
+			}
+		}
+		
+		$.each(entity.regions, function(idx, item) {
+			item.recalculate(entity.derivative.discussions[idx]);
+			if(entity.derivative.discussions[idx].isDeleted && entity.derivative.discussions[idx].isDeleted == true) {
+				item.displayAsDeleted();
+			}
+		});
 	}
 	
 	this.newAnnotation = {
@@ -186,20 +261,22 @@ var MediaEntity = function(data) {
 		});
 		entity.currentAnnotation = annotation;
 		
-		var a = entity.derivative.discussions[annotation].annotations;
-		if(a != undefined && a != null) {
-			$.each(a, function() {
-				
-				var aListItem = $(document.createElement('li'))
-					.append(
-						$(document.createElement('p')).attr('class','date')
-							.html(formatTimestampForHumans(this.date))
-					)
-					.append(
-						$(document.createElement('p')).html(this.content)
-					);
-				aList.append(aListItem);
-			});
+		if(entity.derivative.discussions[annotation] != undefined) {
+			var a = entity.derivative.discussions[annotation].annotations;
+			if(a != undefined && a != null) {
+				$.each(a, function() {
+					
+					var aListItem = $(document.createElement('li'))
+						.append(
+							$(document.createElement('p')).attr('class','date')
+								.html(formatTimestampForHumans(this.date))
+						)
+						.append(
+							$(document.createElement('p')).html(this.content)
+						);
+					aList.append(aListItem);
+				});
+			}
 		}
 	};
 	

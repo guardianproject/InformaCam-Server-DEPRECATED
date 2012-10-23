@@ -97,6 +97,12 @@ var Alert_STR = {
 			MAIN_TITLE: "Rename this media object",
 			TEXT: "New name: "
 		}
+	},
+	Region: {
+		Delete: {
+			MAIN_TITLE: "Delete Region",
+			TEXT: "Do you wish to delete this region?"
+		}
 	}
 };
 
@@ -157,6 +163,11 @@ var View_STR = {
 var MediaTypes_STR = {
 	IMAGE: "Image",
 	VIDEO: "Video"
+}
+
+var EditTypes_STR = {
+	MOVE: "Move",
+	DELETE: "Delete"
 }
 
 var ImageRegion_STR = {

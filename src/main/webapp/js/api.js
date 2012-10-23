@@ -222,7 +222,7 @@ var Media = {
 				var opts = [
 					{
 						label: Alert_STR.Basic.OK,
-						action: removeAlert()
+						action: removeAlert
 					}
 				];
 				showAlert(Alert_STR.Submissions.MAIN_TITLE, Alert_STR.Submissions.NO_NEW_SUBMISSIONS, true, null, opts);
@@ -246,11 +246,70 @@ var Media = {
 		}
 	},
 	annotate : {
-		init: function(timeIn, timeOut, content) {
-		
+		init: function(region) {
+			showSpinner();
+			broadcast({
+				attempt: Command.ADD_ANNOTATION,
+				options: {
+					user: {
+						_id: currentUser._id,
+						_rev: currentUser._rev
+					},
+					entity: {
+						_id: entity._id,
+						_rev: entity._rev,
+						annotation: region
+					}
+				}
+			});
 		},
-		callback: function() {
-		
+		callback: function(updatedMedia) {
+			console.info(updatedMedia);
+			entity._rev = updatedMedia.result._rev;
+			entity.derivative.discussions = updatedMedia.result.discussions;
+			entity.reloadAnnotation(updatedMedia.discussionId);
+			multicast({
+				attempt: Command.UPDATE_DERIVATIVES,
+				entity: {
+					_id: entity._id,
+					_rev: entity._rev,
+					discussions: entity.derivative.discussions
+				}
+			});
+		}
+	},
+	editAnnotation: {
+		init: function(discussionId, editType, region) {
+			showSpinner();
+			broadcast({
+				attempt: Command.EDIT_ANNOTATION,
+				options: {
+					user: {
+						_id: currentUser._id,
+						_rev: currentUser._rev
+					},
+					entity: {
+						_id: entity._id,
+						_rev: entity._rev,
+						discussionId: discussionId,
+						editType: editType,
+						annotation: region 
+					}
+				}
+			});
+		},
+		callback: function(updatedMedia) {
+			entity._rev = updatedMedia.result._rev;
+			entity.derivative.discussions = updatedMedia.result.discussions;
+			entity.reloadAnnotation(updatedMedia.discussionId);
+			multicast({
+				attempt: Command.UPDATE_DERIVATIVES,
+				entity: {
+					_id: entity._id,
+					_rev: entity._rev,
+					discussions: entity.derivative.discussions
+				}
+			});
 		}
 	},
 	appendToAnnotation: {

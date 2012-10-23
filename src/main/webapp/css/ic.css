@@ -186,7 +186,6 @@ Layout*/
 }
 
 #media_overlay {
-	position:absolute;
 	margin:0;
 }
 
@@ -757,6 +756,28 @@ div.mcxActive {
 
 #media_frame div.mcxEditable {
 	cursor:move;
+}
+
+#media_frame div.mcxEditable div.mcxDelete, #media_frame div.mcxEditable div.mcxResize {
+	cursor:pointer;
+	width:20px;
+	height:20px;
+	bottom:0px;
+	position:inherit;
+}
+
+#media_frame div.mcxEditable div.mcxDelete {
+	background-color:#000;
+	left:0px;
+}
+
+#media_frame div.mcxEditable div.mcxResize {
+	background-color:#fff;
+	right:0px;
+}
+
+#media_frame div.mcxDeleted {
+	display:none;
 }
 
 /*--------------------------------------

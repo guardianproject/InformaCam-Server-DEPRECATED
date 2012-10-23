@@ -68,6 +68,9 @@
         // Disconnect when the page unloads
         $(window).unload(function()
         {
+        	broadcast({
+        		attempt: Command.UNLOAD
+        	});
             cometd.disconnect(true);
         });
 

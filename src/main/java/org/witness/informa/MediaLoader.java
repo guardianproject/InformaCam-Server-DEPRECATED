@@ -15,13 +15,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
-import java.util.concurrent.ExecutionException;
-
-import javax.swing.filechooser.FileFilter;
 
 import net.sf.json.JSONArray;
-import net.sf.json.JSONException;
 import net.sf.json.JSONObject;
 
 import org.apache.commons.codec.digest.DigestUtils;
@@ -34,13 +29,7 @@ import org.ektorp.impl.StdCouchDbInstance;
 import org.witness.informa.utils.Constants;
 import org.witness.informa.utils.CouchParser;
 import org.witness.informa.utils.CouchParser.User;
-import org.witness.informa.utils.InformaMessage;
 import org.witness.informa.utils.LocalConstants;
-import org.witness.informa.utils.Constants.Couch;
-import org.witness.informa.utils.Constants.Couch.Views;
-import org.witness.informa.utils.Constants.Couch.Views.Derivatives;
-import org.witness.informa.utils.Constants.Couch.Views.Derivatives.Geolocate;
-import org.witness.informa.utils.Constants.Media.MediaTypes;
 import org.witness.informa.utils.CouchParser.Derivative;
 
 public class MediaLoader implements Constants {
@@ -157,6 +146,32 @@ public class MediaLoader implements Constants {
 		return derivative;
 	}
 	
+	public void cleanup() {
+		CouchParser.Log(Couch.INFO, "cleaning up derivatives");
+		for(JSONObject d : getDerivatives()) {
+			ViewQuery getDerivative = new ViewQuery().designDocId(Couch.Design.DERIVATIVES);
+			String id = (String) d.get(DC.Options._ID);
+			
+			JSONObject derivative = CouchParser.getRecord(dbDerivatives, getDerivative, Couch.Views.Derivatives.GET_BY_ID, id, Annotation.OMIT_FOR_UPDATE);
+			try {
+				String rev = (String) derivative.get(DC.Options._REV);
+				JSONArray discussions = derivative.getJSONArray("discussions");
+				for(Object discussion_ : discussions) {
+					JSONObject discussion = (JSONObject) discussion_;
+					
+					if(discussion.containsKey(DC.Options.DELETE_FLAG) && discussion.getBoolean(DC.Options.DELETE_FLAG)) {
+						discussions.remove(discussion);
+					}
+				}
+				
+				Map<String, Object> updateValues = new HashMap<String, Object>();
+				updateValues.put("discussions", discussions);
+				
+				CouchParser.updateRecord(Derivative.class, dbDerivatives, id, rev, updateValues);
+			} catch(NullPointerException e) {}
+		}
+	}
+	
 	private JSONArray getMessages(String path) {
 		JSONArray messages = new JSONArray();
 		File dir = new File(DERIVATIVE_ROOT + path + "/messages");
@@ -200,9 +215,51 @@ public class MediaLoader implements Constants {
 		return fStrings;
 	}
 
-	public JSONObject addAnnotation(String string, String string2, String string3) {
-		// TODO THESE MUST CHECK FOR CONCURRENCY ISSUES!
-		return null;
+	@SuppressWarnings("unchecked")
+	public JSONObject addAnnotation(Map<String, Object> annotationPack) {
+		JSONObject result = new JSONObject();
+		result.put(DC.Keys.RESULT, DC.Results.FAIL);
+		
+		Map<String, Object> user = (Map<String, Object>) annotationPack.get(DC.Options.USER);
+		if(!CouchParser.validateUser(dbUsers, user))
+			return result;
+		
+		Map<String, Object> entity = (Map<String, Object>) annotationPack.get(DC.Options.ENTITY);
+		String id = (String) entity.remove(DC.Options._ID);
+		
+		JSONObject derivative = CouchParser.getRecord(dbDerivatives, new ViewQuery().designDocId(Couch.Design.DERIVATIVES), Couch.Views.Derivatives.GET_BY_ID, id, new String[] {"j3m"});
+		JSONArray d = derivative.getJSONArray("discussions");
+		String rev = (String) derivative.get(DC.Options._REV);
+		
+		JSONObject annotationStub = new JSONObject();
+		annotationStub.put(DC.Options.TIMESTAMP, System.currentTimeMillis());
+		annotationStub.put(DC.Options.ORIGINATED_BY, user.get(DC.Options._ID));
+		
+		Map<String, Object> annotation = (Map<String, Object>) entity.get(DC.Options.ANNOTATION);
+		annotationStub.put(DC.Options.DURATION, annotation.get(DC.Options.DURATION));
+		annotationStub.put(DC.Options.TIME_IN, annotation.get(DC.Options.TIME_IN));
+		annotationStub.put(DC.Options.TIME_OUT, annotation.get(DC.Options.TIME_OUT));
+		annotationStub.put(DC.Options.REGION_BOUNDS, annotation.get(DC.Options.REGION_BOUNDS));
+		annotationStub.put(DC.Options.ANNOTATIONS, new JSONArray());
+		d.add(annotationStub);
+		
+		Map<String, Object> updateValues = new HashMap<String, Object>();
+		updateValues.put("discussions", d);
+		
+		CouchParser.updateRecord(Derivative.class, dbDerivatives, id, rev, updateValues);
+		JSONObject updatedDerivative = CouchParser.getRecord(dbDerivatives, new ViewQuery().designDocId(Couch.Design.DERIVATIVES), Couch.Views.Derivatives.GET_BY_ID, id, Annotation.OMIT_FOR_UPDATE);
+		
+		Iterator<String> rIt = updatedDerivative.getJSONArray("representation").iterator();
+		String repName = rIt.next();
+		String path = repName.substring(0, repName.length() - 4);
+		
+		updatedDerivative.put(DC.Options.MESSAGES, getMessages(path));
+		int discussionId = d.size() - 1;
+		
+		result.put(DC.Options.RESULT, updatedDerivative);
+		result.put(DC.Options.DISCUSSION_ID, discussionId);
+		
+		return result;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -225,7 +282,7 @@ public class MediaLoader implements Constants {
 		annotation.put(Annotation.Keys.CONTENT, (String) discussion.remove(Annotation.Keys.CONTENT));
 		annotation.put(Annotation.Keys.SUBMITTED_BY, ((Map<String, Object>) annotationPack.get(DC.Options.USER)).get(DC.Options._ID));
 		annotation.put(Annotation.Keys.DATE, System.currentTimeMillis());
-		((JSONArray) ((JSONObject) d.get(discussionId)).get("annotations")).add(annotation);
+		((JSONArray) ((JSONObject) d.get(discussionId)).get(DC.Options.ANNOTATIONS)).add(annotation);
 		
 		Map<String, Object> updateValues = new HashMap<String, Object>();
 		updateValues.put("discussions", d);
@@ -279,6 +336,66 @@ public class MediaLoader implements Constants {
 			e.printStackTrace();
 		}
 
+		return result;
+	}
+
+	@SuppressWarnings("unchecked")
+	public Object modifyAnnotation(Map<String, Object> annotationPack) {
+		JSONObject result = new JSONObject();
+		result.put(DC.Keys.RESULT, DC.Results.FAIL);
+		
+		// user, annotation, modification to perform
+		Map<String, Object> user = (Map<String, Object>) annotationPack.get(DC.Options.USER);
+		if(!CouchParser.validateUser(dbUsers, user))
+			return result;
+		
+		Map<String, Object> discussion = (Map<String, Object>) annotationPack.get(DC.Options.ENTITY);
+		String id = (String) discussion.remove(DC.Options._ID);
+		String rev = (String) discussion.remove(DC.Options._REV);
+		int discussionId = Integer.parseInt(String.valueOf(discussion.get(DC.Options.DISCUSSION_ID)));
+		
+		JSONObject derivative = CouchParser.getRecord(dbDerivatives, new ViewQuery().designDocId(Couch.Design.DERIVATIVES), Couch.Views.Derivatives.GET_BY_ID, id, new String[] {"j3m"});
+		JSONArray d = derivative.getJSONArray("discussions");
+		
+		// does annotation really belong to user?
+		String originatedBy = d.getJSONObject(discussionId).getString(DC.Options.ORIGINATED_BY);
+		if(!originatedBy.equals(user.get(DC.Options._ID)))
+			return result;
+		
+		// if so...
+		long editType = (Long) discussion.get(DC.Options.EDIT_TYPE);		
+		switch((int) editType) {
+		case DC.EditType.DELETE:
+			d.getJSONObject(discussionId).put(DC.Options.DELETE_FLAG, true);
+			// set this as deleted, but update the record after everyone is gone
+			break;
+		case DC.EditType.MOVE:
+			// perform modification on timeIn, timeOut, duration, regionBounds
+			Map<String, Object> annotation = (Map<String, Object>) discussion.get(DC.Options.ANNOTATION);
+			CouchParser.Log(Couch.INFO, annotation.toString());
+			d.getJSONObject(discussionId).put(DC.Options.TIME_IN, annotation.get(DC.Options.TIME_IN));
+			d.getJSONObject(discussionId).put(DC.Options.TIME_OUT, annotation.get(DC.Options.TIME_OUT));
+			d.getJSONObject(discussionId).put(DC.Options.DURATION, annotation.get(DC.Options.DURATION));
+			d.getJSONObject(discussionId).put(DC.Options.REGION_BOUNDS, annotation.get(DC.Options.REGION_BOUNDS));
+			
+			break;
+		}
+		
+		Map<String, Object> updateValues = new HashMap<String, Object>();
+		updateValues.put("discussions", d);
+		
+		CouchParser.updateRecord(Derivative.class, dbDerivatives, id, rev, updateValues);
+		JSONObject updatedDerivative = CouchParser.getRecord(dbDerivatives, new ViewQuery().designDocId(Couch.Design.DERIVATIVES), Couch.Views.Derivatives.GET_BY_ID, id, Annotation.OMIT_FOR_UPDATE);
+		
+		Iterator<String> rIt = updatedDerivative.getJSONArray("representation").iterator();
+		String repName = rIt.next();
+		String path = repName.substring(0, repName.length() - 4);
+		
+		updatedDerivative.put(DC.Options.MESSAGES, getMessages(path));
+		
+		result.put(DC.Options.RESULT, updatedDerivative);
+		result.put(DC.Options.DISCUSSION_ID, discussionId);
+		
 		return result;
 	}
 }
