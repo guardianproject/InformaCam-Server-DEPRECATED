@@ -189,7 +189,7 @@ Layout*/
 	margin:0;
 }
 
-#media_frame div {
+#media_frame div.mcxDiv {
 	border:2px solid #999999;
 }
 

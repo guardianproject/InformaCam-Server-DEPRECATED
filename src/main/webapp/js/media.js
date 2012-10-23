@@ -298,7 +298,8 @@ var MediaEntity = function(data) {
 			});
 		}
 	};
-
+	}
+	
 	this.loadMessages = function(messages) {
 		$("#messages_content").empty();
 		showMessagesHolder();
