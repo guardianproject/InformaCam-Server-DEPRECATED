@@ -59,7 +59,7 @@
 			</table>
 		</div>
 	</div>
-	
+
 	<div id="messages_holder">
 		<div id="messages_controls">
 			<span id="messages_close" onclick="removeMessagesHolder();">[x]</span>
@@ -76,7 +76,7 @@
 			</table>
 		</div>
 	</div>
-	
+
 	<div id="expandedView_holder">
 		<div id="expandedView_controls">
 			<span id="expandedView_close" onclick="removeExpandedViewHolder();">[x]</span>
@@ -90,7 +90,7 @@
 			<div id="ev_x">Here is something else...</div>
 		</div>
 	</div>
-	
+
 	<div id="ic_header">
 		<div id="ic_logo">
 			<table>
@@ -189,7 +189,7 @@
 							</ul>
 						</div>
 						<div id="media_frame">
-							<video id="video_holder" controls></video>
+							<div id="video_wrapper"><video id="video_holder" controls></video></div>
 							<canvas id="media_overlay"></canvas>
 						</div>
 

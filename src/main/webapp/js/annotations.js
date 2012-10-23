@@ -18,15 +18,14 @@ function loadAnnotationButtons() {
 	});
 
 	$('#add_anno').click(function(e) {
-<<<<<<< HEAD
+
 		if(entity.mediaType == 401) {
-=======
->>>>>>> 4cbe990b955a61ed89dd2248347714a389eb51d8
+
 		$('#input_field').val('');
 		$('#output_field').val('');
 		$('#anno_field').val('');
 		$annotation_dialog.dialog('open');
-<<<<<<< HEAD
+
 		mainVideo.pause();
 		var time = mainVideo.currentTime();
 		annoVideo.play(time);
@@ -38,7 +37,7 @@ function loadAnnotationButtons() {
 		else {
 			alert('double-click on desired location on the image to set a location-based annotation');
 		}
-=======
+
 		$('.vio').hide();
 		$('.pos_label').hide();
 		if(entity.mediaType == 401) {
@@ -54,7 +53,7 @@ function loadAnnotationButtons() {
 			$('.pos_label').show();
 		}
 		e.preventDefault();
->>>>>>> 4cbe990b955a61ed89dd2248347714a389eb51d8
+
 	});
 
 $("#start_anno").click(function(e) {
@@ -105,11 +104,10 @@ $("#start_anno").click(function(e) {
 		sortAnnos('date', 1);
 		loadAnnotations();
 		addFootnote();
-<<<<<<< HEAD
-=======
+
 		//TO DO add function to send anno to server to API
 		//addAnno(input, output, content);
->>>>>>> 4cbe990b955a61ed89dd2248347714a389eb51d8
+
 	});
 
 
@@ -119,10 +117,7 @@ $("#start_anno").click(function(e) {
 		$('#output_field').val('');
 		$('#anno_field').val('');
 		$annotation_dialog.dialog('open');
-<<<<<<< HEAD
-=======
 		$('.vio').hide();
->>>>>>> 4cbe990b955a61ed89dd2248347714a389eb51d8
 		$('#input_field').val(position.x);
 		$('#output_field').val(position.y);
 		e.preventDefault();
