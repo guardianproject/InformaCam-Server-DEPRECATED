@@ -28,6 +28,7 @@ import org.ektorp.impl.StdCouchDbInstance;
 
 import org.witness.informa.utils.Constants;
 import org.witness.informa.utils.CouchParser;
+import org.witness.informa.utils.CouchParser.Submission;
 import org.witness.informa.utils.CouchParser.User;
 import org.witness.informa.utils.LocalConstants;
 import org.witness.informa.utils.CouchParser.Derivative;
@@ -35,7 +36,7 @@ import org.witness.informa.utils.CouchParser.Derivative;
 public class MediaLoader implements Constants {
 	public InformaSearch search;
 		
-	StdCouchDbConnector dbSources, dbDerivatives, dbUsers;
+	StdCouchDbConnector dbSources, dbDerivatives, dbUsers, dbSubmissions;
 	
 	public MediaLoader() {
 		StdCouchDbInstance db = null;
@@ -55,6 +56,7 @@ public class MediaLoader implements Constants {
 		dbSources = new StdCouchDbConnector("sources", db);
 		dbDerivatives = new StdCouchDbConnector("derivatives", db);
 		dbUsers = new StdCouchDbConnector("admin", db);
+		dbSubmissions = new StdCouchDbConnector("submissions", db);
 				
 		search = new InformaSearch(dbDerivatives);
 	}
@@ -101,6 +103,7 @@ public class MediaLoader implements Constants {
 	public JSONObject loginUser(Map<String, Object> credentials) {
 		ViewQuery getUsers = new ViewQuery().designDocId(Couch.Design.ADMIN);
 		String unpw = (String) credentials.get("username") + (String) credentials.get("password");
+		// TODO: set current session id, cookies, etc.
 		return CouchParser.getRecord(dbUsers, getUsers, Couch.Views.Admin.ATTEMPT_LOGIN, unpw, new String[] {"unpw"});
 	}	
 	
@@ -395,6 +398,35 @@ public class MediaLoader implements Constants {
 		
 		result.put(DC.Options.RESULT, updatedDerivative);
 		result.put(DC.Options.DISCUSSION_ID, discussionId);
+		
+		return result;
+	}
+
+	@SuppressWarnings("unchecked")
+	public JSONObject requestUploadTicket(Map<String, Object> uploadOpts) {
+		JSONObject result = new JSONObject();
+		result.put(DC.Keys.RESULT, DC.Results.FAIL);
+		
+		Map<String, Object> user = (Map<String, Object>) uploadOpts.get(DC.Options.USER);
+		if(!CouchParser.validateUser(dbUsers, user))
+			return result;
+		
+		Map<String, Object> sourceId = new HashMap<String, Object>();
+		sourceId.put("sourceId", "import_" + user.get(DC.Options._ID));
+		
+		Map<String, Object> initialValues = new HashMap<String, Object>();
+		initialValues.put("java.lang.String", sourceId);
+		
+		
+		// create a blank submission descriptor with user with only a sourceId as "import_USERHASH"
+		// _rev is auth token here (later to be exchanged for j3m)
+		String[] newSubmission = CouchParser.createRecord(Submission.class, dbSubmissions, initialValues);
+		if(newSubmission == null)
+			return result;
+		
+		result.put(DC.Keys.RESULT, DC.Results.OK);
+		result.put(DC.Options.NEW_SUBMISSION_ID, newSubmission[0]);
+		result.put(DC.Options.NEW_SUBMISSION_REV, newSubmission[1]);
 		
 		return result;
 	}

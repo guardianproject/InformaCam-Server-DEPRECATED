@@ -118,6 +118,7 @@ public interface Constants {
 			public static final int UPDATE_DERIVATIVES = 111; // not used?
 			public static final int SEND_MESSAGE = 112;
 			public static final int EDIT_ANNOTATION = 113;
+			public static final int IMPORT_MEDIA = 114;
 		}
 		
 		public final static class Commands {
@@ -136,6 +137,7 @@ public interface Constants {
 			public static final int APPEND_TO_ANNOTATION = DC.Attempts.APPEND_TO_ANNOTATION;
 			public static final int SEND_MESSAGE = DC.Attempts.SEND_MESSAGE;
 			public static final int EDIT_ANNOTATION = DC.Attempts.EDIT_ANNOTATION;
+			public static final int IMPORT_MEDIA = DC.Attempts.IMPORT_MEDIA;
 		}
 		
 		public final static class Keys {
@@ -180,6 +182,8 @@ public interface Constants {
 			public static final String REGION_BOUNDS = "regionBounds";
 			public static final String ANNOTATIONS = "annotations";
 			public static final String DELETE_FLAG = "isDeleted";
+			public static final Object NEW_SUBMISSION_ID = "newSubmissionId";
+			public static final Object NEW_SUBMISSION_REV = "newSubmissionRev";
 		}
 		
 	}

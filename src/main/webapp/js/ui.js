@@ -11,6 +11,7 @@ function clearUi() {
 	annotation_holder.css('display','none');
 	messages_holder.css('display','none');
 	expandedView_holder.css('display','none');
+	importer_holder.css('display','none');
 	$("#media_overlay").unbind();
 }
 
@@ -640,6 +641,14 @@ function removeAlert() {
 	alert_holder.css('display','none');
 }
 
+function showImporter() {
+	importer_holder.css('display','block');
+}
+
+function removeImporter() {
+	importer_holder.css('display','none');
+}
+
 function showAnnotationHolder() {
 	$("#annotation_content").empty();
 	leftmargin = media_frame.width() + 'px';
@@ -747,6 +756,10 @@ function initLayout() {
 	annotation_holder = $("#annotation_holder");
 	messages_holder = $("#messages_holder");
 	expandedView_holder = $("#expandedView_holder");
+	
+	importer_holder = $("#importer_holder");
+	importer_holder.css('left', $(window).width() * .3);
+	importer_holder.css('margin-top', $(window).height()/2 - 150);
 
 	$("#map_view_readout").css({
 		'width': Math.abs(metadata_readout.position().left - $(window).width()) - 60,

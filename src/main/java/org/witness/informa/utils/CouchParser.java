@@ -113,7 +113,53 @@ public class CouchParser implements Constants {
 		}
 		
 		return result;
-	}	
+	}
+	
+	public static String[] createRecord(Class c, StdCouchDbConnector db, Map<String, Object> initialValues) {
+		try {
+			Object o = c.newInstance();
+			
+			Iterator<Entry<String, Object>> iIt = initialValues.entrySet().iterator();
+			while(iIt.hasNext()) {
+				Entry<String, Object> entry = iIt.next();
+				// takes className : object { key : val }
+				
+				String classForName = entry.getKey();
+				Class<?> result = Class.forName(classForName);
+				
+				Map<String, Object> paramBundle = (Map<String, Object>) entry.getValue();
+				Entry<String, Object> param = paramBundle.entrySet().iterator().next();
+				
+				String mStart = String.valueOf(param.getKey().charAt(0));
+				String key = param.getKey().replace(param.getKey().charAt(0), mStart.toUpperCase().charAt(0));
+				
+				Method iMethod = o.getClass().getDeclaredMethod("set" + key, result);
+				
+				iMethod.invoke(o, param.getValue());
+			}
+			
+			db.create(o);
+		
+			return new String[] {((CouchDbDocument) o).getId(), ((CouchDbDocument) o).getRevision()};
+			
+		} catch (InstantiationException e) {
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			e.printStackTrace();
+		} catch (IllegalArgumentException e) {
+			e.printStackTrace();
+		} catch (InvocationTargetException e) {
+			e.printStackTrace();
+		} catch (SecurityException e) {
+			e.printStackTrace();
+		} catch (NoSuchMethodException e) {
+			e.printStackTrace();
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		}
+		
+		return null;
+	}
 	
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public static String updateRecord(Class c, StdCouchDbConnector db, String id, String rev, Map<String, Object> updateValues) {
@@ -251,6 +297,163 @@ public class CouchParser implements Constants {
 
 		public void setCurrentSession(String currentSession) {
 			this.currentSession = currentSession;
+		}
+	}
+	
+	@SuppressWarnings("serial")
+	public static class Submission extends CouchDbDocument {
+		@JsonProperty("_id")
+		private String _id;
+		
+		@JsonProperty("_rev")
+		private String _rev;
+		
+		@JsonProperty("sourceId")
+		private String sourceId;
+		
+		@JsonProperty("mediaType")
+		private int mediaType;
+		
+		@JsonProperty("timestamp_created")
+		private long timestamp_created;
+		
+		@JsonProperty("timestamp_indexed")
+		private long timestamp_indexed;
+		
+		@JsonProperty("timestamp_scheduled")
+		private long timestamp_scheduled;
+		
+		@JsonProperty("bytes_transferred")
+		private int bytes_transferred;
+		
+		@JsonProperty("j3m_bytes_expected")
+		private int j3m_bytes_expected;
+		
+		@JsonProperty("bytes_expected")
+		private int bytes_expected;
+		
+		@JsonProperty("j3m")
+		private JSONObject j3m;
+		
+		@JsonProperty("path")
+		private String path;
+		
+		@JsonProperty("derivative_index")
+		private String derivative_index;
+		
+		@JsonProperty("auth_token")
+		private String auth_token;
+
+		public String getId() {
+			return _id;
+		}
+
+		public void setId(String _id) {
+			this._id = _id;
+		}
+
+		public String getRev() {
+			return _rev;
+		}
+
+		public void setRev(String _rev) {
+			this._rev = _rev;
+		}
+
+		public String getSourceId() {
+			return sourceId;
+		}
+
+		public void setSourceId(String sourceId) {
+			this.sourceId = sourceId;
+		}
+
+		public int getMediaType() {
+			return mediaType;
+		}
+
+		public void setMediaType(int mediaType) {
+			this.mediaType = mediaType;
+		}
+
+		public long getTimestamp_created() {
+			return timestamp_created;
+		}
+
+		public void setTimestamp_created(long timestamp_created) {
+			this.timestamp_created = timestamp_created;
+		}
+
+		public long getTimestamp_indexed() {
+			return timestamp_indexed;
+		}
+
+		public void setTimestamp_indexed(long timestamp_indexed) {
+			this.timestamp_indexed = timestamp_indexed;
+		}
+
+		public long getTimestamp_scheduled() {
+			return timestamp_scheduled;
+		}
+
+		public void setTimestamp_scheduled(long timestamp_scheduled) {
+			this.timestamp_scheduled = timestamp_scheduled;
+		}
+
+		public int getBytes_transferred() {
+			return bytes_transferred;
+		}
+
+		public void setBytes_transferred(int bytes_transferred) {
+			this.bytes_transferred = bytes_transferred;
+		}
+
+		public int getJ3m_bytes_expected() {
+			return j3m_bytes_expected;
+		}
+
+		public void setJ3m_bytes_expected(int j3m_bytes_expected) {
+			this.j3m_bytes_expected = j3m_bytes_expected;
+		}
+
+		public int getBytes_expected() {
+			return bytes_expected;
+		}
+
+		public void setBytes_expected(int bytes_expected) {
+			this.bytes_expected = bytes_expected;
+		}
+
+		public JSONObject getJ3m() {
+			return j3m;
+		}
+
+		public void setJ3m(JSONObject j3m) {
+			this.j3m = j3m;
+		}
+
+		public String getPath() {
+			return path;
+		}
+
+		public void setPath(String path) {
+			this.path = path;
+		}
+
+		public String getDerivative_index() {
+			return derivative_index;
+		}
+
+		public void setDerivative_index(String derivative_index) {
+			this.derivative_index = derivative_index;
+		}
+
+		public String getAuth_token() {
+			return auth_token;
+		}
+
+		public void setAuth_token(String auth_token) {
+			this.auth_token = auth_token;
 		}
 	}
 	

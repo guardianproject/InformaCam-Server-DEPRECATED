@@ -1,11 +1,7 @@
 package org.witness.informa;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.cometd.bayeux.Message;
 import org.cometd.bayeux.server.BayeuxServer;
-import org.cometd.bayeux.server.ServerChannel;
 import org.cometd.bayeux.server.ServerSession;
 import org.cometd.server.AbstractService;
 import org.witness.informa.utils.Constants.DC.Attempts;
@@ -21,7 +17,7 @@ public class DesktopService extends AbstractService implements Constants {
 		super(bayeux, "desktopConnection");
 		addService("/service/desktopConnection", "desktopResponse");
 		addService("/multicast", "multicastResponse");
-		
+				
 		if(ml == null)
 			ml = new MediaLoader();
 		
@@ -54,10 +50,8 @@ public class DesktopService extends AbstractService implements Constants {
 	}
 	
 	public void desktopResponse(ServerSession remote, Message message) {
-		for(ServerSession ss : this.getBayeux().getSessions()) {
-			CouchParser.Log("HELLO", ss.getId());
-		}
-		
+
+
 		InformaMessage msg = new InformaMessage(message);
 		if(msg.in.containsKey(Attempts.TAG)) {
 			long l = (Long) msg.in.get(Attempts.TAG);
@@ -129,6 +123,10 @@ public class DesktopService extends AbstractService implements Constants {
 			case Attempts.EDIT_ANNOTATION:
 				msg.put(DC.Keys.COMMAND, DC.Commands.EDIT_ANNOTATION);
 				msg.put(DC.Keys.METADATA, ml.modifyAnnotation(msg.opts));
+				break;
+			case Attempts.IMPORT_MEDIA:
+				msg.put(DC.Keys.COMMAND, DC.Commands.IMPORT_MEDIA);
+				msg.put(DC.Keys.METADATA, ml.requestUploadTicket(msg.opts));
 				break;
 			}
 		}

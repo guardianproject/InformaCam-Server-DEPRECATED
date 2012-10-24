@@ -1,7 +1,6 @@
 (function($)
 {
     cometd = $.cometd;
-    
 
     $(document).ready(function()
     {
@@ -75,6 +74,7 @@
         });
 
         var cometURL = location.protocol + "//" + location.host + config.contextPath + "/cometd";
+        console.info(cometURL);
         cometd.configure({
             url: cometURL,
             logLevel: 'debug'

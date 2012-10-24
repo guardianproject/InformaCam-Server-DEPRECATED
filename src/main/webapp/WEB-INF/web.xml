@@ -28,5 +28,4 @@
         <filter-name>cross-origin</filter-name>
         <url-pattern>/cometd/*</url-pattern>
     </filter-mapping>
-
 </web-app>

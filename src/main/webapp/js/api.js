@@ -427,6 +427,29 @@ var Media = {
 			} else
 				showAlert(Alert_STR.Errors.MAIN_TITLE, Alert_STR.Errors.RENAME_FAIL, false, null, null);
 		}
+	},
+	doImport: {
+		init: function() {
+			showSpinner();
+			broadcast({
+				attempt: Command.IMPORT_MEDIA,
+				options: {
+					user: {
+						_id: currentUser._id,
+						_rev: currentUser._rev
+					}
+				}
+			});
+		},
+		callback: function(newSubmission) {
+			// inject iframe with these parameters
+			showImporter();
+			importer_holder.empty();
+			importer_holder.append(
+				$(document.createElement('iframe'))
+					.prop('src', 'http://127.0.0.1/~LvH/J3MUploader?doImport=' + newSubmission.newSubmissionId + '&authToken=' + newSubmission.newSubmissionRev + '&uId=' + currentUser._id)
+			);
+		}
 	}
 }
 

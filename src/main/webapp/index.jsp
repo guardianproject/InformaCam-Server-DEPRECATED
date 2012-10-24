@@ -42,6 +42,8 @@
 		<h1 id="popup_title"></h1>
 		<div id="popup_content"></div>
 	</div>
+	
+	<div id="importer_holder"></div>
 
 	<div id="annotation_holder">
 		<div id="annotation_controls">
@@ -228,6 +230,7 @@
 		</div>
 
 		<div id="ui_submissions">
+			<a class="ic_to_import" onclick="Media.doImport.init();">Import Media...</a>
 			<table>
 				<tr class="tr_header">
 					<td id="submissions_filename">

@@ -1,4 +1,4 @@
-var cometd;
+var cometd, importConnex;
 var dc = '/service/desktopConnection';
 var mcast = '/multicast';
 
@@ -18,7 +18,8 @@ var Command = {
 	APPEND_TO_ANNOTATION: 110,
 	UPDATE_DERIVATIVES: 111,
 	SEND_MESSAGE: 112,
-	EDIT_ANNOTATION: 113
+	EDIT_ANNOTATION: 113,
+	IMPORT_MEDIA: 114
 };
 
 var entity, mcxAnnotation, movingAnnotation;
@@ -140,7 +141,7 @@ var currentUser;
 
 var ic, ui, ev;
 var header, nav, footer, main, alert_holder, popup_holder, spinner_holder;
-var metadata_readout, media_options, media_options_menu, media_frame, media_overlay, mcx, annotation_holder, expandedView_holder, messages_holder;
+var metadata_readout, media_options, media_options_menu, media_frame, media_overlay, mcx, annotation_holder, expandedView_holder, messages_holder, importer_holder;
 var regionsTraced = true;
 var pop;
 var mcx_move = 0;

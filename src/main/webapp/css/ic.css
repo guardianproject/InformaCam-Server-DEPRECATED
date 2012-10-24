@@ -85,6 +85,22 @@ Layout*/
 	padding:10px;
 }
 
+#importer_holder {
+	width:40%;
+	position:fixed;
+	height:300px;
+	z-index:97;
+	margin:0;
+	padding:10px;
+}
+
+#importer_holder iframe {
+	width:100%;
+	border:1px solid #c6ff00;
+	background-image:url('../images/ic_trans_blk.png');
+	height:100%;
+}
+
 #annotation_controls, #messages_controls, #expandedView_controls {
 	position:absolute;
 	float:right;
@@ -365,7 +381,7 @@ p {
 	color:#fff;
 }
 
-#ic_login a, a.ic_inner_option, a.ic_inner_option:link, a.ic_inner_option:visited, a.ic_inner_option:hover, #annotation_append_submit, #annotation_append_submit:link, #annotation_append_submit:visited, #annotation_append_submit:hover, #messages_append_submit, #messages_append_submit:link, #messages_append_submit:visited, #messages_append_submit:hover {
+#ic_login a, a.ic_inner_option, a.ic_inner_option:link, a.ic_inner_option:visited, a.ic_inner_option:hover, #annotation_append_submit, #annotation_append_submit:link, #annotation_append_submit:visited, #annotation_append_submit:hover, #messages_append_submit, #messages_append_submit:link, #messages_append_submit:visited, #messages_append_submit:hover, #ui_submissions a.ic_to_import {
 	padding:4px 5px;
 	background-color:#8fae22;
 	cursor:pointer;
@@ -376,12 +392,18 @@ p {
 	font-size:0.6em;
 }
 
-a.ic_inner_option, a.ic_inner_option:link, a.ic_inner_option:visited, a.ic_inner_option:hover {
+a.ic_inner_option, a.ic_inner_option:link, a.ic_inner_option:visited, a.ic_inner_option:hover, #ui_submissions a.ic_to_import {
 	font-size:0.6em;
 }
 
 #metadata_readout ul li, #map_view_annotations p, #map_view_annotations ul li {
 	font-size:0.6em;
+}
+
+#ui_submissions a.ic_to_import {
+	position:relative;
+	top:-5px;
+	left:4px;
 }
 
 #metadata_readout ul li h3 {
