@@ -230,7 +230,7 @@
 		</div>
 
 		<div id="ui_submissions">
-			<a class="ic_to_import" onclick="Media.doImport.init();">Import Media...</a>
+			<a class="ic_to_import" onclick="Media.doImport.init();">Import Media...</a><a class="ic_to_refresh" onclick="Media.getAll.init();">Refresh</a>
 			<table>
 				<tr class="tr_header">
 					<td id="submissions_filename">

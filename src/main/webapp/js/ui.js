@@ -156,6 +156,10 @@ function clearOptions(elName) {
 	});
 }
 
+function listenForDismissal(el) {
+	showSpinner();
+}
+
 function listenForInputHint(el) {
 	if($(el).hasClass('unfocused')) {
 		if($(el).val() == $(el).attr('hint'))
@@ -646,6 +650,7 @@ function showImporter() {
 }
 
 function removeImporter() {
+	importer_holder.empty();
 	importer_holder.css('display','none');
 }
 
@@ -760,7 +765,7 @@ function initLayout() {
 	importer_holder = $("#importer_holder");
 	importer_holder.css('left', $(window).width() * .3);
 	importer_holder.css('margin-top', $(window).height()/2 - 150);
-
+	
 	$("#map_view_readout").css({
 		'width': Math.abs(metadata_readout.position().left - $(window).width()) - 60,
 		'height': (($(window).height() - 100) - (header.height() + footer.height()))

@@ -96,9 +96,8 @@ Layout*/
 
 #importer_holder iframe {
 	width:100%;
-	border:1px solid #c6ff00;
-	background-image:url('../images/ic_trans_blk.png');
 	height:100%;
+	border:none;
 }
 
 #annotation_controls, #messages_controls, #expandedView_controls {
@@ -381,7 +380,7 @@ p {
 	color:#fff;
 }
 
-#ic_login a, a.ic_inner_option, a.ic_inner_option:link, a.ic_inner_option:visited, a.ic_inner_option:hover, #annotation_append_submit, #annotation_append_submit:link, #annotation_append_submit:visited, #annotation_append_submit:hover, #messages_append_submit, #messages_append_submit:link, #messages_append_submit:visited, #messages_append_submit:hover, #ui_submissions a.ic_to_import {
+#ic_login a, a.ic_inner_option, a.ic_inner_option:link, a.ic_inner_option:visited, a.ic_inner_option:hover, #annotation_append_submit, #annotation_append_submit:link, #annotation_append_submit:visited, #annotation_append_submit:hover, #messages_append_submit, #messages_append_submit:link, #messages_append_submit:visited, #messages_append_submit:hover, #ui_submissions a.ic_to_import, #ui_submissions a.ic_to_refresh, #ui_submissions a.ic_to_refresh:link, #ui_submissions a.ic_to_refresh:visited, #importer_dismissal a:hover {
 	padding:4px 5px;
 	background-color:#8fae22;
 	cursor:pointer;
@@ -392,7 +391,7 @@ p {
 	font-size:0.6em;
 }
 
-a.ic_inner_option, a.ic_inner_option:link, a.ic_inner_option:visited, a.ic_inner_option:hover, #ui_submissions a.ic_to_import {
+a.ic_inner_option, a.ic_inner_option:link, a.ic_inner_option:visited, a.ic_inner_option:hover, #ui_submissions a.ic_to_import, #ui_submissions a.ic_to_refresh {
 	font-size:0.6em;
 }
 
@@ -400,10 +399,14 @@ a.ic_inner_option, a.ic_inner_option:link, a.ic_inner_option:visited, a.ic_inner
 	font-size:0.6em;
 }
 
-#ui_submissions a.ic_to_import {
+#ui_submissions a.ic_to_import, #ui_submissions a.ic_to_refresh {
 	position:relative;
 	top:-5px;
 	left:4px;
+}
+
+#ui_submissions a.ic_to_refresh {
+	margin-left:4px;
 }
 
 #metadata_readout ul li h3 {
