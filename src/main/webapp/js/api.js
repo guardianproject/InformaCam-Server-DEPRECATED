@@ -444,7 +444,7 @@ var Media = {
 		callback: function(newSubmission) {
 			importer_holder.empty();
 			importer_holder.append($(document.createElement('iframe'))
-				.prop('src', 'https://iuh5kpanrxnor5ut.onion/?doImport=' + newSubmission.newSubmissionId + '&authToken=' + newSubmission.newSubmissionRev + '&uId=' + currentUser._id)
+				.prop('src', newSubmission.newSubmisionUrl + '/?doImport=' + newSubmission.newSubmissionId + '&authToken=' + newSubmission.newSubmissionRev + '&uId=' + currentUser._id)
 			);
 			showImporter();
 		}
