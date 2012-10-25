@@ -509,6 +509,9 @@ public class CouchParser implements Constants {
 		@JsonProperty("discussions")
 		private List<JSONObject> discussions;
 		
+		@JsonProperty("importFlag")
+		private boolean importFlag;
+		
 		public String getId() {
 			return _id;
 		}
@@ -611,6 +614,14 @@ public class CouchParser implements Constants {
 
 		public void setDiscussions(List<JSONObject> discussions) {
 			this.discussions = discussions;
+		}
+
+		public boolean isImportFlag() {
+			return importFlag;
+		}
+
+		public void setImportFlag(boolean importFlag) {
+			this.importFlag = importFlag;
 		}
 	}
 	
