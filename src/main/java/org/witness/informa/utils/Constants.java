@@ -182,8 +182,9 @@ public interface Constants {
 			public static final String REGION_BOUNDS = "regionBounds";
 			public static final String ANNOTATIONS = "annotations";
 			public static final String DELETE_FLAG = "isDeleted";
-			public static final Object NEW_SUBMISSION_ID = "newSubmissionId";
-			public static final Object NEW_SUBMISSION_REV = "newSubmissionRev";
+			public static final String NEW_SUBMISSION_ID = "newSubmissionId";
+			public static final String NEW_SUBMISSION_REV = "newSubmissionRev";
+			public static final String NEW_SUBMISSION_URL = "newSubmissionUrl";
 		}
 		
 	}

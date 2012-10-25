@@ -427,6 +427,7 @@ public class MediaLoader implements Constants {
 		result.put(DC.Keys.RESULT, DC.Results.OK);
 		result.put(DC.Options.NEW_SUBMISSION_ID, newSubmission[0]);
 		result.put(DC.Options.NEW_SUBMISSION_REV, newSubmission[1]);
+		result.put(DC.Options.NEW_SUBMISSION_URL, LocalConstants.SERVER_URL);
 		
 		return result;
 	}
