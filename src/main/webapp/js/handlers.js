@@ -114,7 +114,6 @@ function handleDesktopServiceMessage(data) {
 					Media.editAnnotation.callback(data.metadata);
 				break;
 			case Command.IMPORT_MEDIA:
-				removeSpinner();
 				if(data.metadata != null)
 					Media.doImport.callback(data.metadata);
 				break;

@@ -444,9 +444,12 @@ var Media = {
 		callback: function(newSubmission) {
 			importer_holder.empty();
 			importer_holder.append($(document.createElement('iframe'))
-				.prop('src', newSubmission.newSubmisionUrl + '/?doImport=' + newSubmission.newSubmissionId + '&authToken=' + newSubmission.newSubmissionRev + '&uId=' + currentUser._id)
+				.load(function() {
+					removeSpinner();
+					showImporter();
+				})
+				.prop('src', newSubmission.newSubmissionUrl + '?doImport=' + newSubmission.newSubmissionId + '&authToken=' + newSubmission.newSubmissionRev + '&uId=' + currentUser._id)
 			);
-			showImporter();
 		}
 	}
 }
