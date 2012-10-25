@@ -242,6 +242,11 @@ Layout*/
 	display:none;
 }
 
+#submissions_holder {
+	overflow-y:auto;
+	height:inherit;
+}
+
 
 /*--------------------------------------
 Typography*/

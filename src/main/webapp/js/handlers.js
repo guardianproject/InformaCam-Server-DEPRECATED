@@ -20,7 +20,7 @@ function handleDesktopServiceMessage(data) {
 	if(data.command) {
 		switch(data.command) {
 			case Command.VIEW_DERIVATIVES:
-				Media.getAll.callback(data.metadata, $("#ui_submissions"));
+				Media.getAll.callback(data.metadata, $("#submissions_holder"));
 				break;
 			case Command.CHOOSE_MEDIA:
 				if(data.metadata != null) {

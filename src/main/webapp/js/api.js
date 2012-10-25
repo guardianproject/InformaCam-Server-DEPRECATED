@@ -430,7 +430,6 @@ var Media = {
 	},
 	doImport: {
 		init: function() {
-			/*
 			showSpinner();
 			broadcast({
 				attempt: Command.IMPORT_MEDIA,
@@ -441,35 +440,13 @@ var Media = {
 					}
 				}
 			});
-			*/
-			
-			importer_holder.empty();
-			var _iFrame = $(document.createElement('iframe'));
-			_iFrame
-				.prop('src', 'http://127.0.0.1/~LvH/J3MUploader?doImport=f4161b2cee705ce57a0e0b8237016102&authToken=1-396e71ce5b2695fbb4ebe03d0a229457&uId=bc725bf998f0ac3839b6c48df8008057')
-				.attr('id','importer');
-			//_iFrame.contentWindow.listener = doImort.listener;
-					
-			importer_holder.append(_iFrame);
-			showImporter();
-				
 		},
 		callback: function(newSubmission) {
-			// inject iframe with these parameters
-			showImporter();
 			importer_holder.empty();
-			var _iFrame = $(document.createElement('iframe'));
-			_iFrame
-				.prop('src', 'http://127.0.0.1/~LvH/J3MUploader?doImport=' + newSubmission.newSubmissionId + '&authToken=' + newSubmission.newSubmissionRev + '&uId=' + currentUser._id)
-				.attr('id','importer');
-			//_iFrame.contentWindow.listener = doImort.listener;
-					
-			//should be https://localhost/ClientUpload on Linux
-			importer_holder.append(_iFrame);
-			document.getElementById("importer").contentWindow.onmouseleave = doImport.listener;	
-		},
-		listener: function() {
-			alert("RECEIVED");
+			importer_holder.append($(document.createElement('iframe'))
+				.prop('src', 'https://iuh5kpanrxnor5ut.onion/?doImport=' + newSubmission.newSubmissionId + '&authToken=' + newSubmission.newSubmissionRev + '&uId=' + currentUser._id)
+			);
+			showImporter();
 		}
 	}
 }
