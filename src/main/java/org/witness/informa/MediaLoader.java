@@ -59,6 +59,8 @@ public class MediaLoader implements Constants {
 		dbSubmissions = new StdCouchDbConnector("submissions", db);
 				
 		search = new InformaSearch(dbDerivatives);
+		
+		CouchParser.ClearDatabase(dbDerivatives, Derivative.class);
 	}
 	
 	public ArrayList<JSONObject> getDerivatives() {

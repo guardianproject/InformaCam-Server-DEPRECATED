@@ -28,6 +28,17 @@ public class CouchParser implements Constants {
 		return "%5B" + str + "%5D";
 	}
 	
+	@SuppressWarnings("unchecked")
+	public static void ClearDatabase(StdCouchDbConnector db, Class c) {
+		for(String s : db.getAllDocIds()) {
+			if(!s.contains("_design")) {
+				Log(Couch.INFO, s);
+				Object o = db.get(c, s);
+				db.delete(((CouchDbDocument) o).getId(), ((CouchDbDocument) o).getRevision());
+			}
+		}
+	}
+	
 	public static JSONObject getRecord(StdCouchDbConnector db, ViewQuery doc, String view, Object match, String[] removal) {
 		JSONObject result = null;
 		doc.viewName(view);
