@@ -60,7 +60,7 @@ public class MediaLoader implements Constants {
 				
 		search = new InformaSearch(dbDerivatives);
 		
-		//CouchParser.ClearDatabase(dbSubmissions, Submission.class);
+		//CouchParser.ClearDatabase(dbDerivatives, Derivative.class);
 	}
 	
 	public ArrayList<JSONObject> getDerivatives() {

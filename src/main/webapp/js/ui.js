@@ -316,6 +316,7 @@ function setVideo() {
 	});
 
 	pop = Popcorn("#video_holder");
+	removeSpinner();
 
 }
 
