@@ -321,7 +321,6 @@ function setVideo() {
 
 function setImage() {
 	media_overlay.css({
-		'background-image': "url('images/session_cache/" + entity.derivative.representation[0] + "')",
 		'background-repeat': 'no-repeat',
 		'background-size': 'contain',
 		'background-position': 'center',
@@ -334,7 +333,12 @@ function setImage() {
 			'width' : entity.displayBounds.displayWidth,
 			'height' : entity.displayBounds.displayHeight
 	});
-
+	var img = document.createElement('img');
+	$(img).prop('src',"images/session_cache/" + entity.derivative.representation[0]);
+	$(img).load(function() {
+		media_overlay.css('background-image', 'url("' + img.src + '")');
+		removeSpinner();
+	});
 	initRegionsImage();
 }
 

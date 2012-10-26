@@ -354,6 +354,9 @@ public class CouchParser implements Constants {
 		
 		@JsonProperty("auth_token")
 		private String auth_token;
+		
+		@JsonProperty("importFlag")
+		private boolean importFlag;
 
 		public String getId() {
 			return _id;
@@ -465,6 +468,14 @@ public class CouchParser implements Constants {
 
 		public void setAuth_token(String auth_token) {
 			this.auth_token = auth_token;
+		}
+		
+		public boolean isImportFlag() {
+			return importFlag;
+		}
+
+		public void setImportFlag(boolean importFlag) {
+			this.importFlag = importFlag;
 		}
 	}
 	

@@ -241,7 +241,6 @@ var Media = {
 			});
 		},
 		callback: function(data) {
-			removeSpinner();
 			entity = new MediaEntity(data);
 		}
 	},
