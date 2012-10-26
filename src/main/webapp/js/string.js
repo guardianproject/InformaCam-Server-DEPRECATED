@@ -197,7 +197,8 @@ var Metadata_STR = {
 	Genealogy: {
 		label: "Genealogy",
 		DATE_CREATED: "Media created on: %=dateCreated",
-		DATE_ACQUIRED: "Acquired by submitting device on: %=dateAcquired"
+		DATE_ACQUIRED: "Acquired by submitting device on: %=dateAcquired",
+		IS_IMPORT: "<b>This media was imported into the system.  It's chain of custody could be contested.</b> %=importFlag"
 	},
 	Data: {
 		label: "Data",
@@ -277,3 +278,7 @@ var Search_STR = {
 		}
 	}
 };
+
+var Misc_STR = {
+	LEARN_MORE: "Learn more..."
+}

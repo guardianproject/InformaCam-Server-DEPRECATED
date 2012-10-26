@@ -186,6 +186,10 @@ var MediaEntity = function(data) {
 	this.sourceId = data.sourceId;
 	this.mediaType = data.mediaType;
 	this.imageDimensions = [data.j3m.data.exif.imageWidth, data.j3m.data.exif.imageLength];
+	
+	this.importFlag = false;
+	if(data.importFlag != undefined && data.importFlag)
+		this.importFlag = true;
 
 	this.messages = new Array();
 
@@ -412,7 +416,7 @@ var MediaEntity = function(data) {
 		locationOnSave: data.locationOnSave,
 		locations: data.location
 	};
-
+	
 	this.informa = {
 		intent: {
 			label: Metadata_STR.Intent.label,
@@ -460,5 +464,12 @@ var MediaEntity = function(data) {
 		}
 	};
 
+	if(this.importFlag) {
+		this.informa.genealogy.loads.push([
+					Metadata_STR.Genealogy.IS_IMPORT,
+					Misc_STR.LEARN_MORE
+		]);
+	}
+	
 	this.visualize(View.NORMAL);
 }
