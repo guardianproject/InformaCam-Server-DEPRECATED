@@ -198,7 +198,10 @@ var Metadata_STR = {
 		label: "Genealogy",
 		DATE_CREATED: "Media created on: %=dateCreated",
 		DATE_ACQUIRED: "Acquired by submitting device on: %=dateAcquired",
-		IS_IMPORT: "<b>This media was imported into the system.  It's chain of custody could be contested.</b> %=importFlag"
+		ChainOfCustody: {
+			label: "Chain of Custody Advisory",
+			IS_IMPORT: "This media was imported into the system.  It's chain of custody could be contested. %=importFlag"
+		}
 	},
 	Data: {
 		label: "Data",

@@ -465,8 +465,9 @@ var MediaEntity = function(data) {
 	};
 
 	if(this.importFlag) {
+		this.informa.genealogy.loads.push(Metadata_STR.Genealogy.ChainOfCustody.label);
 		this.informa.genealogy.loads.push([
-					Metadata_STR.Genealogy.IS_IMPORT,
+					Metadata_STR.Genealogy.ChainOfCustody.IS_IMPORT,
 					Misc_STR.LEARN_MORE
 		]);
 	}
