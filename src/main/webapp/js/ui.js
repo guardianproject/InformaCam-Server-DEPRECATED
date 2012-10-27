@@ -233,10 +233,11 @@ function setMedia() {
 	//});
 
 	media_overlay.css({'background-image':'none'});
-
+	setImageRatio();
+	
 	if(entity.mediaType == MediaTypes.VIDEO) {
 		// sort the regions!
-		setVideo();
+		
 		
 		$.each(entity.derivative.discussions, function(idx, item) {
 			if(item['regionBounds'] instanceof Array) {
@@ -256,6 +257,7 @@ function setMedia() {
 
 		removeSpinner();
 
+		setVideo();
 		$('#video_holder').css('display','block');
 		$("#media_overlay").css('display','none');
 		
@@ -263,7 +265,7 @@ function setMedia() {
 
 	} else {
 
-		setImageRatio();
+		
 
 		$.each(entity.derivative.discussions, function(idx, item) {
 			entity.regions.push(placeRegion(idx, item));
@@ -296,15 +298,7 @@ function setVideo() {
 		displayWidth: media_frame.width(),
 		displayHeight: media_frame.height()
 	}
-	
-	media_overlay.css({
-		'max-height': entity.displayBounds.displayHeight,
-		'max-width' : entity.displayBounds.displayWidth,
-		'height': 'auto',
-		'width' : '100%',
-		'margin': '0 auto'
-	});
-	
+		
 	$("#video_holder").empty();
 	$.each(entity.derivative.representation, function() {
 		var representation = this;
