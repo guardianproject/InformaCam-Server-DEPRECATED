@@ -262,7 +262,6 @@ var MediaEntity = function(data) {
 
 		var aList = $(document.createElement('ul')).attr('class','annotation_list');
 
-
 		$("#annotation_content").append(aList);
 		$("#annotation_append_submit").bind('click', function() {
 			Media.appendToAnnotation.init(annotation);
@@ -273,7 +272,6 @@ var MediaEntity = function(data) {
 			var a = entity.derivative.discussions[annotation].annotations;
 			if(a != undefined && a != null) {
 				$.each(a, function() {
-					
 					var aListItem = $(document.createElement('li'))
 						.append(
 							$(document.createElement('p')).attr('class','date')
@@ -285,24 +283,8 @@ var MediaEntity = function(data) {
 					aList.append(aListItem);
 				});
 			}
-
-		var a = entity.derivative.discussions[annotation].annotations;
-		if(a != undefined && a != null) {
-			$.each(a, function() {
-
-				var aListItem = $(document.createElement('li'))
-					.append(
-						$(document.createElement('p')).attr('class','date')
-							.html(formatTimestampForHumans(this.date))
-					)
-					.append(
-						$(document.createElement('p')).html(this.content)
-					);
-				aList.append(aListItem);
-			});
 		}
 	};
-	}
 	
 	this.loadMessages = function(messages) {
 		$("#messages_content").empty();

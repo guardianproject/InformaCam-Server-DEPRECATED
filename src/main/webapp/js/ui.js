@@ -237,8 +237,6 @@ function setMedia() {
 	
 	if(entity.mediaType == MediaTypes.VIDEO) {
 		// sort the regions!
-		
-		
 		$.each(entity.derivative.discussions, function(idx, item) {
 			if(item['regionBounds'] instanceof Array) {
 				// place the first div as a region
@@ -251,26 +249,19 @@ function setMedia() {
 				entity.regions.push(firstRegion);
 			}
 		});
-		
+
+		setVideo();
 		if(entity.regions != undefined && entity.regions.length > 0)
 			initRegionsVideo();
 
 		removeSpinner();
-
-		setVideo();
+		
 		$('#video_holder').css('display','block');
 		$("#media_overlay").css('display','none');
-		
-		
-
 	} else {
-
-		
-
 		$.each(entity.derivative.discussions, function(idx, item) {
 			entity.regions.push(placeRegion(idx, item));
 		});
-
 
 		setImage();
 		$('#media_overlay').css('display','block');
@@ -292,12 +283,16 @@ var sortByTimeline = function(arr) {
 }
 
 function setVideo() {
-	media_overlay.css('display','none');
-	
-	entity.displayBounds = {
-		displayWidth: media_frame.width(),
-		displayHeight: media_frame.height()
-	}
+	$("#video_holder").css({
+		'margin-left': entity.margLeft,
+		'margin-top': entity.margTop,
+		'display':'block',
+		'position':'absolute'
+	});
+	$("#video_holder").prop({
+			'width' : entity.displayBounds.displayWidth,
+			'height' : entity.displayBounds.displayHeight
+	});
 		
 	$("#video_holder").empty();
 	$.each(entity.derivative.representation, function() {
@@ -310,7 +305,6 @@ function setVideo() {
 		}
 	});
 	
-	$("#video_holder").css('display','block');
 	pop = Popcorn("#video_holder");
 }
 
@@ -422,26 +416,33 @@ function initRegionsImage() {
 var videoRegionTrails = new Array;
 function initRegionsVideo() {
 	$.each(entity.derivative.discussions, function(idx, item) {
-		var region = entity.regions[idx];
-		var container = $(region.container);
-		pop.footnote({
-			start: millisToSeconds(region.timeIn),
-			end: millisToSeconds(region.timeOut),
-			text:"",
-			target: container.attr('id'),
-			effect: "applyclass",
-			applyclass: "mcxActive"
-		});
-		pop.listen("timeupdate", function() {
-			// get regionbounds at about this time
-			var time = secondsToMillis(this.currentTime());
-			for(var vt=0; vt<region.videoTrail.length; vt++) {
-				if(time <= region.videoTrail[vt].timestamp) {
-					region.update(region.videoTrail[vt]);
-					break;
+		try {
+			var region = entity.regions[idx];
+			var container = $(region.container);
+			pop.footnote({
+				start: millisToSeconds(region.timeIn),
+				end: millisToSeconds(region.timeOut),
+				text:"",
+				target: container.attr('id'),
+				effect: "applyclass",
+				applyclass: "mcxActive"
+			});
+			
+			pop.listen("timeupdate", function() {
+				// get regionbounds at about this time
+				var time = secondsToMillis(this.currentTime());
+				for(var vt=0; vt<region.videoTrail.length; vt++) {
+					if(time <= region.videoTrail[vt].timestamp) {
+						region.update(region.videoTrail[vt]);
+						break;
+					}
+					
 				}
-			}
-		});
+			});
+		} catch(err) {
+			console.info(err.message);
+		}
+		
 	});
 }
 
@@ -833,13 +834,15 @@ function initLayout() {
 				var container = entity.regions[entity.regions.length - 1].container;
 				$(container).addClass("mcxActive");
 				$(container).addClass("mcxEditable");
+				Media.annotate.init(entity.newAnnotation);
 				break;
 			case MediaTypes.VIDEO:
 				console.info('adding video region');
 				break;
 		}
 		
-		Media.annotate.init(entity.newAnnotation);
+		// Media.annotate.init(entity.newAnnotation);
+		
 	});
 
 	$(".tr_header td").click(function() {
