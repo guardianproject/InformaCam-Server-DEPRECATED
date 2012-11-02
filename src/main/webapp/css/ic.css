@@ -323,6 +323,10 @@ input, input.focused {
 	color:#444444;
 }
 
+#ic_login input {
+	width:100px;
+}
+
 #alert_holder h3 {
 	color:#fff;
 	font-size:1em;
