@@ -158,7 +158,7 @@ Layout*/
 	height:28px;
 	z-index:0;
 	position:absolute;
-	width:38%;
+	width:50%;
 	bottom:0px;
 	background-color:#c6ff00;
 	color:#8FAE22;
@@ -834,6 +834,10 @@ MAPS*/
 	position:relative;
 	top:45%;
 	width:92%;
+}
+
+#map_view_annotation_holder #map_view_annotations {
+	overflow-y:auto;
 }
 
 #ev_map_holder {
