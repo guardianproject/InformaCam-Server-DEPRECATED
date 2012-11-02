@@ -644,7 +644,7 @@ div.ic_toggle a.selected {
 #search_refine_options {
 	overflow-y:scroll;
 	overflow-x:hidden;
-	padding-right:30px;
+	padding-right:10px;
 }
 
 #search_refine_options #search_refine_actions a, #search_results_info a {
@@ -842,6 +842,8 @@ MAPS*/
 
 #map_view_annotation_holder #map_view_annotations {
 	overflow-y:auto;
+	height:inherit;
+	max-height:275px;
 }
 
 #ev_map_holder {

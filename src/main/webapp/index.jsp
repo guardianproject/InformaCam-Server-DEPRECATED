@@ -359,7 +359,7 @@
 									document.write(Search_STR.By_Location.LABEL);
 								</script>
 							</h3>
-							<input optionKey="location" id="location"  type="text" class="ic_smallListInput" style="width:72%;" /> <a class="ic_inner_option" onclick="showExpandedViewHolder(ev.map);">
+							<input optionKey="location" id="location"  type="text" class="ic_smallListInput" style="width:65%;" /> <a class="ic_inner_option" onclick="showExpandedViewHolder(ev.map);">
 								<script type="text/javascript">
 									document.write(Search_STR.By_Location.Fields.MAP);
 								</script>
