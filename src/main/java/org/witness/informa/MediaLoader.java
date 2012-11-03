@@ -551,8 +551,10 @@ public class MediaLoader implements Constants {
 				CouchParser.Log(Couch.INFO, cred.toString());
 				
 				File sourceRoot = new File(LocalConstants.ENGINE_ROOT + "sources/" + ((String) cred.get(Couch.Views.Sources.Keys.SOURCE_ID)).toLowerCase());
+				/*
 				if(sourceRoot.exists())
 					return result;
+				*/
 				
 				// copy over key
 				sourceRoot.mkdir();
