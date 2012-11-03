@@ -21,7 +21,9 @@ var Command = {
 	EDIT_ANNOTATION: 113,
 	IMPORT_MEDIA: 114,
 	LOAD_MODULES: 115,
-	INIT_NEW_CLIENT: 116
+	INIT_NEW_CLIENT: 116,
+	LOAD_CLIENTS = 117,
+	GET_CLIENT = 118
 };
 
 var entity, mcxAnnotation, movingAnnotation;

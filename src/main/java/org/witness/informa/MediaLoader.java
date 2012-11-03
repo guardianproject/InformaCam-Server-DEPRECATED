@@ -631,4 +631,22 @@ public class MediaLoader implements Constants {
 		
 		return result;
 	}
+
+	public JSONObject loadClients() {
+		JSONObject result = new JSONObject();
+		result.put(DC.Keys.RESULT, DC.Results.FAIL);
+		
+		ViewQuery getClients = new ViewQuery().designDocId(Couch.Design.SOURCES);
+		ArrayList<JSONObject> res = CouchParser.getRows(dbDerivatives, getClients, Couch.Views.Sources.GET_BY_ID, null);
+		
+		
+		return result;
+	}
+
+	public JSONObject getClient(Map<String, Object> opts) {
+		JSONObject result = new JSONObject();
+		result.put(DC.Keys.RESULT, DC.Results.FAIL);
+		
+		return result;
+	}
 }

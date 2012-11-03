@@ -48,6 +48,8 @@ public interface Constants {
 			}
 			
 			public final static class Sources {
+				public final static String GET_BY_ID = Keys.SOURCE_ID;
+				
 				public final static class Keys {
 					public final static String SOURCE_ID = "sourceId";
 					public final static String EMAIL = "email";
@@ -130,6 +132,8 @@ public interface Constants {
 			public static final int IMPORT_MEDIA = 114;
 			public static final int LOAD_MODULES = 115;
 			public static final int INIT_NEW_CLIENT = 116;
+			public static final int LOAD_CLIENTS = 117;
+			public static final int GET_CLIENT = 118;
 		}
 		
 		public final static class Commands {
@@ -151,6 +155,8 @@ public interface Constants {
 			public static final int IMPORT_MEDIA = DC.Attempts.IMPORT_MEDIA;
 			public static final int LOAD_MODULES = DC.Attempts.LOAD_MODULES;
 			public static final int INIT_NEW_CLIENT = DC.Attempts.INIT_NEW_CLIENT;
+			public static final int LOAD_CLIENTS = DC.Attempts.LOAD_CLIENTS;
+			public static final int GET_CLIENT = DC.Attempts.GET_CLIENT;
 		}
 		
 		public final static class Keys {

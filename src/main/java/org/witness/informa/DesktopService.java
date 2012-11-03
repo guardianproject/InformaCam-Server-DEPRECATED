@@ -136,6 +136,14 @@ public class DesktopService extends AbstractService implements Constants {
 				msg.put(DC.Keys.COMMAND, DC.Commands.INIT_NEW_CLIENT);
 				msg.put(DC.Keys.METADATA, ml.initNewClient(msg.opts));
 				break;
+			case Attempts.LOAD_CLIENTS:
+				msg.put(DC.Keys.COMMAND, DC.Commands.LOAD_CLIENTS);
+				msg.put(DC.Keys.METADATA, ml.loadClients());
+				break;
+			case Attempts.GET_CLIENT:
+				msg.put(DC.Keys.COMMAND, DC.Commands.GET_CLIENT);
+				msg.put(DC.Keys.METADATA, ml.getClient(msg.opts));
+				break;
 			}
 		}
 		
