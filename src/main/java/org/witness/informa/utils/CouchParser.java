@@ -508,19 +508,19 @@ public class CouchParser implements Constants {
 		@JsonProperty("notes")
 		private List<JSONObject> notes;
 
-		public String get_id() {
+		public String getId() {
 			return _id;
 		}
 
-		public void set_id(String _id) {
+		public void setId(String _id) {
 			this._id = _id;
 		}
 
-		public String get_rev() {
+		public String getRev() {
 			return _rev;
 		}
 
-		public void set_rev(String _rev) {
+		public void setRev(String _rev) {
 			this._rev = _rev;
 		}
 
