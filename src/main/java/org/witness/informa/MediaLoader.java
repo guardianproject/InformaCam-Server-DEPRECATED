@@ -571,14 +571,24 @@ public class MediaLoader implements Constants {
 					return result;
 				} 
 				
-				Map<String, Object> newClientCredentials = new HashMap<String, Object>();
-				newClientCredentials.put(Couch.Views.Sources.Keys.ALIAS, name);
-				newClientCredentials.put(Couch.Views.Sources.Keys.EMAIL, email);
-				newClientCredentials.put(Couch.Views.Sources.Keys.SOURCE_ID, ((String) cred.get(Couch.Views.Sources.Keys.SOURCE_ID)).toLowerCase());
+				Map<String, Object> sourceId = new HashMap<String, Object>();
+				sourceId.put(Couch.Views.Sources.Keys.SOURCE_ID, ((String) cred.get(Couch.Views.Sources.Keys.SOURCE_ID)).toLowerCase());
 				
-				CouchParser.Log(Couch.INFO, newClientCredentials.toString());
+				Map<String, Object> alias = new HashMap<String, Object>();
+				alias.put(Couch.Views.Sources.Keys.ALIAS, name);
 				
-				if(CouchParser.createRecord(Source.class, dbSources, newClientCredentials) == null)
+				Map<String, Object> _email = new HashMap<String, Object>();
+				_email.put(Couch.Views.Sources.Keys.ALIAS, email);
+				
+				Map<String, Object> initialValues = new HashMap<String, Object>();
+				initialValues.put("java.lang.String", sourceId);
+				initialValues.put("java.lang.String", alias);
+				initialValues.put("java.lang.String", _email);
+				
+				
+				CouchParser.Log(Couch.INFO, initialValues.toString());
+				
+				if(CouchParser.createRecord(Source.class, dbSources, initialValues) == null)
 					return result;
 				
 				// delete tmp
