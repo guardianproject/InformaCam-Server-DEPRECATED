@@ -240,6 +240,15 @@ var Admin = {
 					newClient: newClient
 				}
 			});
+		},
+		callback: function(newClient) {
+			// returns fingerprint, which is also the root dir
+			removeSpinner();
+			if(newClient.newClient != null && newClient.newClient != undefined) {
+			
+			} else {
+				showAlert(Alert_STR.Errors.MAIN_TITLE, Alert_STR.Errors.INIT_CLIENT_FAIL, false, null, null);
+			}
 		}
 	}
 }

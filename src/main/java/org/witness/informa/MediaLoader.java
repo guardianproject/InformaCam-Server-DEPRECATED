@@ -605,7 +605,7 @@ public class MediaLoader implements Constants {
 					FileChannel r = new FileOutputStream(sourceICTD).getChannel();
 					r.transferFrom(o, 0, o.size());
 					
-					result.put(DC.Options.NEW_CLIENT, ((String) cred.get(Couch.Views.Sources.Keys.SOURCE_ID)).toLowerCase() + "/" + sourceICTD.getName());
+					result.put(DC.Options.NEW_CLIENT, ((String) cred.get(Couch.Views.Sources.Keys.SOURCE_ID)).toLowerCase());
 					result.put(DC.Keys.RESULT, DC.Results.OK);
 					original.delete();
 				} catch(IOException e) {
