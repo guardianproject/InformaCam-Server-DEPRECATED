@@ -60,6 +60,16 @@ public interface Constants {
 					public final static String NOTES = "notes";
 					
 				}
+				
+				public final static class Omits {
+					public final static String[] SHORT_DESCRIPTION = {
+						Keys.EMAIL,
+						Keys.BASE_IMAGE,
+						Keys.PRIMARY_PHONE,
+						Keys.FLAGS,
+						Keys.NOTES
+					};
+				}
 			}
 			
 			public final static class Admin {
@@ -209,6 +219,7 @@ public interface Constants {
 			public static final String NEW_CLIENT_EMAIL = "newClientEmail";
 			public static final String NEW_CLIENT_KEY = "newClientKey";
 			public static final String NEW_CLIENT = "newClient";
+			public static final String SOURCE_ID = Couch.Views.Sources.Keys.SOURCE_ID;
 		}
 		
 	}
@@ -255,10 +266,12 @@ public interface Constants {
 		public final static class Modules {
 			public final static class Keys {
 				public final static int NEW_CLIENT = 2000;
+				public static final int LOAD_CLIENTS = 2001;
 			}
 			
 			public final static class Assets {
 				public final static String NEW_CLIENT = "new_client.html";
+				public final static String LOAD_CLIENTS = "list_clients.html";
 			}
 		}
 		
@@ -266,6 +279,7 @@ public interface Constants {
 		static {
 			Map<Integer, String> modules = new HashMap<Integer, String>();
 			modules.put(Modules.Keys.NEW_CLIENT, Modules.Assets.NEW_CLIENT);
+			modules.put(Modules.Keys.LOAD_CLIENTS, Modules.Assets.LOAD_CLIENTS);
 			MODULES = Collections.unmodifiableMap(modules);
 		}
 	

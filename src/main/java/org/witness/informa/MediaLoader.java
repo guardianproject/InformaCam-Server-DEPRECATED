@@ -637,16 +637,32 @@ public class MediaLoader implements Constants {
 		result.put(DC.Keys.RESULT, DC.Results.FAIL);
 		
 		ViewQuery getClients = new ViewQuery().designDocId(Couch.Design.SOURCES);
-		ArrayList<JSONObject> res = CouchParser.getRows(dbDerivatives, getClients, Couch.Views.Sources.GET_BY_ID, null);
-		
+		ArrayList<JSONObject> res = CouchParser.getRows(dbDerivatives, getClients, Couch.Views.Sources.GET_BY_ID, Couch.Views.Sources.Omits.SHORT_DESCRIPTION);
+		if(res.size() == 0)
+			return result;
+				
+		result.put(DC.Keys.METADATA, res);
+		result.put(DC.Keys.RESULT, DC.Results.OK);
 		
 		return result;
 	}
 
+	@SuppressWarnings("unchecked")
 	public JSONObject getClient(Map<String, Object> opts) {
 		JSONObject result = new JSONObject();
 		result.put(DC.Keys.RESULT, DC.Results.FAIL);
 		
+		Map<String, Object> user = (Map<String, Object>) opts.get(DC.Options.USER);
+		if(!CouchParser.validateUser(dbUsers, user))
+			return result;
+		
+		ViewQuery getClient = new ViewQuery().designDocId(Couch.Design.SOURCES);
+		JSONObject source = CouchParser.getRecord(dbSources, getClient, Couch.Views.Sources.GET_BY_ID, opts.get(DC.Options.SOURCE_ID), null);
+		if(source == null)
+			return result;
+		
+		result.put(DC.Keys.METADATA, source);
+		result.put(DC.Keys.RESULT, DC.Results.OK);
 		return result;
 	}
 }
