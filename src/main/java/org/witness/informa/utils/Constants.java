@@ -39,7 +39,7 @@ public interface Constants {
 		
 		public final static class Views {
 			public final static class Submissions {
-				public final static String GET_BY_SOURCE_ID = "sourceId";
+				public final static String GET_BY_SOURCE_ID = Sources.Keys.SOURCE_ID;
 				public final static String GET_BY_MEDIA_TYPE = "mediaType";
 				public final static class GetByTimestamp {
 					public final static String SUBMITTED = "timestampIndexed";
@@ -48,7 +48,16 @@ public interface Constants {
 			}
 			
 			public final static class Sources {
-				
+				public final static class Keys {
+					public final static String SOURCE_ID = "sourceId";
+					public final static String EMAIL = "email";
+					public final static String ALIAS = "alias";
+					public final static String BASE_IMAGE = "baseImage";
+					public final static String PRIMARY_PHONE = "primaryPhone";
+					public final static String FLAGS = "flags";
+					public final static String NOTES = "notes";
+					
+				}
 			}
 			
 			public final static class Admin {

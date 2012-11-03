@@ -20,6 +20,7 @@ import java.util.Map.Entry;
 
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
+import net.sf.json.util.JSONTokener;
 
 import org.apache.commons.codec.digest.DigestUtils;
 import org.ektorp.*;
@@ -31,6 +32,7 @@ import org.ektorp.util.Base64;
 
 import org.witness.informa.utils.Constants;
 import org.witness.informa.utils.CouchParser;
+import org.witness.informa.utils.CouchParser.Source;
 import org.witness.informa.utils.CouchParser.Submission;
 import org.witness.informa.utils.CouchParser.User;
 import org.witness.informa.utils.LocalConstants;
@@ -472,6 +474,7 @@ public class MediaLoader implements Constants {
 		Map<String, Object> user = (Map<String, Object>) opts.get(DC.Options.USER);
 		if(!CouchParser.validateUser(dbUsers, user))
 			return result;
+		
 		Map<String, Object> newClient = (Map<String, Object>) opts.get(DC.Options.NEW_CLIENT);
 		try {
 			String name = (String) newClient.get(DC.Options.NEW_CLIENT_NAME);
@@ -489,7 +492,6 @@ public class MediaLoader implements Constants {
 				e.printStackTrace();
 			}
 
-			
 			List<String> cmd = new ArrayList<String>();
 			if(LocalConstants.SUDOER != null) {
 				cmd.add("echo");
@@ -529,9 +531,38 @@ public class MediaLoader implements Constants {
 			}
 			
 			try {
-				String line;
-				while((line = dis_i.readLine()) != null)
+				String line, pyResult = null;
+				while((line = dis_i.readLine()) != null) {
 					CouchParser.Log(Couch.INFO, line);
+					pyResult = line;
+				}
+				
+				// delete tmp
+				new File(LocalConstants.CLIENT_TEMP + tempName).delete();
+				
+				// parse pyResult
+				String[] pResult = pyResult.split(", ");
+				for(int x=0; x<pResult.length; x++) {
+					pResult[x] = pResult[x].replace("[", "");
+					pResult[x] = pResult[x].replace("]", "");
+					pResult[x] = pResult[x].replace("u'", "");
+					pResult[x] = pResult[x].replace("'", "");
+				}
+				
+				// add new source in db (sourceId has to be lowercased!)
+				JSONObject cred = (JSONObject) new JSONTokener(pResult[1]).nextValue();
+				CouchParser.Log(Couch.INFO, cred.toString());
+				
+				Map<String, Object> newClientCredentials = new HashMap<String, Object>();
+				newClientCredentials.put(Couch.Views.Sources.Keys.ALIAS, name);
+				newClientCredentials.put(Couch.Views.Sources.Keys.EMAIL, email);
+				newClientCredentials.put(Couch.Views.Sources.Keys.SOURCE_ID, (String) cred.get(Couch.Views.Sources.Keys.SOURCE_ID)); 
+				CouchParser.createRecord(Source.class, dbSources, newClientCredentials);
+				
+				// return result
+				result.put(DC.Keys.RESULT, DC.Results.OK);
+				result.put(DC.Options.NEW_CLIENT, pResult[0]);
+
 			} catch(IOException e) {
 				CouchParser.Log(Couch.ERROR, e.toString());
 				e.printStackTrace();

@@ -480,6 +480,108 @@ public class CouchParser implements Constants {
 	}
 	
 	@SuppressWarnings("serial")
+	public static class Source extends CouchDbDocument {
+		@JsonProperty("_id")
+		private String _id;
+		
+		@JsonProperty("_rev")
+		private String _rev;
+		
+		@JsonProperty("alias")
+		private String alias;
+		
+		@JsonProperty("sourceId")
+		private String sourceId;
+		
+		@JsonProperty("baseImage")
+		private String baseImage;
+		
+		@JsonProperty("email")
+		private String email;
+		
+		@JsonProperty("primaryPhone")
+		private long primaryPhone;
+		
+		@JsonProperty("flags")
+		private List<JSONObject> flags;
+		
+		@JsonProperty("notes")
+		private List<JSONObject> notes;
+
+		public String get_id() {
+			return _id;
+		}
+
+		public void set_id(String _id) {
+			this._id = _id;
+		}
+
+		public String get_rev() {
+			return _rev;
+		}
+
+		public void set_rev(String _rev) {
+			this._rev = _rev;
+		}
+
+		public String getAlias() {
+			return alias;
+		}
+
+		public void setAlias(String alias) {
+			this.alias = alias;
+		}
+
+		public String getSourceId() {
+			return sourceId;
+		}
+
+		public void setSourceId(String sourceId) {
+			this.sourceId = sourceId;
+		}
+
+		public String getBaseImage() {
+			return baseImage;
+		}
+
+		public void setBaseImage(String baseImage) {
+			this.baseImage = baseImage;
+		}
+
+		public String getEmail() {
+			return email;
+		}
+
+		public void setEmail(String email) {
+			this.email = email;
+		}
+
+		public long getPrimaryPhone() {
+			return primaryPhone;
+		}
+
+		public void setPrimaryPhone(long primaryPhone) {
+			this.primaryPhone = primaryPhone;
+		}
+
+		public List<JSONObject> getFlags() {
+			return flags;
+		}
+
+		public void setFlags(List<JSONObject> flags) {
+			this.flags = flags;
+		}
+
+		public List<JSONObject> getNotes() {
+			return notes;
+		}
+
+		public void setNotes(List<JSONObject> notes) {
+			this.notes = notes;
+		}
+	}
+	
+	@SuppressWarnings("serial")
 	public static class Derivative extends CouchDbDocument {
 		@JsonProperty("_id")
 		private String _id;
