@@ -307,6 +307,10 @@ h2 {
 	color:#c6ff00;
 }
 
+h1.ic_admin_module_toggle {
+	font-weight:normal;
+}
+
 h3 {
 	font-size:0.7em;
 	font-weight:normal;
@@ -389,14 +393,14 @@ p {
 	color:#fff;
 }
 
-#ic_login a, a.ic_inner_option, a.ic_inner_option:link, a.ic_inner_option:visited, a.ic_inner_option:hover, #annotation_append_submit, #annotation_append_submit:link, #annotation_append_submit:visited, #annotation_append_submit:hover, #messages_append_submit, #messages_append_submit:link, #messages_append_submit:visited, #messages_append_submit:hover, #ui_submissions a.ic_to_import, #ui_submissions a.ic_to_refresh, #ui_submissions a.ic_to_refresh:link, #ui_submissions a.ic_to_refresh:visited, #importer_dismissal a:hover {
+#ic_login a, a.ic_inner_option, a.ic_inner_option:link, a.ic_inner_option:visited, a.ic_inner_option:hover, #annotation_append_submit, #annotation_append_submit:link, #annotation_append_submit:visited, #annotation_append_submit:hover, #messages_append_submit, #messages_append_submit:link, #messages_append_submit:visited, #messages_append_submit:hover, #ui_submissions a.ic_to_import, #ui_submissions a.ic_to_refresh, #ui_submissions a.ic_to_refresh:link, #ui_submissions a.ic_to_refresh:visited, #importer_dismissal a:hover, #ui_admin div.ic_admin_module_content a.ic_submit, #ui_admin div.ic_admin_module_content a.ic_submit:link, #ui_admin div.ic_admin_module_content a.ic_submit:visited, #ui_admin div.ic_admin_module_content a.ic_submit:hover {
 	padding:4px 5px;
 	background-color:#8fae22;
 	cursor:pointer;
 	color:#ffffff;
 }
 
-#annotation_append_submit, #messages_append_submit {
+#annotation_append_submit, #messages_append_submit, #ui_admin div.ic_admin_module_content a.ic_submit {
 	font-size:0.6em;
 }
 
@@ -442,17 +446,21 @@ a.ic_inner_option, a.ic_inner_option:link, a.ic_inner_option:visited, a.ic_inner
 	font-size:0.55em;
 }
 
-#ui_submissions table tr.tr_header td {
+#ui_submissions table tr.tr_header td, h1.ic_admin_module_toggle {
 	color:#8FAE22;
 	font-size:0.65em;
 }
 
 /*--------------------------------------
 Lists & Tables*/
-#popup_content ul {
+#popup_content ul, #ui_admin #ic_admin_module_holder {
 	margin:0;
 	padding:0;
 	list-style-type:none;
+}
+
+#ui_admin #ic_admin_module_holder li {
+	margin:0 0 10px 0;
 }
 
 #popup_content ul li {
@@ -550,12 +558,12 @@ ul.ic_menu_button li.ic_menu_buttonOverride {
 	background-color:#cccccc;
 }
 
-#ui_submissions table td {
+#ui_submissions table td, h1.ic_admin_module_toggle {
 	border:1px solid #444444;
 	padding:4px 12px;
 }
 
-#ui_submissions table tr.tr_header td {
+#ui_submissions table tr.tr_header td, h1.ic_admin_module_toggle {
 	background-color:#C6FF00;
 	cursor:pointer;
 }
@@ -598,10 +606,14 @@ td.ic_toMedia {
 	color:#ffffff;
 }
 
-#map_view_annotations ul {
+#map_view_annotations ul, #ui_admin #ic_admin_module_holder li ul {
 	list-style-type:none;
 	padding:0;
 	margin: 5px 0;
+}
+
+#ui_admin #ic_admin_module_holder input, #ui_admin #ic_admin_module_holder textarea {
+	width:40%;
 }
 
 /*--------------------------------------

@@ -223,6 +223,17 @@ var Admin = {
 			loadAdminModules(modules.availableModules);
 		}
 	},
+	listClients: {
+		init: function() {
+			showSpinner();
+			broadcast({
+				attempt: Command.LOAD_CLIENTS
+			});
+		},
+		callback: function(clientList) {
+			
+		}
+	},
 	registerClient: {
 		init: function(newClientHolder) {
 			var newClient = gatherFormInput(newClientHolder);

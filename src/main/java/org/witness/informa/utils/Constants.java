@@ -267,19 +267,22 @@ public interface Constants {
 			public final static class Keys {
 				public final static int NEW_CLIENT = 2000;
 				public static final int LOAD_CLIENTS = 2001;
+				public final static int MY_PREFERENCES = 2002;
 			}
 			
 			public final static class Assets {
 				public final static String NEW_CLIENT = "new_client.html";
 				public final static String LOAD_CLIENTS = "list_clients.html";
+				public final static String MY_PREFERENCES = "my_account.html";
 			}
 		}
 		
 		public final static Map<Integer, String> MODULES;
 		static {
 			Map<Integer, String> modules = new HashMap<Integer, String>();
-			modules.put(Modules.Keys.NEW_CLIENT, Modules.Assets.NEW_CLIENT);
 			modules.put(Modules.Keys.LOAD_CLIENTS, Modules.Assets.LOAD_CLIENTS);
+			modules.put(Modules.Keys.NEW_CLIENT, Modules.Assets.NEW_CLIENT);
+			modules.put(Modules.Keys.MY_PREFERENCES, Modules.Assets.MY_PREFERENCES);
 			MODULES = Collections.unmodifiableMap(modules);
 		}
 	

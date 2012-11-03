@@ -122,6 +122,16 @@ function handleDesktopServiceMessage(data) {
 					Admin.loadModules.callback(data.metadata);
 				else
 					removeSpinner();
+				break;
+			case Command.LOAD_CLIENTS:
+				removeSpinner();
+				if(data.metadata != null)
+					Admin.listClients.callback(data.metadata);
+				break;
+			case Command.INIT_NEW_CLIENT:
+				if(data.metadata != null)
+					Admin.registerClient.callback(data.metadata);
+				break;
 		}
 	}
 }

@@ -745,12 +745,41 @@ function listenForListInput(el) {
 	});
 }
 
+function toggleModule(el) {
+	if($(el).hasClass('selected'))
+		$(el).removeClass('selected');
+	else
+		$(el).addClass('selected');
+		
+	var sibling = $(el).next(".ic_admin_module_content");
+	if($(el).hasClass('selected'))
+		$(sibling).css('display','block');
+	else
+		$(sibling).css('display','none');
+}
+
 function loadAdminModules(modules) {
 	$("#ic_admin_module_holder").empty();
 	var content = 0;
 	
 	var waitForLoaded = window.setInterval(function() {
 		if(content == modules.length) {
+			$.each($(".ic_admin_module_toggle"), function() {
+				var toggle = this;
+				$(toggle).live('click', function() {
+					toggleModule(toggle);
+				});
+			});
+			
+			$.each($(".ic_admin_module_content"), function() {
+				var module = this;
+				$(module).css('display','none');
+				
+				$.each($(module).find(".ic_live_update"), function() {
+					
+				});
+			});
+			
 			removeSpinner();
 			window.clearInterval(waitForLoaded);
 		}
@@ -759,10 +788,6 @@ function loadAdminModules(modules) {
 	$.each(modules, function() {
 		var src = this;
 		var module = $(document.createElement('li'));
-		$(module).append(
-			$(document.createElement('div'))
-				.attr('class','ic_admin_module')
-		);
 		
 		$.ajax({
 			url: "modules/" + src,
