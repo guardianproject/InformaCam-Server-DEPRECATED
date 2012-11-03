@@ -66,7 +66,8 @@ var Alert_STR = {
 		LOGIN_PROMPT: "Please log in at the bottom of the screen to continue.",
 		RENAME_FAIL: "Could not change the media object's title.",
 		EMPTY_ANNOTATION: "Please enter some text for your annotation.",
-		EMPTY_MESSAGE_CONTENT: "Please enter a message to send."
+		EMPTY_MESSAGE_CONTENT: "Please enter a message to send.",
+		INIT_CLIENT_FAIL: "Sorry, I could not initiate this new client.  Please try again."
 	},
 	MediaLoading: {
 		MAIN_TITLE: "Media Loading...",
