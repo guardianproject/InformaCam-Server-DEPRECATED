@@ -65,9 +65,10 @@ public class MediaLoader implements Constants {
 				
 		search = new InformaSearch(dbDerivatives);
 		
-		/* you can clear the databases by uncommenting the following
+		/* TODO: you can clear the databases by uncommenting the following
 		 CouchParser.ClearDatabase(dbDerivatives, Derivative.class);
 		 CouchParser.ClearDatabase(dbSubmissions, Submission.class);
+		 CouchParser.ClearDatabase(dbSources, Source.class);
 		 */
 	}
 	
@@ -551,10 +552,9 @@ public class MediaLoader implements Constants {
 				CouchParser.Log(Couch.INFO, cred.toString());
 				
 				File sourceRoot = new File(LocalConstants.ENGINE_ROOT + "sources/" + ((String) cred.get(Couch.Views.Sources.Keys.SOURCE_ID)).toLowerCase());
-				/*
+				
 				if(sourceRoot.exists())
 					return result;
-				*/
 				
 				// copy over key
 				sourceRoot.mkdir();
@@ -584,7 +584,6 @@ public class MediaLoader implements Constants {
 				initialValues.put("java.lang.String", sourceId);
 				initialValues.put("java.lang.String", alias);
 				initialValues.put("java.lang.String", _email);
-				
 				
 				CouchParser.Log(Couch.INFO, initialValues.toString());
 				
