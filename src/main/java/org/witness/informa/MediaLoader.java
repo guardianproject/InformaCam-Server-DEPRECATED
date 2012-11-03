@@ -572,8 +572,12 @@ public class MediaLoader implements Constants {
 				Map<String, Object> newClientCredentials = new HashMap<String, Object>();
 				newClientCredentials.put(Couch.Views.Sources.Keys.ALIAS, name);
 				newClientCredentials.put(Couch.Views.Sources.Keys.EMAIL, email);
-				newClientCredentials.put(Couch.Views.Sources.Keys.SOURCE_ID, ((String) cred.get(Couch.Views.Sources.Keys.SOURCE_ID)).toLowerCase()); 
-				CouchParser.createRecord(Source.class, dbSources, newClientCredentials);
+				newClientCredentials.put(Couch.Views.Sources.Keys.SOURCE_ID, ((String) cred.get(Couch.Views.Sources.Keys.SOURCE_ID)).toLowerCase());
+				
+				CouchParser.Log(Couch.INFO, newClientCredentials.toString());
+				
+				if(CouchParser.createRecord(Source.class, dbSources, newClientCredentials) == null)
+					return result;
 				
 				// delete tmp
 				sourceKey.delete();
