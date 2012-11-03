@@ -260,7 +260,7 @@
 		</div>
 
 		<div id="ui_admin">
-			<h1>admin main</h1>
+			<ul id="ic_admin_module_holder"></ul>
 		</div>
 
 		<div id="ui_help">

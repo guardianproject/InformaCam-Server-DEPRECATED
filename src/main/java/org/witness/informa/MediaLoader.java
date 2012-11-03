@@ -1,6 +1,7 @@
 package org.witness.informa;
 
 import java.io.BufferedReader;
+import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -15,6 +16,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
@@ -25,6 +27,7 @@ import org.ektorp.http.HttpClient;
 import org.ektorp.http.StdHttpClient;
 import org.ektorp.impl.StdCouchDbConnector;
 import org.ektorp.impl.StdCouchDbInstance;
+import org.ektorp.util.Base64;
 
 import org.witness.informa.utils.Constants;
 import org.witness.informa.utils.CouchParser;
@@ -433,6 +436,111 @@ public class MediaLoader implements Constants {
 		result.put(DC.Options.NEW_SUBMISSION_ID, newSubmission[0]);
 		result.put(DC.Options.NEW_SUBMISSION_REV, newSubmission[1]);
 		result.put(DC.Options.NEW_SUBMISSION_URL, LocalConstants.SERVER_URL);
+		
+		return result;
+	}
+
+	@SuppressWarnings("unchecked")
+	public JSONObject loadAdminModulesForUser(Map<String, Object> opts) {
+		JSONObject result = new JSONObject();
+		result.put(DC.Keys.RESULT, DC.Results.FAIL);
+		
+		Map<String, Object> user = (Map<String, Object>) opts.get(DC.Options.USER);
+		if(!CouchParser.validateUser(dbUsers, user))
+			return result;
+		
+		List<String> modules = new ArrayList<String>();
+		for(Entry<Integer, String> module : Admin.MODULES.entrySet()) {
+			// TODO: if user can use this module... (if blah blah blah == module.getKey())
+			modules.add(module.getValue());
+		}
+		
+		if(modules.isEmpty())
+			return result;
+		
+		result.put(DC.Keys.RESULT, DC.Results.OK);
+		result.put(DC.Options.AVAILABLE_MODULES, modules.toArray(new String[modules.size()]));
+		
+		return result;
+	}
+
+	@SuppressWarnings({ "unchecked", "deprecation" })
+	public JSONObject initNewClient(Map<String, Object> opts) {
+		JSONObject result = new JSONObject();
+		result.put(DC.Keys.RESULT, DC.Results.FAIL);
+		
+		Map<String, Object> user = (Map<String, Object>) opts.get(DC.Options.USER);
+		if(!CouchParser.validateUser(dbUsers, user))
+			return result;
+		Map<String, Object> newClient = (Map<String, Object>) opts.get(DC.Options.NEW_CLIENT);
+		try {
+			String name = (String) newClient.get(DC.Options.NEW_CLIENT_NAME);
+			String email = (String) newClient.get(DC.Options.NEW_CLIENT_EMAIL);
+			String key = new String(Base64.decode((String) newClient.get(DC.Options.NEW_CLIENT_KEY)));
+			String tempName = DigestUtils.md5Hex(name + email + System.currentTimeMillis()) + ".asc";
+			
+			try {
+				FileWriter fw = new FileWriter(LocalConstants.CLIENT_TEMP + tempName);
+				fw.write(key);
+				fw.flush();
+				fw.close();
+			} catch (IOException e) {
+				CouchParser.Log(Couch.ERROR, e.toString());
+				e.printStackTrace();
+			}
+
+			
+			List<String> cmd = new ArrayList<String>();
+			if(LocalConstants.SUDOER != null) {
+				cmd.add("echo");
+				cmd.add(LocalConstants.SUDOER);
+				cmd.add("|");
+			}
+			
+			cmd.add("sudo");
+			cmd.add("-S");
+			cmd.add(LocalConstants.ScriptsRoot.PY + "new_client.py");
+			cmd.add(name);
+			cmd.add(email);
+			cmd.add(LocalConstants.CLIENT_TEMP + tempName);
+			
+			StringBuffer cmdStr = new StringBuffer();
+			for(String c : cmd)
+				cmdStr.append(" " + c + " ");
+			
+			String cmds[] = {
+					"sh",
+					"-c",
+					cmdStr.toString().substring(1)
+			};
+			
+			CouchParser.Log(Couch.INFO, cmdStr.toString());
+			
+			Process p = Runtime.getRuntime().exec(cmds);
+			DataInputStream dis_i = new DataInputStream(p.getInputStream());
+			DataInputStream dis_e = new DataInputStream(p.getErrorStream());
+			try {
+				String line;
+				while((line = dis_e.readLine()) != null)
+					CouchParser.Log(Couch.INFO, line);
+			} catch(IOException e) {
+				CouchParser.Log(Couch.ERROR, e.toString());
+				e.printStackTrace();
+			}
+			
+			try {
+				String line;
+				while((line = dis_i.readLine()) != null)
+					CouchParser.Log(Couch.INFO, line);
+			} catch(IOException e) {
+				CouchParser.Log(Couch.ERROR, e.toString());
+				e.printStackTrace();
+			}
+			
+		} catch(IOException e) {
+			CouchParser.Log(Couch.ERROR, e.toString());
+			e.printStackTrace();
+		}
 		
 		return result;
 	}

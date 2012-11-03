@@ -119,6 +119,8 @@ public interface Constants {
 			public static final int SEND_MESSAGE = 112;
 			public static final int EDIT_ANNOTATION = 113;
 			public static final int IMPORT_MEDIA = 114;
+			public static final int LOAD_MODULES = 115;
+			public static final int INIT_NEW_CLIENT = 116;
 		}
 		
 		public final static class Commands {
@@ -138,6 +140,8 @@ public interface Constants {
 			public static final int SEND_MESSAGE = DC.Attempts.SEND_MESSAGE;
 			public static final int EDIT_ANNOTATION = DC.Attempts.EDIT_ANNOTATION;
 			public static final int IMPORT_MEDIA = DC.Attempts.IMPORT_MEDIA;
+			public static final int LOAD_MODULES = DC.Attempts.LOAD_MODULES;
+			public static final int INIT_NEW_CLIENT = DC.Attempts.INIT_NEW_CLIENT;
 		}
 		
 		public final static class Keys {
@@ -185,6 +189,11 @@ public interface Constants {
 			public static final String NEW_SUBMISSION_ID = "newSubmissionId";
 			public static final String NEW_SUBMISSION_REV = "newSubmissionRev";
 			public static final String NEW_SUBMISSION_URL = "newSubmissionUrl";
+			public static final String AVAILABLE_MODULES = "availableModules";
+			public static final String NEW_CLIENT_NAME = "newClientName";
+			public static final String NEW_CLIENT_EMAIL = "newClientEmail";
+			public static final String NEW_CLIENT_KEY = "newClientKey";
+			public static final String NEW_CLIENT = "newClient";
 		}
 		
 	}
@@ -225,6 +234,26 @@ public interface Constants {
 			"sourceId",
 			"timestampIndexed"
 		};
+	}
+	
+	public final static class Admin {
+		public final static class Modules {
+			public final static class Keys {
+				public final static int NEW_CLIENT = 2000;
+			}
+			
+			public final static class Assets {
+				public final static String NEW_CLIENT = "new_client.html";
+			}
+		}
+		
+		public final static Map<Integer, String> MODULES;
+		static {
+			Map<Integer, String> modules = new HashMap<Integer, String>();
+			modules.put(Modules.Keys.NEW_CLIENT, Modules.Assets.NEW_CLIENT);
+			MODULES = Collections.unmodifiableMap(modules);
+		}
+	
 	}
 	
 	public final static class Search {

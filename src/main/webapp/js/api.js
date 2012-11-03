@@ -205,6 +205,45 @@ var Search = {
 	}
 }
 
+var Admin = {
+	loadModules: {
+		init: function() {
+			showSpinner();
+			broadcast({
+				attempt: Command.LOAD_MODULES,
+				options: {
+					user: {
+						_id: currentUser._id,
+						_rev: currentUser._rev
+					}
+				}
+			});
+		},
+		callback: function(modules) {
+			loadAdminModules(modules.availableModules);
+		}
+	},
+	registerClient: {
+		init: function(newClientHolder) {
+			var newClient = gatherFormInput(newClientHolder);
+			if(newClient == null)
+				return;
+				
+			showSpinner();
+			broadcast({
+				attempt: Command.INIT_NEW_CLIENT,
+				options: {
+					user: {
+						_id: currentUser._id,
+						_rev: currentUser._rev
+					},
+					newClient: newClient
+				}
+			});
+		}
+	}
+}
+
 var Media = {
 	getAll : {
 		init: function() {

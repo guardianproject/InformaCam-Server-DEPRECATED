@@ -1,0 +1,16 @@
+<h1 class="ic_admin_module_toggle">Register a New Client</h1>
+<ul id="newClient_holder">
+	<li>
+		<h3>Name:</h3>
+		<input type="text" id="newClientName" optionKey="newClientName" />
+	</li>
+	<li>
+		<h3>Email:</h3>
+		<input type="text" id="newClientEmail" optionKey="newClientEmail" />
+	</li>
+	<li>
+		<h3>PGP Key:</h3>
+		<textarea id="newClientKey" optionKey="newClientKey"></textarea>
+	</li>
+</ul>
+<a onclick="Admin.registerClient.init('newClient_holder');">Submit</a>

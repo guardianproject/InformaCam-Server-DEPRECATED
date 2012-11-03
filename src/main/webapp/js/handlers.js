@@ -117,6 +117,11 @@ function handleDesktopServiceMessage(data) {
 				if(data.metadata != null)
 					Media.doImport.callback(data.metadata);
 				break;
+			case Command.LOAD_MODULES:
+				if(data.metadata != null)
+					Admin.loadModules.callback(data.metadata);
+				else
+					removeSpinner();
 		}
 	}
 }

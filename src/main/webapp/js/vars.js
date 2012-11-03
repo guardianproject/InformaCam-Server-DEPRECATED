@@ -19,7 +19,9 @@ var Command = {
 	UPDATE_DERIVATIVES: 111,
 	SEND_MESSAGE: 112,
 	EDIT_ANNOTATION: 113,
-	IMPORT_MEDIA: 114
+	IMPORT_MEDIA: 114,
+	LOAD_MODULES: 115,
+	INIT_NEW_CLIENT: 116
 };
 
 var entity, mcxAnnotation, movingAnnotation;
