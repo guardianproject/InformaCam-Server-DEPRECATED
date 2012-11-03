@@ -537,9 +537,6 @@ public class MediaLoader implements Constants {
 					pyResult = line;
 				}
 				
-				// delete tmp
-				new File(LocalConstants.CLIENT_TEMP + tempName).delete();
-				
 				// parse pyResult
 				String[] pResult = pyResult.split(", ");
 				for(int x=0; x<pResult.length; x++) {
@@ -553,11 +550,33 @@ public class MediaLoader implements Constants {
 				JSONObject cred = (JSONObject) new JSONTokener(pResult[1]).nextValue();
 				CouchParser.Log(Couch.INFO, cred.toString());
 				
+				File sourceRoot = new File(LocalConstants.ENGINE_ROOT + "sources/" + ((String) cred.get(Couch.Views.Sources.Keys.SOURCE_ID)).toLowerCase());
+				if(sourceRoot.exists())
+					return result;
+				
+				// copy over key
+				sourceRoot.mkdir();
+				File original = new File(LocalConstants.CLIENT_TEMP + tempName);
+				File sourceKey = new File(sourceRoot, ((String) cred.get(Couch.Views.Sources.Keys.SOURCE_ID)).toLowerCase() + ".asc");
+				
+				try {
+					FileChannel o = new FileInputStream(original).getChannel();
+					FileChannel r = new FileOutputStream(sourceKey).getChannel();
+					r.transferFrom(o, 0, o.size());
+				} catch(IOException e) {
+					CouchParser.Log(Couch.ERROR, e.toString());
+					e.printStackTrace();
+					return result;
+				} 
+				
 				Map<String, Object> newClientCredentials = new HashMap<String, Object>();
 				newClientCredentials.put(Couch.Views.Sources.Keys.ALIAS, name);
 				newClientCredentials.put(Couch.Views.Sources.Keys.EMAIL, email);
-				newClientCredentials.put(Couch.Views.Sources.Keys.SOURCE_ID, (String) cred.get(Couch.Views.Sources.Keys.SOURCE_ID)); 
+				newClientCredentials.put(Couch.Views.Sources.Keys.SOURCE_ID, ((String) cred.get(Couch.Views.Sources.Keys.SOURCE_ID)).toLowerCase()); 
 				CouchParser.createRecord(Source.class, dbSources, newClientCredentials);
+				
+				// delete tmp
+				sourceKey.delete();
 				
 				// return result
 				result.put(DC.Keys.RESULT, DC.Results.OK);
