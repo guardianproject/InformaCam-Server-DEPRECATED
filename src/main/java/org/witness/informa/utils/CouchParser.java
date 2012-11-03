@@ -142,7 +142,7 @@ public class CouchParser implements Constants {
 				Entry<String, Object> param = paramBundle.entrySet().iterator().next();
 				
 				String mStart = String.valueOf(param.getKey().charAt(0));
-				String key = param.getKey().replace(param.getKey().charAt(0), mStart.toUpperCase().charAt(0));
+				String key = param.getKey().replaceFirst(String.valueOf(param.getKey().charAt(0)), String.valueOf(mStart.toUpperCase().charAt(0)));
 				
 				Method iMethod = o.getClass().getDeclaredMethod("set" + key, result);
 				
