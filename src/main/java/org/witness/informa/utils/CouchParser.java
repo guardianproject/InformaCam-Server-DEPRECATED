@@ -126,6 +126,7 @@ public class CouchParser implements Constants {
 		return result;
 	}
 	
+	@SuppressWarnings("unchecked")
 	public static String[] createRecord(Class c, StdCouchDbConnector db, Map<String, Object> initialValues) {
 		try {
 			Object o = c.newInstance();

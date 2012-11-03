@@ -549,7 +549,6 @@ public class MediaLoader implements Constants {
 				
 				// add new source in db (sourceId has to be lowercased!)
 				JSONObject cred = (JSONObject) new JSONTokener(pResult[1]).nextValue();
-				CouchParser.Log(Couch.INFO, cred.toString());
 				
 				File sourceRoot = new File(LocalConstants.ENGINE_ROOT + "sources/" + ((String) cred.get(Couch.Views.Sources.Keys.SOURCE_ID)).toLowerCase());
 				
@@ -568,6 +567,9 @@ public class MediaLoader implements Constants {
 				} catch(IOException e) {
 					CouchParser.Log(Couch.ERROR, e.toString());
 					e.printStackTrace();
+					original.delete();
+					sourceKey.delete();
+					sourceRoot.delete();
 					return result;
 				} 
 				
@@ -584,18 +586,38 @@ public class MediaLoader implements Constants {
 				initialValues.put("java.lang.String", sourceId);
 				initialValues.put("java.lang.String", alias);
 				initialValues.put("java.lang.String", _email);
-				
-				CouchParser.Log(Couch.INFO, initialValues.toString());
-				
-				if(CouchParser.createRecord(Source.class, dbSources, initialValues) == null)
+								
+				if(CouchParser.createRecord(Source.class, dbSources, initialValues) == null) {
+					original.delete();
+					sourceKey.delete();
+					sourceRoot.delete();
 					return result;
+				}
 				
 				// delete tmp
-				sourceKey.delete();
+				original.delete();
 				
-				// return result
-				result.put(DC.Keys.RESULT, DC.Results.OK);
-				result.put(DC.Options.NEW_CLIENT, pResult[0]);
+				original = new File(pResult[0]);
+				File sourceICTD = new File(LocalConstants.ENGINE_ROOT + "sources/" + ((String) cred.get(Couch.Views.Sources.Keys.SOURCE_ID)).toLowerCase(), LocalConstants.ORGANIZATION_NAME + ".ictd");
+				
+				try {
+					FileChannel o = new FileInputStream(original).getChannel();
+					FileChannel r = new FileOutputStream(sourceICTD).getChannel();
+					r.transferFrom(o, 0, o.size());
+					
+					result.put(DC.Options.NEW_CLIENT, ((String) cred.get(Couch.Views.Sources.Keys.SOURCE_ID)).toLowerCase() + "/" + sourceICTD.getName());
+					result.put(DC.Keys.RESULT, DC.Results.OK);
+					original.delete();
+				} catch(IOException e) {
+					CouchParser.Log(Couch.ERROR, e.toString());
+					e.printStackTrace();
+					original.delete();
+					sourceKey.delete();
+					sourceRoot.delete();
+					sourceICTD.delete();
+					return result;
+				} 
+				
 
 			} catch(IOException e) {
 				CouchParser.Log(Couch.ERROR, e.toString());
