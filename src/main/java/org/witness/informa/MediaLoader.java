@@ -640,6 +640,11 @@ public class MediaLoader implements Constants {
 		ArrayList<JSONObject> res = CouchParser.getRows(dbDerivatives, getClients, Couch.Views.Sources.GET_BY_ID, Couch.Views.Sources.Omits.SHORT_DESCRIPTION);
 		if(res.size() == 0)
 			return result;
+		
+		for(JSONObject j : res) {
+			// get the number of submissions, and date of latest submission
+			CouchParser.Log(Couch.INFO, j.toString());
+		}
 				
 		result.put(DC.Keys.METADATA, res);
 		result.put(DC.Keys.RESULT, DC.Results.OK);
