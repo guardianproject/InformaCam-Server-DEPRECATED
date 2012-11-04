@@ -637,7 +637,7 @@ public class MediaLoader implements Constants {
 		result.put(DC.Keys.RESULT, DC.Results.FAIL);
 		
 		ViewQuery getClients = new ViewQuery().designDocId(Couch.Design.SOURCES);
-		ArrayList<JSONObject> res = CouchParser.getRows(dbDerivatives, getClients, Couch.Views.Sources.GET_BY_ID, Couch.Views.Sources.Omits.SHORT_DESCRIPTION);
+		ArrayList<JSONObject> res = CouchParser.getRows(dbSources, getClients, Couch.Views.Sources.GET_BY_ID, Couch.Views.Sources.Omits.SHORT_DESCRIPTION);
 		if(res.size() == 0)
 			return result;
 		
