@@ -12,6 +12,8 @@ import java.net.MalformedURLException;
 import java.nio.channels.FileChannel;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -641,9 +643,37 @@ public class MediaLoader implements Constants {
 		if(res.size() == 0)
 			return result;
 		
+		ViewQuery getSubmissionsBySource = new ViewQuery().designDocId(Couch.Design.DERIVATIVES);
 		for(JSONObject j : res) {
 			// get the number of submissions, and date of latest submission
 			CouchParser.Log(Couch.INFO, j.toString());
+			String sourceId = j.getString(Couch.Views.Sources.Keys.SOURCE_ID);
+			ArrayList<JSONObject> submissions = CouchParser.getRows(dbDerivatives, getSubmissionsBySource, Couch.Views.Derivatives.GET_BY_SOURCE_ID, sourceId, Couch.Views.Derivatives.Omits.SHORT_DESCRIPTION);
+			
+			j.remove(Couch.Documents._ID);
+			j.remove(Couch.Documents._REV);
+			
+			j.put(Couch.Views.Sources.Keys.NUMBER_OF_SUBMISSIONS, submissions == null ? 0 :submissions.size());
+			//j.put(Couch.Views.Sources.Keys.LAST_SUBMISSION_DATE, value);
+			
+			if(submissions != null) {
+				CouchParser.Log(Couch.INFO, "before sort:");
+				for(JSONObject sub : submissions)
+					CouchParser.Log(Couch.INFO, sub.toString());
+				
+				Collections.sort(submissions, new Comparator<JSONObject>() {
+					public int compare(JSONObject j1, JSONObject j2) {
+						if(j1.getLong(Couch.Views.Derivatives.Keys.TIMESTAMP_INDEXED) == j2.getLong(Couch.Views.Derivatives.Keys.TIMESTAMP_INDEXED))
+							return 0;
+						return j1.getLong(Couch.Views.Derivatives.Keys.TIMESTAMP_INDEXED) < j2.getLong(Couch.Views.Derivatives.Keys.TIMESTAMP_INDEXED) ? -1 : 1;
+					}
+					
+				});
+				
+				CouchParser.Log(Couch.INFO, "AFTER sort:");
+				for(JSONObject sub : submissions)
+					CouchParser.Log(Couch.INFO, sub.toString());
+			}
 		}
 				
 		result.put(DC.Keys.METADATA, res);

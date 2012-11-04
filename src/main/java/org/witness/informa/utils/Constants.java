@@ -11,32 +11,32 @@ public interface Constants {
 	public final static String MEDIA_CACHE = APP_ROOT + "src/main/webapp/images/session_cache/";
 	public final static String VIEW_ROOT = APP_ROOT + "view_templates/";
 	public final static String VIEW_CACHE = VIEW_ROOT + "caches/";
-	
+
 	public final static String DERIVATIVE_ROOT = LocalConstants.ENGINE_ROOT + "derivatives/";
-	
+
 	public final static class Channels {
 		public final static String SERVER = "/service/desktopConnection";
 		public final static String MULTICAST = "/multicast";
 	}
-	
+
 	public final static class Couch {
 		public static String ERROR = "COUCH ERROR";
 		public static String INFO = "COUCH INFO";
 		public static String DEBUG = "COUCH DEBUG";
 		public final static String VAR_SENTINEL = "@VARS";
-		
+
 		public final static class Documents {
 			public final static String _ID = "_id";
 			public final static String _REV = "_rev";
 		}
-		
+
 		public final static class Design {
 			public final static String DERIVATIVES = "_design/derivatives";
 			public final static String SOURCES = "_design/sources";
 			public final static String SUBMISSIONS = "_design/submissions";
 			public final static String ADMIN = "_design/admin";
 		}
-		
+
 		public final static class Views {
 			public final static class Submissions {
 				public final static String GET_BY_SOURCE_ID = Sources.Keys.SOURCE_ID;
@@ -46,10 +46,10 @@ public interface Constants {
 					public final static String CREATED = "dateCreated";
 				}
 			}
-			
+
 			public final static class Sources {
 				public final static String GET_BY_ID = Keys.SOURCE_ID;
-				
+
 				public final static class Keys {
 					public final static String SOURCE_ID = "sourceId";
 					public final static String EMAIL = "email";
@@ -58,9 +58,11 @@ public interface Constants {
 					public final static String PRIMARY_PHONE = "primaryPhone";
 					public final static String FLAGS = "flags";
 					public final static String NOTES = "notes";
-					
+					public static final String NUMBER_OF_SUBMISSIONS = "numberOfSubmissions";
+					public static final String LAST_SUBMISSION_DATE = "dateOfLastSubmission";
+
 				}
-				
+
 				public final static class Omits {
 					public final static String[] SHORT_DESCRIPTION = {
 						Keys.EMAIL,
@@ -71,11 +73,11 @@ public interface Constants {
 					};
 				}
 			}
-			
+
 			public final static class Admin {
 				public final static String ATTEMPT_LOGIN = "attemptLogin";
 				public final static String GET_BY_ID = "getById";
-				
+
 				public static class Keys {
 					public final static String VIEW_HASH = "viewHash";
 					public final static String PARAMETERS = DC.Options.PARAMETERS;
@@ -84,44 +86,61 @@ public interface Constants {
 					public static final String _REV = DC.Options._REV;
 				}
 			}
-			
+
 			public final static class Derivatives {
+				public final static String GET_ALL = "representation";
+				public final static String GET_BY_ID = "getById";
+				public final static String GET_ALL_SHORTENED = "mediaShortDescription";
+				public static final String GET_BY_SOURCE_ID = Keys.SOURCE_ID;
+				
 				public final static class Geolocate {
 					public final static String RADIUS = "radius";
 					public final static String QUERY_LAT = "queryLat";
 					public final static String QUERY_LNG = "queryLng";
 				}
-				
-				public final static String GET_ALL = "representation";
-				public final static String GET_BY_ID = "getById";
-				public final static String DATE_CREATED = "dateCreated";
-				public final static String SOURCE_ID = "sourceId";
-				public final static String KEYWORDS = "keywords";
-				public final static String LOCATION_ON_SAVE = "locationOnSave";
-				public final static String LOCATION = "location";
-				public final static String MEDIA_TYPE = "mediaType";
-				public final static String TIMESTAMP_INDEXED = "timestampIndexed";
-				public final static String ALIAS = "alias";
-				public final static String GET_ALL_SHORTENED = "mediaShortDescription";
-				
-				
+
+				public final static class Keys {
+					
+					public final static String DATE_CREATED = "dateCreated";
+					public final static String SOURCE_ID = "sourceId";
+					public final static String KEYWORDS = "keywords";
+					public final static String LOCATION_ON_SAVE = "locationOnSave";
+					public final static String LOCATION = "location";
+					public final static String MEDIA_TYPE = "mediaType";
+					public final static String TIMESTAMP_INDEXED = "timestampIndexed";
+					public final static String ALIAS = "alias";
+					public final static String J3M = "j3m";
+				}
+
+				public static final class Omits {
+					public final static String[] SHORT_DESCRIPTION = {
+						Keys.J3M,
+						Keys.SOURCE_ID,
+						Keys.KEYWORDS,
+						Keys.LOCATION,
+						Keys.LOCATION_ON_SAVE,
+						Keys.ALIAS
+					};
+				}
+
+
 			}
 		}
-		
+
 	}
-	
+
 	public final static class DC {
 		public final static String RESPONSE = "response";
 		public static final class EditType {
 			public static final int MOVE = 500;
 			public static final int DELETE = 501;
 		}
-		
+
 		public static final class Results {
 			public static final int OK = 1;
 			public static final int FAIL = -1;
 		}
-		
+
 		public final static class Attempts {
 			public final static String TAG = "attempt";
 			public final static int UNLOAD = 98;
@@ -145,7 +164,7 @@ public interface Constants {
 			public static final int LOAD_CLIENTS = 117;
 			public static final int GET_CLIENT = 118;
 		}
-		
+
 		public final static class Commands {
 			public final static int UNLOAD = DC.Attempts.UNLOAD;
 			public final static int CHOOSE_MEDIA = DC.Attempts.CHOOSE_MEDIA;
@@ -168,7 +187,7 @@ public interface Constants {
 			public static final int LOAD_CLIENTS = DC.Attempts.LOAD_CLIENTS;
 			public static final int GET_CLIENT = DC.Attempts.GET_CLIENT;
 		}
-		
+
 		public final static class Keys {
 			public final static String COMMAND = "command";
 			public final static String MEDIA_TYPE = "mediaType";
@@ -185,7 +204,7 @@ public interface Constants {
 				public final static int MOVE = 501;
 			}
 		}
-		
+
 		public final static class Options {
 			public final static String _ID = Couch.Documents._ID;
 			public final static String _REV = Couch.Documents._REV;
@@ -221,28 +240,28 @@ public interface Constants {
 			public static final String NEW_CLIENT = "newClient";
 			public static final String SOURCE_ID = Couch.Views.Sources.Keys.SOURCE_ID;
 		}
-		
+
 	}
-	
+
 	public final static class Callback {
 		public final static class Jpeg {
 			public final static String GET_METADATA = "getMetadata";
 			public final static String REVERSE_REDACTION = "reverseRedaction";
-			
+
 		}
-		
+
 		public final static class Ffmpeg {
-			
+
 		}
 	}
-	
+
 	public final static class UI {
 		public final static class Prompt {
 			public final static String MEDIA_PICKER = "Jpeg or Movie";
 			public final static String MEDIA_LOADING = "Media Loading";
 		}
 	}
-	
+
 	public final static class Annotation {
 		public final static class Keys {
 			public final static String CONTENT = "content";
@@ -261,7 +280,7 @@ public interface Constants {
 			"timestampIndexed"
 		};
 	}
-	
+
 	public final static class Admin {
 		public final static class Modules {
 			public final static class Keys {
@@ -269,14 +288,14 @@ public interface Constants {
 				public static final int LOAD_CLIENTS = 2001;
 				public final static int MY_PREFERENCES = 2002;
 			}
-			
+
 			public final static class Assets {
 				public final static String NEW_CLIENT = "new_client.html";
 				public final static String LOAD_CLIENTS = "list_clients.html";
 				public final static String MY_PREFERENCES = "my_account.html";
 			}
 		}
-		
+
 		public final static Map<Integer, String> MODULES;
 		static {
 			Map<Integer, String> modules = new HashMap<Integer, String>();
@@ -285,9 +304,9 @@ public interface Constants {
 			modules.put(Modules.Keys.MY_PREFERENCES, Modules.Assets.MY_PREFERENCES);
 			MODULES = Collections.unmodifiableMap(modules);
 		}
-	
+
 	}
-	
+
 	public final static class Search {
 		public final static class Parameters {
 			public final static Map<String, Integer> KEYS;
@@ -299,16 +318,16 @@ public interface Constants {
 				keys.put(Search.Parameters.Location.TAG, Search.Parameters.Location.KEY);
 				KEYS = Collections.unmodifiableMap(keys);
 			}
-			
+
 			public final static class Keywords {
 				public final static String TAG = "keywords";
 				public final static int KEY = 299;
 			}
-			
+
 			public final static class Type {
 				public final static int KEY = 298;
 				public final static String TAG = "mediaType";
-				
+
 				public final static int IMAGE = Media.MediaTypes.IMAGE;
 				public final static int VIDEO = Media.MediaTypes.VIDEO;
 				public final static Map<String, Integer> TYPES;
@@ -319,11 +338,11 @@ public interface Constants {
 					TYPES = Collections.unmodifiableMap(types);
 				}
 			}
-			
+
 			public final static class Timeframe {
 				public final static int KEY = 297;
 				public final static String TAG = "timeframe";
-				
+
 				public final static int PAST_24_HOURS = 300;
 				public final static int PAST_WEEK = 301;
 				public final static int PAST_MONTH = 302;
@@ -340,11 +359,11 @@ public interface Constants {
 					TIMEFRAMES = Collections.unmodifiableMap(timeframes);
 				}
 			}
-			
+
 			public final static class Location {
 				public final static int KEY = 296;
 				public final static String TAG = "location";
-				
+
 				public final static int RADIUS = 305;
 				public final static int LATLNG = 306;
 				public final static Map<String, Integer> LOCATION_PARAMETERS;
@@ -356,12 +375,12 @@ public interface Constants {
 				}
 			}
 		}
-		
+
 	}
-	
+
 	public final static class Media {
 		public final static String LOCAL_PATH = "localPath";
-		
+
 		public final static String[] EXTENSIONS = {"jpeg", "jpg", "mov", "mp4", "mkv", "ogg"};
 		public final static class MimeTypes {
 			public final static int JPEG = 100;
@@ -381,36 +400,36 @@ public interface Constants {
 			mime_types.put(".ogg", Media.MimeTypes.OGG);
 			MIME_TYPES = Collections.unmodifiableMap(mime_types);
 		}
-		
+
 		public final static String MEDIA_TYPE = "mediaType";
 		public final static class MediaTypes {
 			public final static int VIDEO = 401;
 			public final static int IMAGE = 400;
 		}
-		
+
 		public final static String DIMENSIONS = "dimensions";
 		public final static class Dimensions {
 			public final static String WIDTH = "width";
 			public final static String HEIGHT = "height";
 		}
-		
+
 		public final static String PATH = "filePath";
 	}
-	
+
 	public final static class Ffmpeg {
 		public final static String ROOT = "/usr/local/bin/";
 		public final static String PID = "processId";
-		
+
 		public final static String CLONE = "%vpathclone_%vroot.mp4";
 		public final static String METADATA = "%vpathinforma_metadata_%vroot.txt";
-		
+
 		public final static String CHECK = Ffmpeg.ROOT + "ffmpeg";
 		public final static String GET_INFO = Ffmpeg.ROOT + "ffmpeg -i %vid";
 		public final static String SHOW_STREAMS = Ffmpeg.ROOT + "ffprobe -pretty -show_streams %vid";
 		public final static String EXTRACT_INFORMA_TRACK = Ffmpeg.ROOT + "ffmpeg -y -i %vid -an -vn -sbsf mov2textsub -scodec copy -f rawvideo %metadata";
 		public final static String EMBED_INFORMA_TRACK = Ffmpeg.ROOT + "ffmpeg -y -i %vid -i %inft -scodec copy -vcodec copy -acodec copy %vpath%vroot.mkv";
 		public final static String CLONE_FROM_MKV = Ffmpeg.ROOT + "ffmpeg -y -i %vid -vcodec copy -acodec copy %clone";
-		
+
 		public final static class Replace {
 			public final static String VIDEO = "%vid";
 			public final static String VIDEO_ROOT = "%vroot";
@@ -418,19 +437,19 @@ public interface Constants {
 			public final static String CLONE = "%clone";
 			public final static String METADATA = "%metadata";
 		}
-		
+
 		public final static Map<String, String> TAGS;
 		static {
 			Map<String, String> tags = new HashMap<String, String>();
 			tags.put("[STREAM]", "stream");
 			TAGS = Collections.unmodifiableMap(tags);
 		}
-		
+
 		public final static class Tags {
 			public final static String END = "[/%tag]";
 			public final static String RETURN = "result";
 			public final static String TYPE = "type";
-			
+
 			public final static class Stream {
 				public final static String CODEC_NAME = "codec_name";
 				public final static String CODEC_TYPE = "codec_type";
@@ -445,6 +464,6 @@ public interface Constants {
 			}
 		}
 	}
-	
-	
+
+
 }
