@@ -654,12 +654,13 @@ public class MediaLoader implements Constants {
 			j.remove(Couch.Documents._REV);
 			
 			j.put(Couch.Views.Sources.Keys.NUMBER_OF_SUBMISSIONS, submissions == null ? 0 :submissions.size());
-			//j.put(Couch.Views.Sources.Keys.LAST_SUBMISSION_DATE, value);
 			
 			if(submissions != null) {
+				/*
 				CouchParser.Log(Couch.INFO, "before sort:");
 				for(JSONObject sub : submissions)
 					CouchParser.Log(Couch.INFO, sub.toString());
+				*/
 				
 				Collections.sort(submissions, new Comparator<JSONObject>() {
 					public int compare(JSONObject j1, JSONObject j2) {
@@ -670,9 +671,12 @@ public class MediaLoader implements Constants {
 					
 				});
 				
+				/*
 				CouchParser.Log(Couch.INFO, "AFTER sort:");
 				for(JSONObject sub : submissions)
 					CouchParser.Log(Couch.INFO, sub.toString());
+				*/	
+				j.put(Couch.Views.Sources.Keys.LAST_SUBMISSION_DATE, submissions.get(0).getLong(Couch.Views.Derivatives.Keys.TIMESTAMP_INDEXED));
 			}
 		}
 				

@@ -436,6 +436,10 @@ a.ic_inner_option, a.ic_inner_option:link, a.ic_inner_option:visited, a.ic_inner
 	cursor:pointer;
 }
 
+.locationMarkerData {
+	display: none;
+}
+
 #map_view_annotations p {
 	margin:0;
 	padding:0;

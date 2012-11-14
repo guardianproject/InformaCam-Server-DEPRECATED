@@ -110,6 +110,9 @@ public interface Constants {
 					public final static String TIMESTAMP_INDEXED = "timestampIndexed";
 					public final static String ALIAS = "alias";
 					public final static String J3M = "j3m";
+					public final static String DISCUSSIONS = "discussions";
+					public final static String IMPORT_FLAG = "importFlag";
+					public final static String REPRESENTATION = "representation";
 				}
 
 				public static final class Omits {
@@ -119,7 +122,10 @@ public interface Constants {
 						Keys.KEYWORDS,
 						Keys.LOCATION,
 						Keys.LOCATION_ON_SAVE,
-						Keys.ALIAS
+						Keys.ALIAS,
+						Keys.DISCUSSIONS,
+						Keys.IMPORT_FLAG,
+						Keys.REPRESENTATION
 					};
 				}
 

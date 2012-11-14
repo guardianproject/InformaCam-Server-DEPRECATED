@@ -1,3 +1,11 @@
+function parseLiveUpdate(liveUpdateHolder) {
+	switch(parseInt($(liveUpdateHolder).attr('liveupdate'))) {
+		case Command.LOAD_CLIENTS:
+			Admin.listClients.init();
+			break;
+	}
+}
+
 var User = {
 	login : function(username, password) {
 		var res = false;

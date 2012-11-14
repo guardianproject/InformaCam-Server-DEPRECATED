@@ -776,15 +776,10 @@ function loadAdminModules(modules) {
 				$(module).css('display','none');
 				
 				$.each($(module).find(".ic_live_update"), function() {
-					var liveUpdate = this;
-					console.info($(this).attr('liveupdate'));
-					switch(parseInt($(this).attr('liveupdate'))) {
-						case Command.LOAD_CLIENTS:
-							Admin.listClients.init();
-							break;
-					}
+					parseLiveUpdate(this);
 				});
 			});
+			
 			
 			removeSpinner();
 			window.clearInterval(waitForLoaded);

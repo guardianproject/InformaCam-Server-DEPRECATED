@@ -2,19 +2,20 @@ var InformaLocationMarker = function(coords, text) {
 	this.lat = coords[0];
 	this.lng = coords[1];
 	this.text = text;
-
 	this.label = "[" + coords[0] + ", " + coords[1] + "]";
 
+	markerData = '<span id="markerLat" class="locationMarkerData">' + this.lat + '</span>' + '<span id="markerLng" class="locationMarkerData">' + this.lng + '</span>';
+
 	this.build = function() {
+
 		var a = locationMarker = $(document.createElement('a'))
-			.html(this.label)
+			.html(this.label + markerData)
 			.attr('class','informaLocationMarker')
-			.attr('id', this.lat + ','+this.lng)
 			.live('click', function() {
-				var latlng = $(".informaLocationMarker").attr("id");
-				lat = latlng.substr(0,10);
-				lng = latlng.substr(11);
-				zoomOnMap(lat, lng, null, this.label, this.text, mapViewMap);
+				lat = $("#markerLat").html();
+				lng = $("#markerLng").html();
+				text = lat + ', ' + lng;
+				zoomOnMap(lat, lng, null, null, text, mapViewMap);
 				google.maps.event.trigger(mapViewMap, 'resize');
 			});
 		return a;
@@ -30,12 +31,12 @@ var InformaRegion = function(left, top, right, bottom, discussionId, isNew) {
 		width: Math.abs(left - right),
 		height: Math.abs(top - bottom)
 	};
-	
+
 	if(isNew)
 		this.isEditable = true;
 	else
 		this.isEditable = currentUser._id == entity.derivative.discussions[discussionId].originatedBy ? true : false;
-	
+
 	this.container = $(document.createElement('div')).attr({
 		'class':'mcxDiv',
 		'id':'mcx_' + discussionId
@@ -44,7 +45,7 @@ var InformaRegion = function(left, top, right, bottom, discussionId, isNew) {
 	if(isNew) {
 		$(this.container).addClass('mcxNew');
 	}
-	
+
 	if(this.isEditable) {
 		$(this.container).addClass("mcxEditable");
 		$(this.container).append(
@@ -66,7 +67,7 @@ var InformaRegion = function(left, top, right, bottom, discussionId, isNew) {
 							action: removeAlert
 						}
 					];
-					showAlert(Alert_STR.Region.Delete.MAIN_TITLE, Alert_STR.Region.Delete.TEXT, true, null, opts); 
+					showAlert(Alert_STR.Region.Delete.MAIN_TITLE, Alert_STR.Region.Delete.TEXT, true, null, opts);
 				})
 		);
 		$(this.container).append(
@@ -74,18 +75,18 @@ var InformaRegion = function(left, top, right, bottom, discussionId, isNew) {
 				.attr('class','mcxResize')
 		);
 	}
-	
+
 	this.displayAsDeleted = function() {
 		$(this.container).removeClass('mcxNew');
 		$(this.container).removeClass('mcxEditable');
 		$(this.container).removeClass('mcxActive');
-		$(this.container).addClass('mcxDeleted');		
+		$(this.container).addClass('mcxDeleted');
 	}
-	
+
 	if(!isNew && entity.derivative.discussions[discussionId].isDeleted != undefined && entity.derivative.discussions[discussionId].isDeleted == true) {
 		this.displayAsDeleted();
 	}
-	
+
 	$(this.container).click(function() {
 		mcx_move = 0;
 		var r = entity.getActiveRegion(this);
@@ -124,7 +125,7 @@ var InformaRegion = function(left, top, right, bottom, discussionId, isNew) {
 	this.discussionId = discussionId;
 	this.isActive = false;
 	this.isSelected = false;
-	
+
 	this.recalculate = function(realRegion) {
 		this.bounds.left = (realRegion.regionBounds.regionCoordinates.region_left * entity.displayBounds.displayWidth)/entity.imageDimensions[0];
 		this.bounds.top = (realRegion.regionBounds.regionCoordinates.region_top * entity.displayBounds.displayHeight)/entity.imageDimensions[1];
@@ -140,7 +141,7 @@ var InformaRegion = function(left, top, right, bottom, discussionId, isNew) {
 			if(!this.isActive)
 				$(this.container).removeClass('selected');
 		}
-		
+
 		if(trail != null && trail != undefined) {
 			this.bounds.left = (trail.regionCoordinates.region_left * entity.displayBounds.displayWidth)/entity.imageDimensions[0];
 			this.bounds.top = (trail.regionCoordinates.region_top * entity.displayBounds.displayHeight)/entity.imageDimensions[1];
@@ -186,7 +187,7 @@ var MediaEntity = function(data) {
 	this.sourceId = data.sourceId;
 	this.mediaType = data.mediaType;
 	this.imageDimensions = [data.j3m.data.exif.imageWidth, data.j3m.data.exif.imageLength];
-	
+
 	this.importFlag = false;
 	if(data.importFlag != undefined && data.importFlag)
 		this.importFlag = true;
@@ -212,7 +213,7 @@ var MediaEntity = function(data) {
 
 		if(entity.currentAnnotation != null && entity.currentAnnotation != undefined)
 			entity.reloadAnnotation(entity.currentAnnotation);
-			
+
 		// make sure user has all the regions!
 		var missingRegions = Math.abs(entity.derivative.discussions.length - entity.regions.length);
 		console.info(missingRegions);
@@ -224,7 +225,7 @@ var MediaEntity = function(data) {
 				placeRegion((pickup + mr), entity.derivative.discussions[pickup + mr]);
 			}
 		}
-		
+
 		$.each(entity.regions, function(idx, item) {
 			item.recalculate(entity.derivative.discussions[idx]);
 			if(entity.derivative.discussions[idx].isDeleted && entity.derivative.discussions[idx].isDeleted == true) {
@@ -267,7 +268,7 @@ var MediaEntity = function(data) {
 			Media.appendToAnnotation.init(annotation);
 		});
 		entity.currentAnnotation = annotation;
-		
+
 		if(entity.derivative.discussions[annotation] != undefined) {
 			var a = entity.derivative.discussions[annotation].annotations;
 			if(a != undefined && a != null) {
@@ -285,7 +286,7 @@ var MediaEntity = function(data) {
 			}
 		}
 	};
-	
+
 	this.loadMessages = function(messages) {
 		$("#messages_content").empty();
 		showMessagesHolder();
@@ -398,7 +399,7 @@ var MediaEntity = function(data) {
 		locationOnSave: data.locationOnSave,
 		locations: data.location
 	};
-	
+
 	this.informa = {
 		intent: {
 			label: Metadata_STR.Intent.label,
@@ -453,6 +454,6 @@ var MediaEntity = function(data) {
 					Misc_STR.LEARN_MORE
 		]);
 	}
-	
+
 	this.visualize(View.NORMAL);
 }
