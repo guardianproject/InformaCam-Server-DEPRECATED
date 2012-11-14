@@ -1,6 +1,7 @@
 var cometd, importConnex;
 var dc = '/service/desktopConnection';
 var mcast = '/multicast';
+var org_name = "guardian_project";
 
 var Command = {
 	UNLOAD: 98,
@@ -23,7 +24,8 @@ var Command = {
 	LOAD_MODULES: 115,
 	INIT_NEW_CLIENT: 116,
 	LOAD_CLIENTS: 117,
-	GET_CLIENT: 118
+	GET_CLIENT: 118,
+	DOWNLOAD_CLIENT_CREDENTIALS: 119
 };
 
 var entity, mcxAnnotation, movingAnnotation;

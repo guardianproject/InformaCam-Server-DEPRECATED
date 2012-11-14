@@ -242,6 +242,24 @@ var Admin = {
 			
 		}
 	},
+	downloadClientCredentials: {
+		init: function(sourceId) {
+			showSpinner();
+			broadcast({
+				attempt: Command.DOWNLOAD_CLIENT_CREDENTIALS,
+				options: {
+					user: {
+						_id: currentUser._id,
+						_rev: currentUser._rev
+					},
+					sourceId: sourceId
+				}
+			});
+		},
+		callback: function(downloadLink) {
+		
+		}
+	},
 	registerClient: {
 		init: function(newClientHolder) {
 			var newClient = gatherFormInput(newClientHolder);
@@ -262,6 +280,7 @@ var Admin = {
 		},
 		callback: function(newClient) {
 			// returns fingerprint, which is also the root dir
+			console.info(newClient);
 			removeSpinner();
 			if(newClient.newClient != null && newClient.newClient != undefined) {
 				// TODO: ok, and download file

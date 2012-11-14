@@ -71,7 +71,7 @@ function gatherFormInput(elName) {
 					formInput[key] = fi[key];
 				parsed++;
 			}
-			
+
 			expect++;
 		}
 	});
@@ -260,7 +260,7 @@ function setMedia() {
 
 	media_overlay.css({'background-image':'none'});
 	setImageRatio();
-	
+
 	if(entity.mediaType == MediaTypes.VIDEO) {
 		// sort the regions!
 		$.each(entity.derivative.discussions, function(idx, item) {
@@ -281,7 +281,7 @@ function setMedia() {
 			initRegionsVideo();
 
 		removeSpinner();
-		
+
 		$('#video_holder').css('display','block');
 		$("#media_overlay").css('display','none');
 	} else {
@@ -319,7 +319,7 @@ function setVideo() {
 			'width' : entity.displayBounds.displayWidth,
 			'height' : entity.displayBounds.displayHeight
 	});
-		
+
 	$("#video_holder").empty();
 	$.each(entity.derivative.representation, function() {
 		var representation = this;
@@ -330,7 +330,7 @@ function setVideo() {
 			);
 		}
 	});
-	
+
 	pop = Popcorn("#video_holder");
 }
 
@@ -367,6 +367,8 @@ function setImageRatio() {
 	console.info("maxWidth: " + maxWidth);
 	console.info("maxHeight: " + maxHeight);
 
+	if(entity.mediaType == MediaTypes.IMAGE) {
+
 	if(entity.imageDimensions[0] > entity.imageDimensions[1]) {
 		// if it's landscape, let height set the ratio...
 		console.info('this width is larger than the height');
@@ -392,16 +394,40 @@ function setImageRatio() {
 		displayHeight = maxHeight;
 	}
 
+}
 
 
-	/*
-	if(entity.imageDimensions[0] == entity.imageDimensions[1]) {
-		displayHeight = displayWidth = maxHeight;
-	} else {
-		displayHeight = maxHeight;
-		displayWidth = ((displayHeight * entity.imageDimensions[0])/entity.imageDimensions[1]);
-	}
-	*/
+	if(entity.mediaType == MediaTypes.VIDEO) {
+
+
+		if(entity.imageDimensions[0] > entity.imageDimensions[1]) {
+		// if it's landscape...
+		frameHeight = $('#media_frame').height();
+		displayHeight = 480;
+		displayWidth = 360;
+		}
+		else if(entity.imageDimensions[1] > entity.imageDimensions[0]) {
+
+		// if it's landscape...
+			frameWidth = $('#media_frame').width();
+			alert(frameWidth);
+			if (frameWidth >= 1280) {
+				displayWidth = 1280;
+				displayHeight = 720;
+			}
+			else if (frameWidth >= 480) {
+				displayWidth = 480;
+				displayHeight = 360;
+			}
+			else {
+ 				displayWidth = 176;
+				displayHeight = 144;
+			}
+
+		}
+}
+
+
 
 	entity.displayBounds = {
 		displayWidth: displayWidth,
@@ -453,7 +479,7 @@ function initRegionsVideo() {
 				effect: "applyclass",
 				applyclass: "mcxActive"
 			});
-			
+
 			pop.listen("timeupdate", function() {
 				// get regionbounds at about this time
 				var time = secondsToMillis(this.currentTime());
@@ -462,13 +488,13 @@ function initRegionsVideo() {
 						region.update(region.videoTrail[vt]);
 						break;
 					}
-					
+
 				}
 			});
 		} catch(err) {
 			console.info(err.message);
 		}
-		
+
 	});
 }
 
@@ -750,7 +776,7 @@ function toggleModule(el) {
 		$(el).removeClass('selected');
 	else
 		$(el).addClass('selected');
-		
+
 	var sibling = $(el).next(".ic_admin_module_content");
 	if($(el).hasClass('selected'))
 		$(sibling).css('display','block');
@@ -761,7 +787,7 @@ function toggleModule(el) {
 function loadAdminModules(modules) {
 	$("#ic_admin_module_holder").empty();
 	var content = 0;
-	
+
 	var waitForLoaded = window.setInterval(function() {
 		if(content == modules.length) {
 			$.each($(".ic_admin_module_toggle"), function() {
@@ -770,26 +796,26 @@ function loadAdminModules(modules) {
 					toggleModule(toggle);
 				});
 			});
-			
+
 			$.each($(".ic_admin_module_content"), function() {
 				var module = this;
 				$(module).css('display','none');
-				
+
 				$.each($(module).find(".ic_live_update"), function() {
 					parseLiveUpdate(this);
 				});
 			});
-			
-			
+
+
 			removeSpinner();
 			window.clearInterval(waitForLoaded);
 		}
 	}, 10);
-	
+
 	$.each(modules, function() {
 		var src = this;
 		var module = $(document.createElement('li'));
-		
+
 		$.ajax({
 			url: "modules/" + src,
 			dataType: "html",
@@ -798,8 +824,8 @@ function loadAdminModules(modules) {
 				content++;
 			}
 		});
-		
-		$("#ic_admin_module_holder").append(module);	
+
+		$("#ic_admin_module_holder").append(module);
 	});
 }
 
@@ -832,11 +858,11 @@ function initLayout() {
 	annotation_holder = $("#annotation_holder");
 	messages_holder = $("#messages_holder");
 	expandedView_holder = $("#expandedView_holder");
-	
+
 	importer_holder = $("#importer_holder");
 	importer_holder.css('left', $(window).width() * .3);
 	importer_holder.css('margin-top', $(window).height()/2 - 150);
-	
+
 	$("#map_view_readout").css({
 		'width': Math.abs(metadata_readout.position().left - $(window).width()) - 60,
 		'height': (($(window).height() - 100) - (header.height() + footer.height()))
@@ -927,9 +953,9 @@ function initLayout() {
 				console.info('adding video region');
 				break;
 		}
-		
+
 		// Media.annotate.init(entity.newAnnotation);
-		
+
 	});
 
 	$(".tr_header td").click(function() {
@@ -1033,19 +1059,19 @@ function moveAnnotation(e) {
 function setAnnotation() {
 	$(document).unbind('mousemove', moveAnnotation);
 
-	if(mcx_move == 1) {	
+	if(mcx_move == 1) {
 		var realRegion = entity.derivative.discussions[movingAnnotation.discussionId];
-		
+
 		realRegion.regionBounds.regionCoordinates = {
 			region_left : (movingAnnotation.bounds.left * entity.imageDimensions[0])/entity.displayBounds.displayWidth,
 			region_top : (movingAnnotation.bounds.top * entity.imageDimensions[1])/entity.displayBounds.displayHeight
 		};
-		
+
 		realRegion.regionBounds.regionDimensions = {
 			region_height: (movingAnnotation.bounds.height * entity.imageDimensions[1])/entity.displayBounds.displayHeight,
 			region_width: (movingAnnotation.bounds.width * entity.imageDimensions[0])/entity.displayBounds.displayWidth
 		};
-		
+
 		Media.editAnnotation.init(movingAnnotation.discussionId, EditTypes.MOVE, realRegion);
 		mcx_move = 0;
 	}

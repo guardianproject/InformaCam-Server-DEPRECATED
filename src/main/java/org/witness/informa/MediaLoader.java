@@ -468,6 +468,19 @@ public class MediaLoader implements Constants {
 		
 		return result;
 	}
+	
+	public JSONObject downloadClientCredentials(Map<String, Object> opts) {
+		JSONObject result = new JSONObject();
+		result.put(DC.Keys.RESULT, DC.Results.FAIL);
+		
+		Map<String, Object> user = (Map<String, Object>) opts.get(DC.Options.USER);
+		if(!CouchParser.validateUser(dbUsers, user))
+			return result;
+			
+		
+		
+		return result;
+	}
 
 	@SuppressWarnings({ "unchecked", "deprecation" })
 	public JSONObject initNewClient(Map<String, Object> opts) {

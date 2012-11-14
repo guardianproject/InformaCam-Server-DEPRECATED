@@ -154,6 +154,10 @@ Layout*/
 	z-index:1;
 }
 
+#ui_admin {
+	overflow-y:auto;
+}
+
 #ic_footer {
 	height:28px;
 	z-index:0;
