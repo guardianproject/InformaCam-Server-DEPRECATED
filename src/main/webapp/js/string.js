@@ -67,7 +67,8 @@ var Alert_STR = {
 		RENAME_FAIL: "Could not change the media object's title.",
 		EMPTY_ANNOTATION: "Please enter some text for your annotation.",
 		EMPTY_MESSAGE_CONTENT: "Please enter a message to send.",
-		INIT_CLIENT_FAIL: "Sorry, I could not initiate this new client.  Please try again."
+		INIT_CLIENT_FAIL: "Sorry, I could not initiate this new client.  Please try again.",
+		EXPORT_ICTD_FAIL: "Sorry, I could not find an ICTD file for this client.  Please try again."
 	},
 	MediaLoading: {
 		MAIN_TITLE: "Media Loading...",
