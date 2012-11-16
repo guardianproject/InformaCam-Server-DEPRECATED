@@ -46,6 +46,9 @@ function doClear(el) {
 		case "input":
 			$(el).val('');
 			break;
+		case "textarea":
+			$(el).val('');
+			break;
 		case "li":
 			$(el).removeClass('selected');
 			break;
@@ -647,14 +650,19 @@ function showAlert(title, txt, isDismissable, replacements, options) {
 	$("#alert_options").empty();
 	if(isDismissable) {
 		if(options != null && options != undefined ) {
+			
 			$.each(options, function() {
 				var button = this;
-				$("#alert_options").append(
-					$(document.createElement('a'))
+				var a = $(document.createElement('a'))
 						.html(button.label)
-						.addClass('dismissal')
-						.click(function() {button.action.call();})
-				);
+						.addClass('dismissal');
+										
+				a.click(function() {
+					button.action.call();
+				});
+			
+				
+				$("#alert_options").append(a);
 			});
 		} else {
 			$("#alert_options").append(

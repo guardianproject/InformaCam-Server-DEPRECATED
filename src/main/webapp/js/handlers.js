@@ -132,9 +132,9 @@ function handleDesktopServiceMessage(data) {
 				if(data.metadata != null)
 					Admin.registerClient.callback(data.metadata);
 				break;
-			case Command.Command.DOWNLOAD_CLIENT_CREDENTIALS:
+			case Command.DOWNLOAD_CLIENT_CREDENTIALS:
 				if(data.metadata != null) 
-					Admin.downloadClientCredentials(data.metadata);
+					Admin.downloadClientCredentials.callback(data.metadata);
 				break;
 		}
 	}
