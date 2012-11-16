@@ -239,7 +239,9 @@ var Admin = {
 			});
 		},
 		callback: function(clientList) {
-			
+			$.each(formatClientListForTable(clientList.clientList), function() {
+				$("#list_clients_holder").append(this);
+			});
 		}
 	},
 	downloadClientCredentials: {
@@ -256,8 +258,29 @@ var Admin = {
 				}
 			});
 		},
-		callback: function(downloadLink) {
-		
+		callback: function(downloadData) {
+			removeSpinner();
+						
+			var opts = [
+				{
+					label: Alert_STR.Basic.DOWNLOAD,
+					action: function() {
+						// init the iframe...
+						importer_holder.empty();
+						importer_holder.append($(document.createElement('iframe'))
+							.prop('src', downloadData.containerURL + "?fileData=" + downloadData.fileData + "&sourceId=" + downloadData.sourceId)
+							.load(removeAlert)
+						);
+						showImporter();
+					}
+				},
+				{
+					label: Alert_STR.Basic.CANCEL,
+					action: removeAlert
+				}
+			];
+			showAlert(Alert_STR.Admin.ClientDownload.MAIN_TITLE, Alert_STR.Admin.ClientDownload.CLICK_TO_DOWNLOAD, true, null, opts);
+			
 		}
 	},
 	registerClient: {
@@ -283,7 +306,11 @@ var Admin = {
 			console.info(newClient);
 			removeSpinner();
 			if(newClient.newClient != null && newClient.newClient != undefined) {
-				// TODO: ok, and download file
+				doClear("#newClientName");
+				doClear("#newClientEmail");
+				doClear("#newClientKey");
+				
+				Admin.downloadClientCredentials.init(newClient.newClient);
 			} else {
 				showAlert(Alert_STR.Errors.MAIN_TITLE, Alert_STR.Errors.INIT_CLIENT_FAIL, false, null, null);
 			}

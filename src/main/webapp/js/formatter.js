@@ -126,6 +126,50 @@ function parseForReplacementMetadata(item) {
 	return mod;
 }
 
+function formatClientListForTable(data) {
+	var obj = new Array();
+	$.each(data, function(idx, item) {
+		
+		var d = item;
+		var alias = d.alias;
+		
+		if(alias == undefined)
+			alias = d.sourceId;
+		
+		var export_ictd = $(document.createElement('a'))
+			.html(Source_STR.EXPORT_PROMPT)
+			.click(function() {
+				Admin.downloadClientCredentials.init(d.sourceId);
+			});
+			
+		var row = $(document.createElement('tr'))
+			.append(
+				$(document.createElement('td'))
+					.html("<b>" + alias + "</b>")
+					.attr({
+						'class': 'ic_toSource',
+						'id': d.sourceId
+					})
+			)
+			.append(
+				$(document.createElement('td'))
+					.html(d.numberOfSubmissions)
+			)
+			.append(
+				$(document.createElement('td'))
+					.html(formatTimestampForHumans(d.dateOfLastSubmission))
+			)
+			.append(
+				$(document.createElement('td'))
+					.append(export_ictd)
+			);
+		
+		obj.push(row);
+				
+	});
+	return obj;
+}
+
 function formatSubmissionsForTable(data) {
 	var obj = new Array();
 	$.each(data, function() {

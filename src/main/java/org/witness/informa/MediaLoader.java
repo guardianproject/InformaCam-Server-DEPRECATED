@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -469,6 +470,7 @@ public class MediaLoader implements Constants {
 		return result;
 	}
 	
+	@SuppressWarnings("unchecked")
 	public JSONObject downloadClientCredentials(Map<String, Object> opts) {
 		JSONObject result = new JSONObject();
 		result.put(DC.Keys.RESULT, DC.Results.FAIL);
@@ -477,7 +479,27 @@ public class MediaLoader implements Constants {
 		if(!CouchParser.validateUser(dbUsers, user))
 			return result;
 			
+		File ictd = new File(LocalConstants.ENGINE_ROOT + "sources/" + (String) opts.get(DC.Options.SOURCE_ID) + "/" + LocalConstants.ORGANIZATION_NAME + ".ictd");
+		if(!ictd.exists())
+			return result;
 		
+	
+		try {
+			FileInputStream fis = new FileInputStream(ictd);
+			byte[] ictd_ = new byte[fis.available()];
+			fis.read(ictd_);
+			
+			result.put(DC.Keys.FILE_DATA, ictd.getAbsolutePath());
+			result.put(DC.Keys.SOURCE_ID, (String) opts.get(DC.Options.SOURCE_ID));
+			result.put(DC.Keys.CONTAINER_URL, LocalConstants.SERVER_URL + "ictd.php");
+			result.put(DC.Keys.RESULT, DC.Results.OK);
+
+			fis.close();
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		
 		return result;
 	}
@@ -666,6 +688,7 @@ public class MediaLoader implements Constants {
 			j.remove(Couch.Documents._ID);
 			j.remove(Couch.Documents._REV);
 			
+			// XXX: why is this wonky?
 			j.put(Couch.Views.Sources.Keys.NUMBER_OF_SUBMISSIONS, submissions == null ? 0 :submissions.size());
 			
 			if(submissions != null) {
@@ -693,7 +716,7 @@ public class MediaLoader implements Constants {
 			}
 		}
 				
-		result.put(DC.Keys.METADATA, res);
+		result.put(DC.Keys.CLIENT_LIST, res);
 		result.put(DC.Keys.RESULT, DC.Results.OK);
 		
 		return result;

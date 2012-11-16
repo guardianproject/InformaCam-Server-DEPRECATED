@@ -74,11 +74,18 @@ var Alert_STR = {
 		SELECT_MEDIA: "Please select your media",
 		WAITING: "Please wait.  Your media is being processed."
 	},
+	Admin: {
+		ClientDownload: {
+			MAIN_TITLE: "Download Client Credentials",
+			CLICK_TO_DOWNLOAD: "Click below to download as an .ictd file.  How you distribute this file to users is up to you."	
+		}	
+	},
 	Basic: {
 		YES: "Yes",
 		NO: "No",
 		OK: "OK",
-		CANCEL: "Cancel"
+		CANCEL: "Cancel",
+		DOWNLOAD: "Download"
 	},
 	Submissions: {
 		MAIN_TITLE: "No Submissions",
@@ -127,6 +134,16 @@ var Derivative_STR = {
 		VIDEO: "Video by "
 	},
 	UnaliasedSource: "User ID "
+};
+
+var Source_STR = {
+	MAIN_TITLE: "Sources",
+	EXPORT_PROMPT: "Export ICTD File",
+	Fields: {
+		ALIAS: "Name/Alias",
+		NUMBER_OF_SUBMISSIONS: "No. of Submissions",
+		DATE_OF_LAST_SUBMISSION: "Last Submission"
+	}
 };
 
 var Menu_STR = {
