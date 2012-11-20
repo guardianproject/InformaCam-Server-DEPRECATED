@@ -401,19 +401,27 @@ function setImageRatio() {
 
 
 	if(entity.mediaType == MediaTypes.VIDEO) {
-
+		frameHeight = $('#media_frame').height();
+	frameWidth = $('#media_frame').width();
 
 		if(entity.imageDimensions[0] > entity.imageDimensions[1]) {
 		// if it's landscape...
-		frameHeight = $('#media_frame').height();
-		displayHeight = 480;
-		displayWidth = 360;
+			if (frameHeight >= 1280) {
+				displayHeight = 1280;
+				displayWidth = 720;
+			}
+			else if (frameHeight >= 480) {
+				displayHeight = 480;
+				displayWidth = 360;
+			}
+			else {
+ 				displayframeHeight = 176;
+				displayWidth = 144;
+			}
+
 		}
 		else if(entity.imageDimensions[1] > entity.imageDimensions[0]) {
-
-		// if it's landscape...
-			frameWidth = $('#media_frame').width();
-			alert(frameWidth);
+		// if it's portrait...
 			if (frameWidth >= 1280) {
 				displayWidth = 1280;
 				displayHeight = 720;

@@ -133,8 +133,12 @@ function handleDesktopServiceMessage(data) {
 					Admin.registerClient.callback(data.metadata);
 				break;
 			case Command.DOWNLOAD_CLIENT_CREDENTIALS:
-				if(data.metadata != null) 
+				if(data.metadata != null && data.metadata.result == 1) 
 					Admin.downloadClientCredentials.callback(data.metadata);
+				else {
+					removeSpinner();
+					showAlert(Alert_STR.Errors.MAIN_TITLE, Alert_STR.Errors.EXPORT_ICTD_FAIL, false, null, null);
+				}
 				break;
 		}
 	}
