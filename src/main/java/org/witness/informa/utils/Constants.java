@@ -251,6 +251,7 @@ public interface Constants {
 			public static final String NEW_CLIENT_KEY = "newClientKey";
 			public static final String NEW_CLIENT = "newClient";
 			public static final String SOURCE_ID = Couch.Views.Sources.Keys.SOURCE_ID;
+			public static final String CURRENT_SESSION = "currentSession";
 		}
 
 	}
@@ -291,6 +292,13 @@ public interface Constants {
 			"sourceId",
 			"timestampIndexed"
 		};
+	}
+	
+	public final static class Log {
+		public final static int LOG_MAX = 4;
+		public final static class Termination {
+			public final static String MAXIMUM_ENTRIES_REACHED = "Maximum entries reached";
+		}
 	}
 
 	public final static class Admin {

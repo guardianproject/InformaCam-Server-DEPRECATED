@@ -114,11 +114,20 @@ public class MediaLoader implements Constants {
 		return search.query(viewHash);
 	}
 	
-	public JSONObject loginUser(Map<String, Object> credentials) {
+	public JSONObject loginUser(Map<String, Object> credentials, String sessionId) {
 		ViewQuery getUsers = new ViewQuery().designDocId(Couch.Design.ADMIN);
 		String unpw = (String) credentials.get("username") + (String) credentials.get("password");
 		// TODO: set current session id, cookies, etc.
-		return CouchParser.getRecord(dbUsers, getUsers, Couch.Views.Admin.ATTEMPT_LOGIN, unpw, new String[] {"unpw"});
+		JSONObject user = CouchParser.getRecord(dbUsers, getUsers, Couch.Views.Admin.ATTEMPT_LOGIN, unpw, new String[] {"unpw"});
+		
+		Map<String, Object> new_session = new HashMap<String, Object>();
+		new_session.put(DC.Options.CURRENT_SESSION, sessionId);
+		
+		if(user != null)
+			user.put(DC.Options._REV, CouchParser.updateRecord(User.class, dbUsers, user.getString(DC.Options._ID), user.getString(DC.Options._REV), new_session));
+		
+		user.remove(DC.Options.CURRENT_SESSION);
+		return user;
 	}	
 	
 	public JSONObject renameMedia(String id, String rev, String newAlias) {
@@ -518,6 +527,9 @@ public class MediaLoader implements Constants {
 			String name = (String) newClient.get(DC.Options.NEW_CLIENT_NAME);
 			String email = (String) newClient.get(DC.Options.NEW_CLIENT_EMAIL);
 			String key = new String(Base64.decode((String) newClient.get(DC.Options.NEW_CLIENT_KEY)));
+			
+			// XXX: GET THE FINGERPRINT: this is tempName OK?
+			
 			String tempName = DigestUtils.md5Hex(name + email + System.currentTimeMillis()) + ".asc";
 			
 			try {

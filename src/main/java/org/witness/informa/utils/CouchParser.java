@@ -28,8 +28,7 @@ public class CouchParser implements Constants {
 		return "%5B" + str + "%5D";
 	}
 	
-	@SuppressWarnings("unchecked")
-	public static void ClearDatabase(StdCouchDbConnector db, Class c) {
+	public static void ClearDatabase(StdCouchDbConnector db, Class<?> c) {
 		for(String s : db.getAllDocIds()) {
 			if(!s.contains("_design")) {
 				Log(Couch.INFO, s);
@@ -127,7 +126,7 @@ public class CouchParser implements Constants {
 	}
 	
 	@SuppressWarnings("unchecked")
-	public static String[] createRecord(Class c, StdCouchDbConnector db, Map<String, Object> initialValues) {
+	public static String[] createRecord(Class<?> c, StdCouchDbConnector db, Map<String, Object> initialValues) {
 		try {
 			Object o = c.newInstance();
 			

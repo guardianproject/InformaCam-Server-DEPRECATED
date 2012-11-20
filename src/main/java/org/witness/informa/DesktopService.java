@@ -8,16 +8,20 @@ import org.witness.informa.utils.Constants.DC.Attempts;
 import org.witness.informa.utils.Constants;
 import org.witness.informa.utils.CouchParser;
 import org.witness.informa.utils.InformaMessage;
+import org.witness.informa.utils.Logger;
 
 public class DesktopService extends AbstractService implements Constants {
 	MediaLoader ml = null;
 	boolean cFlag = false;
+	public Logger log;
 	
 	public DesktopService(BayeuxServer bayeux) {
 		super(bayeux, "desktopConnection");
 		addService("/service/desktopConnection", "desktopResponse");
 		addService("/multicast", "multicastResponse");
-				
+		
+		log = new Logger(getBayeux().getSessions());
+		
 		if(ml == null)
 			ml = new MediaLoader();
 		
@@ -50,8 +54,6 @@ public class DesktopService extends AbstractService implements Constants {
 	}
 	
 	public void desktopResponse(ServerSession remote, Message message) {
-
-
 		InformaMessage msg = new InformaMessage(message);
 		if(msg.in.containsKey(Attempts.TAG)) {
 			long l = (Long) msg.in.get(Attempts.TAG);
@@ -64,7 +66,7 @@ public class DesktopService extends AbstractService implements Constants {
 					ml = new MediaLoader();
 				
 				msg.put(DC.Keys.COMMAND, DC.Commands.ATTEMPT_LOGIN);
-				msg.put(DC.Keys.METADATA, ml.loginUser(msg.opts));
+				msg.put(DC.Keys.METADATA, ml.loginUser(msg.opts, remote.getId()));
 				break;
 			case Attempts.LOGOUT:
 				msg.put(DC.Keys.COMMAND, DC.Commands.LOGOUT);
@@ -151,6 +153,7 @@ public class DesktopService extends AbstractService implements Constants {
 			}
 		}
 		
+		log.log(msg.out(), remote.getId());
 		remote.deliver(getServerSession(), "/desktopConnection", msg.out(), null);
 	}
 	
