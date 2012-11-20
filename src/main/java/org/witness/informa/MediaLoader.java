@@ -601,71 +601,72 @@ public class MediaLoader implements Constants {
 				
 				File sourceRoot = new File(LocalConstants.ENGINE_ROOT + "sources/" + ((String) cred.get(Couch.Views.Sources.Keys.SOURCE_ID)).toLowerCase());
 				
-				if(sourceRoot.exists())
-					return result;
-				
-				// copy over key
-				sourceRoot.mkdir();
-				File original = new File(LocalConstants.CLIENT_TEMP + tempName);
-				File sourceKey = new File(sourceRoot, ((String) cred.get(Couch.Views.Sources.Keys.SOURCE_ID)).toLowerCase() + ".asc");
-				
-				try {
-					FileChannel o = new FileInputStream(original).getChannel();
-					FileChannel r = new FileOutputStream(sourceKey).getChannel();
-					r.transferFrom(o, 0, o.size());
-				} catch(IOException e) {
-					CouchParser.Log(Couch.ERROR, e.toString());
-					e.printStackTrace();
+				if(!sourceRoot.exists()) {
+					// copy over key
+					sourceRoot.mkdir();
+					File original = new File(LocalConstants.CLIENT_TEMP + tempName);
+					File sourceKey = new File(sourceRoot, ((String) cred.get(Couch.Views.Sources.Keys.SOURCE_ID)).toLowerCase() + ".asc");
+
+					try {
+						FileChannel o = new FileInputStream(original).getChannel();
+						FileChannel r = new FileOutputStream(sourceKey).getChannel();
+						r.transferFrom(o, 0, o.size());
+					} catch(IOException e) {
+						CouchParser.Log(Couch.ERROR, e.toString());
+						e.printStackTrace();
+						original.delete();
+						sourceKey.delete();
+						sourceRoot.delete();
+						return result;
+					} 
+
+					Map<String, Object> sourceId = new HashMap<String, Object>();
+					sourceId.put(Couch.Views.Sources.Keys.SOURCE_ID, ((String) cred.get(Couch.Views.Sources.Keys.SOURCE_ID)).toLowerCase());
+
+					Map<String, Object> alias = new HashMap<String, Object>();
+					alias.put(Couch.Views.Sources.Keys.ALIAS, name);
+
+					Map<String, Object> _email = new HashMap<String, Object>();
+					_email.put(Couch.Views.Sources.Keys.ALIAS, email);
+
+					Map<String, Object> initialValues = new HashMap<String, Object>();
+					initialValues.put("java.lang.String", sourceId);
+					initialValues.put("java.lang.String", alias);
+					initialValues.put("java.lang.String", _email);
+
+					if(CouchParser.createRecord(Source.class, dbSources, initialValues) == null) {
+						original.delete();
+						sourceKey.delete();
+						sourceRoot.delete();
+						return result;
+					}
+
+					// delete tmp
 					original.delete();
-					sourceKey.delete();
-					sourceRoot.delete();
-					return result;
-				} 
-				
-				Map<String, Object> sourceId = new HashMap<String, Object>();
-				sourceId.put(Couch.Views.Sources.Keys.SOURCE_ID, ((String) cred.get(Couch.Views.Sources.Keys.SOURCE_ID)).toLowerCase());
-				
-				Map<String, Object> alias = new HashMap<String, Object>();
-				alias.put(Couch.Views.Sources.Keys.ALIAS, name);
-				
-				Map<String, Object> _email = new HashMap<String, Object>();
-				_email.put(Couch.Views.Sources.Keys.ALIAS, email);
-				
-				Map<String, Object> initialValues = new HashMap<String, Object>();
-				initialValues.put("java.lang.String", sourceId);
-				initialValues.put("java.lang.String", alias);
-				initialValues.put("java.lang.String", _email);
-								
-				if(CouchParser.createRecord(Source.class, dbSources, initialValues) == null) {
-					original.delete();
-					sourceKey.delete();
-					sourceRoot.delete();
-					return result;
-				}
-				
-				// delete tmp
-				original.delete();
-				
-				original = new File(pResult[0]);
-				File sourceICTD = new File(LocalConstants.ENGINE_ROOT + "sources/" + ((String) cred.get(Couch.Views.Sources.Keys.SOURCE_ID)).toLowerCase(), LocalConstants.ORGANIZATION_NAME + ".ictd");
-				
-				try {
-					FileChannel o = new FileInputStream(original).getChannel();
-					FileChannel r = new FileOutputStream(sourceICTD).getChannel();
-					r.transferFrom(o, 0, o.size());
+					original = new File(pResult[0]);
+					File sourceICTD = new File(LocalConstants.ENGINE_ROOT + "sources/" + ((String) cred.get(Couch.Views.Sources.Keys.SOURCE_ID)).toLowerCase(), LocalConstants.ORGANIZATION_NAME + ".ictd");
 					
+					try {
+						FileChannel o = new FileInputStream(original).getChannel();
+						FileChannel r = new FileOutputStream(sourceICTD).getChannel();
+						r.transferFrom(o, 0, o.size());
+						
+						result.put(DC.Options.NEW_CLIENT, ((String) cred.get(Couch.Views.Sources.Keys.SOURCE_ID)).toLowerCase());
+						result.put(DC.Keys.RESULT, DC.Results.OK);
+						original.delete();
+					} catch(IOException e) {
+						CouchParser.Log(Couch.ERROR, e.toString());
+						e.printStackTrace();
+						original.delete();
+						sourceKey.delete();
+						sourceRoot.delete();
+						sourceICTD.delete();
+						return result;
+					} 
+				} else {
 					result.put(DC.Options.NEW_CLIENT, ((String) cred.get(Couch.Views.Sources.Keys.SOURCE_ID)).toLowerCase());
 					result.put(DC.Keys.RESULT, DC.Results.OK);
-					original.delete();
-				} catch(IOException e) {
-					CouchParser.Log(Couch.ERROR, e.toString());
-					e.printStackTrace();
-					original.delete();
-					sourceKey.delete();
-					sourceRoot.delete();
-					sourceICTD.delete();
-					return result;
-				} 
+				}
 				
 
 			} catch(IOException e) {
