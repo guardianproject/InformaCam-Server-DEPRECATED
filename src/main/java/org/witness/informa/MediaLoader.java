@@ -526,14 +526,18 @@ public class MediaLoader implements Constants {
 		try {
 			String name = (String) newClient.get(DC.Options.NEW_CLIENT_NAME);
 			String email = (String) newClient.get(DC.Options.NEW_CLIENT_EMAIL);
-			String key = new String(Base64.decode((String) newClient.get(DC.Options.NEW_CLIENT_KEY)));
+			
+			String key_package = new String(Base64.decode((String) newClient.get(DC.Options.NEW_CLIENT_KEY)));
+			
+			String key = key_package.substring(0, key_package.lastIndexOf(0x0A));
+			String base_image = key_package.substring(key_package.lastIndexOf(0x0A) + 1);
 			
 			// XXX: GET THE FINGERPRINT: this is tempName OK?
 			
-			String tempName = DigestUtils.md5Hex(name + email + System.currentTimeMillis()) + ".asc";
+			String tempKeyName = DigestUtils.md5Hex(name + email + System.currentTimeMillis()) + ".asc";
 			
 			try {
-				FileWriter fw = new FileWriter(LocalConstants.CLIENT_TEMP + tempName);
+				FileWriter fw = new FileWriter(LocalConstants.CLIENT_TEMP + tempKeyName);
 				fw.write(key);
 				fw.flush();
 				fw.close();
@@ -554,7 +558,7 @@ public class MediaLoader implements Constants {
 			cmd.add(LocalConstants.ScriptsRoot.PY + "new_client.py");
 			cmd.add(name);
 			cmd.add(email);
-			cmd.add(LocalConstants.CLIENT_TEMP + tempName);
+			cmd.add(LocalConstants.CLIENT_TEMP + tempKeyName);
 			
 			StringBuffer cmdStr = new StringBuffer();
 			for(String c : cmd)
@@ -604,13 +608,20 @@ public class MediaLoader implements Constants {
 				if(!sourceRoot.exists()) {
 					// copy over key
 					sourceRoot.mkdir();
-					File original = new File(LocalConstants.CLIENT_TEMP + tempName);
+					File original = new File(LocalConstants.CLIENT_TEMP + tempKeyName);
 					File sourceKey = new File(sourceRoot, ((String) cred.get(Couch.Views.Sources.Keys.SOURCE_ID)).toLowerCase() + ".asc");
+					File baseImage = new File(sourceRoot, "base_image.jpg");
 
 					try {
 						FileChannel o = new FileInputStream(original).getChannel();
 						FileChannel r = new FileOutputStream(sourceKey).getChannel();
 						r.transferFrom(o, 0, o.size());
+						
+						FileOutputStream fos = new FileOutputStream(baseImage);
+						fos.write(Base64.decode(base_image));
+						fos.flush();
+						fos.close();
+						
 					} catch(IOException e) {
 						CouchParser.Log(Couch.ERROR, e.toString());
 						e.printStackTrace();
