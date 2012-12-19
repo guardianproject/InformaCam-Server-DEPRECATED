@@ -150,6 +150,7 @@ public class CouchParser implements Constants {
 			}
 			
 			db.create(o);
+			Log(Couch.INFO, ((CouchDbDocument) o).getId() + "\n" + ((CouchDbDocument) o).getRevision());
 		
 			return new String[] {((CouchDbDocument) o).getId(), ((CouchDbDocument) o).getRevision()};
 			
