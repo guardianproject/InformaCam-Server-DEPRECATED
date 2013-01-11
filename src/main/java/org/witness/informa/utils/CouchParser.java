@@ -358,8 +358,8 @@ public class CouchParser implements Constants {
 		@JsonProperty("importFlag")
 		private boolean importFlag;
 		
-		@JsonProperty("wholeUpload")
-		private boolean wholeUpload;
+		@JsonProperty("whole_upload")
+		private boolean whole_upload;
 
 		public String getId() {
 			return _id;
@@ -481,12 +481,12 @@ public class CouchParser implements Constants {
 			this.importFlag = importFlag;
 		}
 
-		public boolean getWholeUpload() {
-			return wholeUpload;
+		public boolean getWhole_upload() {
+			return whole_upload;
 		}
 
-		public void setWholeUpload(boolean wholeUpload) {
-			this.wholeUpload = wholeUpload;
+		public void setWhole_upload(boolean whole_upload) {
+			this.whole_upload = whole_upload;
 		}
 	}
 	
