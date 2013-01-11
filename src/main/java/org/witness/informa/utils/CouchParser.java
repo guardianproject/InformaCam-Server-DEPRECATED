@@ -125,27 +125,26 @@ public class CouchParser implements Constants {
 		return result;
 	}
 	
-	@SuppressWarnings("unchecked")
-	public static String[] createRecord(Class<?> c, StdCouchDbConnector db, Map<String, Object> initialValues) {
+	public static String[] createRecord(Class<?> c, StdCouchDbConnector db, Map<String, Map<String, Object>> initialValues) {
 		try {
 			Object o = c.newInstance();
 			
-			Iterator<Entry<String, Object>> iIt = initialValues.entrySet().iterator();
+			Iterator<Entry<String, Map<String, Object>>> iIt = initialValues.entrySet().iterator();
 			while(iIt.hasNext()) {
-				Entry<String, Object> entry = iIt.next();
-				// takes className : object { key : val }
-				
-				String classForName = entry.getKey();
-				Class<?> result = Class.forName(classForName);
+				Entry<String, Map<String, Object>> entry = iIt.next();
+				// takes  key { className : val }
+				String key = entry.getKey();
+				String mStart = String.valueOf(key.charAt(0));
+				key = key.replaceFirst(String.valueOf(key.charAt(0)), String.valueOf(mStart.toUpperCase().charAt(0)));
 				
 				Map<String, Object> paramBundle = (Map<String, Object>) entry.getValue();
 				Entry<String, Object> param = paramBundle.entrySet().iterator().next();
 				
-				String mStart = String.valueOf(param.getKey().charAt(0));
-				String key = param.getKey().replaceFirst(String.valueOf(param.getKey().charAt(0)), String.valueOf(mStart.toUpperCase().charAt(0)));
+				String classForName = param.getKey();
+				Class<?> result = Class.forName(classForName);
 				
 				Method iMethod = o.getClass().getDeclaredMethod("set" + key, result);
-				
+				Log(Couch.INFO, "invoking " + iMethod.getName() + " class: " + classForName);
 				iMethod.invoke(o, param.getValue());
 			}
 			
@@ -358,6 +357,9 @@ public class CouchParser implements Constants {
 		
 		@JsonProperty("importFlag")
 		private boolean importFlag;
+		
+		@JsonProperty("wholeUpload")
+		private boolean wholeUpload;
 
 		public String getId() {
 			return _id;
@@ -471,12 +473,20 @@ public class CouchParser implements Constants {
 			this.auth_token = auth_token;
 		}
 		
-		public boolean isImportFlag() {
+		public boolean getImportFlag() {
 			return importFlag;
 		}
 
 		public void setImportFlag(boolean importFlag) {
 			this.importFlag = importFlag;
+		}
+
+		public boolean getWholeUpload() {
+			return wholeUpload;
+		}
+
+		public void setWholeUpload(boolean wholeUpload) {
+			this.wholeUpload = wholeUpload;
 		}
 	}
 	

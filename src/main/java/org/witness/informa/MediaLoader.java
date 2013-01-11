@@ -20,6 +20,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Vector;
 
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
@@ -435,14 +436,15 @@ public class MediaLoader implements Constants {
 			return result;
 
 		Map<String, Object> sourceId = new HashMap<String, Object>();
-		sourceId.put("sourceId", "import_" + user.get(DC.Options._ID));
+		sourceId.put("java.lang.String", "import_" + user.get(DC.Options._ID));
 
-		Map<String, Object> initialValues = new HashMap<String, Object>();
-		initialValues.put("java.lang.String", sourceId);
-
+		Map<String, Map<String, Object>> initialValues = new HashMap<String, Map<String, Object>>();
+		initialValues.put("sourceId", sourceId);
 
 		// create a blank submission descriptor with user with only a sourceId as "import_USERHASH"
 		// _rev is auth token here (later to be exchanged for j3m)
+		
+		// takes  key { className : val }
 		String[] newSubmission = CouchParser.createRecord(Submission.class, dbSubmissions, initialValues);
 		if(newSubmission == null)
 			return result;
@@ -683,24 +685,24 @@ public class MediaLoader implements Constants {
 		return result;
 	}
 
-	private boolean checkForSource(String sourceId_, String alias_, String email_) {
+	public boolean checkForSource(String sourceId_, String alias_, String email_) {
 		CouchParser.Log(Couch.DEBUG, "checking for this source: " + sourceId_);
 		
 		if(CouchParser.getRecord(dbSources, new ViewQuery().designDocId(Couch.Design.SOURCES), Couch.Views.Sources.GET_BY_ID, sourceId_, null) == null) {
 			CouchParser.Log(Couch.DEBUG, "source does not exist... placing it");
 			Map<String, Object> sourceId = new HashMap<String, Object>();
-			sourceId.put(Couch.Views.Sources.Keys.SOURCE_ID, sourceId);
+			sourceId.put("java.lang.String", sourceId_);
 
 			Map<String, Object> alias = new HashMap<String, Object>();
-			alias.put(Couch.Views.Sources.Keys.ALIAS, alias_);
+			alias.put("java.lang.String", alias_);
 
-			Map<String, Object> _email = new HashMap<String, Object>();
-			_email.put(Couch.Views.Sources.Keys.ALIAS, email_);
+			Map<String, Object> email = new HashMap<String, Object>();
+			email.put("java.lang.String", email_);
 
-			Map<String, Object> initialValues = new HashMap<String, Object>();
-			initialValues.put("java.lang.String", sourceId);
-			initialValues.put("java.lang.String", alias);
-			initialValues.put("java.lang.String", _email);
+			Map<String, Map<String, Object>> initialValues = new HashMap<String, Map<String, Object>>();
+			initialValues.put(Couch.Views.Sources.Keys.SOURCE_ID, sourceId);
+			initialValues.put(Couch.Views.Sources.Keys.ALIAS, alias);
+			initialValues.put(Couch.Views.Sources.Keys.EMAIL, email);
 
 			if(CouchParser.createRecord(Source.class, dbSources, initialValues) != null) {
 				return true;
