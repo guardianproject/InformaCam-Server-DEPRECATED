@@ -49,17 +49,17 @@ function handleDesktopServiceMessage(data) {
 					console.info("MEDIA IS NULL");
 					var opts = [
 						{
-							label: Alert_STR.Basic.YES, 
+							label: Alert_STR.Basic.YES,
 							action: media.displayOnScreen()
 						},
 						{
-							label: Alert_STR.Basic.No, 
+							label: Alert_STR.Basic.No,
 							action: removeAlert()
 						}
 					];
 					showAlert(Alert_STR.Errors.MAIN_TITLE, Alert_STR.Errors.NO_METADATA, true, null, opts);
 				}
-					
+
 				break;
 			case Command.SEARCH:
 				if(data.metadata != null) {
@@ -68,8 +68,11 @@ function handleDesktopServiceMessage(data) {
 				break;
 			case Command.ATTEMPT_LOGIN:
 				removeSpinner();
-				if(data.metadata != null)
+
+				if(data.metadata != null) {
 					User.loadSession(data.metadata);
+					ic.refresh();
+				}
 				else {
 					currentUser = null;
 					showAlert(Alert_STR.Errors.MAIN_TITLE, Alert_STR.Errors.LOGIN_FAILURE, false, null, null);
@@ -78,6 +81,7 @@ function handleDesktopServiceMessage(data) {
 			case Command.LOGOUT:
 				removeSpinner();
 				User.unloadSession();
+				window.location = '#submissions/';
 				break;
 			case Command.RENAME_MEDIA:
 				removeSpinner();
@@ -89,7 +93,7 @@ function handleDesktopServiceMessage(data) {
 				if(data.metadata != null) {
 					console.info(data.metadata);
 					Search.saveSearch.callback(data.metadata);
-					
+
 				}
 				break;
 			case Command.APPEND_TO_ANNOTATION:
@@ -129,11 +133,13 @@ function handleDesktopServiceMessage(data) {
 					Admin.listClients.callback(data.metadata);
 				break;
 			case Command.INIT_NEW_CLIENT:
-				if(data.metadata != null)
+				if(data.metadata != null) {
+					console.info("CLIENT INITED>>");
 					Admin.registerClient.callback(data.metadata);
+				}
 				break;
 			case Command.DOWNLOAD_CLIENT_CREDENTIALS:
-				if(data.metadata != null && data.metadata.result == 1) 
+				if(data.metadata != null && data.metadata.result == 1)
 					Admin.downloadClientCredentials.callback(data.metadata);
 				else {
 					removeSpinner();

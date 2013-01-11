@@ -11,16 +11,16 @@ var User = {
 		var res = false;
 		if(username == undefined)
 			username = $("#loginUsername").val();
-		
+
 		if(password == undefined)
 			password = $("#loginPassword").val();
-		
+
 		if(
-			username == $("#loginUsername").attr('hint') || 
+			username == $("#loginUsername").attr('hint') ||
 			password == $("#loginPassword").attr('hint')
 		)
 			return res;		//default username & password :(
-		
+
 		showSpinner();
 		var d = new Date();
 		var now = d.getTime();
@@ -43,7 +43,7 @@ var User = {
 		d.setTime(now - (3600 * 1000)); // an hour ago
 		document.cookie="username=;expires=" + d.toUTCString();
 		document.cookie="password=;expires=" + d.toUTCString();
-		
+
 		broadcast({
 			attempt: Command.LOGOUT,
 			options: {
@@ -83,37 +83,36 @@ var User = {
 	},
 	isLoggedIn : function() {
 		var res = false;
-		
+
 		if(currentUser != undefined && currentUser != null)
 			res = true;
 		else {
 			var i, c = document.cookie.split("; ");
-			
+
 			var username = "";
 			var	password = "";
-			
+
 			if(c.length > 0) {
 				for(i=0;i<c.length;i++) {
 					var cName = c[i].substr(0,c[i].indexOf("="));
 					var cVal = c[i].substr(c[i].indexOf("=") + 1);
-					
+
 					if(cName == "username")
 						username = cVal;
-					
+
 					if(cName == "password")
-						password = cVal;	
+						password = cVal;
 				}
-				
-				
+
+
 				if(username != "" && password != "") {
 					User.login(username, password);
-					
+
 					if(currentUser != null)
 						res = true;
 				}
 			}
 		}
-
 		return res;
 	}
 };
@@ -124,8 +123,8 @@ var Search = {
 			searchQuery = new SearchBuilder();
 			searchQuery.setOptions(getOptions('search_refine_options'));
 			var s = searchQuery.build();
-			
-			if(!isEmptyObject(s)) {			
+
+			if(!isEmptyObject(s)) {
 				showSpinner();
 				broadcast({
 					attempt: Command.SEARCH,
@@ -155,9 +154,9 @@ var Search = {
 	},
 	prompt: function() {
 		if(currentUser.searchBasedOffOfExistingSearch == undefined || currentUser.searchBasedOffOfExistingSearch === null) {
-			showAlert(Alert_STR.Search.Prompt.MAIN_TITLE, 
+			showAlert(Alert_STR.Search.Prompt.MAIN_TITLE,
 				Alert_STR.Search.Prompt.TEXT + '<input type="text" id="savedSearchAlias" />',
-				true, null, 
+				true, null,
 				[
 					{
 						label: Alert_STR.Basic.OK,
@@ -182,7 +181,7 @@ var Search = {
 		init : function(alias) {
 			if(alias == undefined || alias == null)
 				alias = $("#savedSearchAlias").val();
-				
+
 			showSpinner();
 			broadcast({
 				attempt: Command.SAVE_SEARCH,
@@ -260,7 +259,7 @@ var Admin = {
 		},
 		callback: function(downloadData) {
 			removeSpinner();
-						
+
 			var opts = [
 				{
 					label: Alert_STR.Basic.DOWNLOAD,
@@ -269,7 +268,10 @@ var Admin = {
 						importer_holder.empty();
 						importer_holder.append($(document.createElement('iframe'))
 							.prop('src', downloadData.containerURL + "?fileData=" + downloadData.fileData + "&sourceId=" + downloadData.sourceId)
-							.load(removeAlert)
+							.load(function() {
+								console.info("hello importer");
+								removeAlert();
+							})
 						);
 						showImporter();
 					}
@@ -280,7 +282,7 @@ var Admin = {
 				}
 			];
 			showAlert(Alert_STR.Admin.ClientDownload.MAIN_TITLE, Alert_STR.Admin.ClientDownload.CLICK_TO_DOWNLOAD, true, null, opts);
-			
+
 		}
 	},
 	registerClient: {
@@ -288,7 +290,7 @@ var Admin = {
 			var newClient = gatherFormInput(newClientHolder);
 			if(newClient == null)
 				return;
-				
+
 			showSpinner();
 			broadcast({
 				attempt: Command.INIT_NEW_CLIENT,
@@ -309,7 +311,7 @@ var Admin = {
 				doClear("#newClientName");
 				doClear("#newClientEmail");
 				doClear("#newClientKey");
-				
+
 				Admin.downloadClientCredentials.init(newClient.newClient);
 			} else {
 				showAlert(Alert_STR.Errors.MAIN_TITLE, Alert_STR.Errors.INIT_CLIENT_FAIL, false, null, null);
@@ -325,7 +327,7 @@ var Media = {
 			showSpinner();
 			broadcast({
 				attempt: Command.VIEW_DERIVATIVES
-			});	
+			});
 		},
 		callback: function(derivatives, target) {
 			if(derivatives != null) {
@@ -405,7 +407,7 @@ var Media = {
 						_rev: entity._rev,
 						discussionId: discussionId,
 						editType: editType,
-						annotation: region 
+						annotation: region
 					}
 				}
 			});
@@ -434,7 +436,7 @@ var Media = {
 						user: {
 							_id: currentUser._id,
 							_rev: currentUser._rev
-						}, 
+						},
 						entity: {
 							_id: entity._id,
 							_rev: entity._rev,
@@ -502,9 +504,9 @@ var Media = {
 	},
 	rename: {
 		prompt: function() {
-			showAlert(Alert_STR.Media.Prompt.MAIN_TITLE, 
+			showAlert(Alert_STR.Media.Prompt.MAIN_TITLE,
 				Alert_STR.Media.Prompt.TEXT + '<input type="text" id="mediaAlias" />',
-				true, null, 
+				true, null,
 				[
 					{
 						label: Alert_STR.Basic.OK,
@@ -520,7 +522,7 @@ var Media = {
 					}
 				]);
 		},
-		init : function() {				
+		init : function() {
 			showSpinner();
 			alert($("#mediaAlias").val());
 			broadcast({
@@ -569,12 +571,12 @@ var Media = {
 var Source = {
 	view : function(id) {
 		var source = null;
-		
+
 		return source;
 	},
 	addDetail : function(id, key, value) {
 		var res = false;
-		
+
 		return res;
 	}
 }
@@ -597,16 +599,16 @@ function buildObjectAsString(object) {
 					aVal = '"' + val + '"';
 				else if(aVal.constructor == Object)
 					aVal = buildObjectAsString(aVal);
-					
+
 				sArray.push(aVal);
 			}
-			s += "[" + sArray.join(",") + "]"; 
+			s += "[" + sArray.join(",") + "]";
 		} else {
 			s += object[prop];
 		}
 		console.info(prop);
 		allProps.push(s);
 	}
-		
+
 	return '"{' + allProps.join(",") + '}"';
 }

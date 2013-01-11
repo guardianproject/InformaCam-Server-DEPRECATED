@@ -24,7 +24,7 @@ public class DesktopService extends AbstractService implements Constants {
 		
 		if(ml == null)
 			ml = new MediaLoader();
-		
+			
 		new Thread(new Runnable() {			
 			private void watch() {
 				CouchParser.Log("HI", "hi! there are " +   DesktopService.this.getBayeux().getSessions().size() + " active connections!");
