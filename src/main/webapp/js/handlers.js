@@ -68,11 +68,9 @@ function handleDesktopServiceMessage(data) {
 				break;
 			case Command.ATTEMPT_LOGIN:
 				removeSpinner();
-
-				if(data.metadata != null) {
+				if(data.metadata != null)
 					User.loadSession(data.metadata);
 					ic.refresh();
-				}
 				else {
 					currentUser = null;
 					showAlert(Alert_STR.Errors.MAIN_TITLE, Alert_STR.Errors.LOGIN_FAILURE, false, null, null);
@@ -133,10 +131,8 @@ function handleDesktopServiceMessage(data) {
 					Admin.listClients.callback(data.metadata);
 				break;
 			case Command.INIT_NEW_CLIENT:
-				if(data.metadata != null) {
-					console.info("CLIENT INITED>>");
+				if(data.metadata != null)
 					Admin.registerClient.callback(data.metadata);
-				}
 				break;
 			case Command.DOWNLOAD_CLIENT_CREDENTIALS:
 				if(data.metadata != null && data.metadata.result == 1)
