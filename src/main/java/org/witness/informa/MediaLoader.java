@@ -277,7 +277,7 @@ public class MediaLoader implements Constants {
 		
 		if(forms.size() > 0) {
 			result.put(DC.Keys.RESULT, DC.Results.OK);
-			result.put(DC.Keys.METADATA, forms);
+			result.put(DC.Keys.XFORM_MANIFESTS, forms);
 		}
 		return result;
 	}

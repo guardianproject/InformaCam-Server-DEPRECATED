@@ -213,6 +213,7 @@ public interface Constants {
 			public static final String CONTAINER_URL = "containerURL";
 			public static final String SOURCE_ID = Options.SOURCE_ID;
 			public static final String CLIENT_LIST = "clientList";
+			public static final Object XFORM_MANIFESTS = "xform_manifests";
 			public static final class EditTypes {
 				public final static int DELETE = 500;
 				public final static int MOVE = 501;
