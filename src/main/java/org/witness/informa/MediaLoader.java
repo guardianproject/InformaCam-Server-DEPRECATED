@@ -274,6 +274,11 @@ public class MediaLoader implements Constants {
 				e.printStackTrace();
 			}
 		}
+		
+		if(forms.size() > 0) {
+			result.put(DC.Keys.RESULT, DC.Results.OK);
+			result.put(DC.Keys.METADATA, forms);
+		}
 		return result;
 	}
 
