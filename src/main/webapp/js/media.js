@@ -279,7 +279,9 @@ var MediaEntity = function(data) {
 								.html(formatTimestampForHumans(this.date))
 						)
 						.append(
-							$(document.createElement('p')).html(this.content)
+							$(document.createElement('p')).html(
+								formatFromXForm(this.content)
+							)
 						);
 					aList.append(aListItem);
 				});

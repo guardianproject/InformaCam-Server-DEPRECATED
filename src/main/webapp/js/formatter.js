@@ -210,3 +210,11 @@ function formatTimestampForHumans(ts) {
 	var date = new Date(ts);
 	return date.getDate() + " " + TimeAndDate_STR.Months.SHORT[date.getMonth()] + " " + date.getFullYear() + ", " + date.getHours() + ":" + date.getMinutes();
 }
+
+function formatFromXForm(data) {
+	for(key in data) {
+		console.info(key);
+	}
+	
+	return "hello";
+}

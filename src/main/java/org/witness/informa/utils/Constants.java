@@ -170,6 +170,7 @@ public interface Constants {
 			public static final int LOAD_CLIENTS = 117;
 			public static final int GET_CLIENT = 118;
 			public static final int DOWNLOAD_CLIENT_CREDENTIALS = 119;
+			public static final int GET_AVAILABLE_FORMS = 120;
 		}
 
 		public final static class Commands {
@@ -194,6 +195,7 @@ public interface Constants {
 			public static final int LOAD_CLIENTS = DC.Attempts.LOAD_CLIENTS;
 			public static final int GET_CLIENT = DC.Attempts.GET_CLIENT;
 			public static final int DOWNLOAD_CLIENT_CREDENTIALS = DC.Attempts.DOWNLOAD_CLIENT_CREDENTIALS;
+			public static final int GET_AVAILABLE_FORMS = DC.Attempts.GET_AVAILABLE_FORMS;
 		}
 
 		public final static class Keys {

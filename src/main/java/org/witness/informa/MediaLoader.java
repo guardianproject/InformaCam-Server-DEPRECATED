@@ -75,7 +75,7 @@ public class MediaLoader implements Constants {
 		 CouchParser.ClearDatabase(dbSources, Source.class);
 		 */
 		 
-		 CouchParser.ClearDatabase(dbSubmissions, Submission.class);
+		 
 	}
 
 	public ArrayList<JSONObject> getDerivatives() {
@@ -242,6 +242,18 @@ public class MediaLoader implements Constants {
 		while((line = br.readLine()) != null)
 			fStrings.add(line);
 		return fStrings;
+	}
+	
+	public JSONObject getAvailableForms(Map<String, Object> formOpts) {
+		JSONObject result = new JSONObject();
+		result.put(DC.Keys.RESULT, DC.Results.FAIL);
+
+		Map<String, Object> user = (Map<String, Object>) formOpts.get(DC.Options.USER);
+		if(!CouchParser.validateUser(dbUsers, user))
+			return result;
+			
+			
+		return result;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -726,24 +738,24 @@ public class MediaLoader implements Constants {
 			return result;
 
 		ViewQuery getSubmissionsBySource = new ViewQuery().designDocId(Couch.Design.DERIVATIVES);
+		
 		for(JSONObject j : res) {
 			// get the number of submissions, and date of latest submission
-			CouchParser.Log(Couch.INFO, j.toString());
+			// CouchParser.Log(Couch.INFO, j.toString());
+			/*
 			String sourceId = j.getString(Couch.Views.Sources.Keys.SOURCE_ID);
 			ArrayList<JSONObject> submissions = CouchParser.getRows(dbDerivatives, getSubmissionsBySource, Couch.Views.Derivatives.GET_BY_SOURCE_ID, sourceId, Couch.Views.Derivatives.Omits.SHORT_DESCRIPTION);
+			*/
 
 			j.remove(Couch.Documents._ID);
 			j.remove(Couch.Documents._REV);
 
 			// XXX: why is this wonky?
+			/*
 			j.put(Couch.Views.Sources.Keys.NUMBER_OF_SUBMISSIONS, submissions == null ? 0 :submissions.size());
 
 			if(submissions != null) {
-				/*
-				CouchParser.Log(Couch.INFO, "before sort:");
-				for(JSONObject sub : submissions)
-					CouchParser.Log(Couch.INFO, sub.toString());
-				 */
+
 
 				Collections.sort(submissions, new Comparator<JSONObject>() {
 					public int compare(JSONObject j1, JSONObject j2) {
@@ -754,13 +766,9 @@ public class MediaLoader implements Constants {
 
 				});
 
-				/*
-				CouchParser.Log(Couch.INFO, "AFTER sort:");
-				for(JSONObject sub : submissions)
-					CouchParser.Log(Couch.INFO, sub.toString());
-				 */	
 				j.put(Couch.Views.Sources.Keys.LAST_SUBMISSION_DATE, submissions.get(0).getLong(Couch.Views.Derivatives.Keys.TIMESTAMP_INDEXED));
 			}
+			*/
 		}
 
 		result.put(DC.Keys.CLIENT_LIST, res);

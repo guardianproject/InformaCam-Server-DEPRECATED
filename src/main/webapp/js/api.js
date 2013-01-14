@@ -232,12 +232,14 @@ var Admin = {
 	},
 	listClients: {
 		init: function() {
+			console.info("getting client list...");
 			showSpinner();
 			broadcast({
 				attempt: Command.LOAD_CLIENTS
 			});
 		},
 		callback: function(clientList) {
+			console.info(clientList);
 			$.each(formatClientListForTable(clientList.clientList), function() {
 				$("#list_clients_holder").append(this);
 			});

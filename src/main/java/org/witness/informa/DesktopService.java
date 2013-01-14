@@ -20,7 +20,7 @@ public class DesktopService extends AbstractService implements Constants {
 		addService("/service/desktopConnection", "desktopResponse");
 		addService("/multicast", "multicastResponse");
 		
-		log = new Logger(getBayeux().getSessions());
+		//log = new Logger(getBayeux().getSessions());
 		
 		if(ml == null)
 			ml = new MediaLoader();
@@ -150,10 +150,14 @@ public class DesktopService extends AbstractService implements Constants {
 				msg.put(DC.Keys.COMMAND, DC.Commands.DOWNLOAD_CLIENT_CREDENTIALS);
 				msg.put(DC.Keys.METADATA, ml.downloadClientCredentials(msg.opts));
 				break;
+			case Attempts.GET_AVAILABLE_FORMS:
+				msg.put(DC.Keys.COMMAND, DC.Commands.GET_AVAILABLE_FORMS);
+				msg.put(DC.Keys.METADATA, ml.getAvailableForms(msg.opts));
+				break;
 			}
 		}
 		
-		log.log(msg.out(), remote.getId());
+		//log.log(msg.out(), remote.getId());
 		remote.deliver(getServerSession(), "/desktopConnection", msg.out(), null);
 	}
 	

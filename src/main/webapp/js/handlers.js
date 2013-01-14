@@ -17,6 +17,7 @@ function handleMulticast(data) {
 }
 
 function handleDesktopServiceMessage(data) {
+	console.info(data.command);
 	if(data.command) {
 		switch(data.command) {
 			case Command.VIEW_DERIVATIVES:
@@ -68,10 +69,10 @@ function handleDesktopServiceMessage(data) {
 				break;
 			case Command.ATTEMPT_LOGIN:
 				removeSpinner();
-				if(data.metadata != null)
+				if(data.metadata != null) {
 					User.loadSession(data.metadata);
 					ic.refresh();
-				else {
+				} else {
 					currentUser = null;
 					showAlert(Alert_STR.Errors.MAIN_TITLE, Alert_STR.Errors.LOGIN_FAILURE, false, null, null);
 				}
@@ -126,6 +127,7 @@ function handleDesktopServiceMessage(data) {
 					removeSpinner();
 				break;
 			case Command.LOAD_CLIENTS:
+				console.info("loading clients...");
 				removeSpinner();
 				if(data.metadata != null)
 					Admin.listClients.callback(data.metadata);
