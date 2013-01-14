@@ -234,6 +234,17 @@ public class MediaLoader implements Constants {
 			sb.append(line + "<br />");
 		return sb.toString();
 	}
+	
+	public static JSONObject fileToJSON(File file) throws IOException {
+		StringBuffer sb = new StringBuffer();
+		FileInputStream fis = new FileInputStream(file);
+		BufferedReader br = new BufferedReader(new InputStreamReader(fis, Charset.forName("UTF-8")));
+		String line;
+		while((line = br.readLine()) != null)
+			sb.append(line);
+		return (JSONObject) new JSONTokener(sb.toString()).nextValue();
+		
+	}
 
 	public static ArrayList<String> fileToStrings(File file) throws IOException {
 		ArrayList<String> fStrings = new ArrayList<String>();
@@ -245,6 +256,7 @@ public class MediaLoader implements Constants {
 		return fStrings;
 	}
 	
+	@SuppressWarnings("unchecked")
 	public JSONObject getAvailableForms(Map<String, Object> formOpts) {
 		JSONObject result = new JSONObject();
 		result.put(DC.Keys.RESULT, DC.Results.FAIL);
@@ -253,7 +265,15 @@ public class MediaLoader implements Constants {
 		if(!CouchParser.validateUser(dbUsers, user))
 			return result;
 			
-			
+		List<JSONObject> forms = new ArrayList<JSONObject>();
+		for(File f : new File(LocalConstants.ENGINE_ROOT + "form_manifests").listFiles()) {
+			try {
+				forms.add(fileToJSON(f));
+			} catch (IOException e) {
+				CouchParser.Log(Couch.ERROR, e.toString());
+				e.printStackTrace();
+			}
+		}
 		return result;
 	}
 
