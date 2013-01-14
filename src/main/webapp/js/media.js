@@ -277,12 +277,10 @@ var MediaEntity = function(data) {
 						.append(
 							$(document.createElement('p')).attr('class','date')
 								.html(formatTimestampForHumans(this.date))
-						)
-						.append(
-							$(document.createElement('p')).html(
-								formatFromXForm(this.content)
-							)
 						);
+					$.each(formatFromXForm(this.content), function(idx, item) {
+						aListItem.append(item);
+					});
 					aList.append(aListItem);
 				});
 			}

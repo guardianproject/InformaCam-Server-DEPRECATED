@@ -15,6 +15,15 @@ function clearUi() {
 	$("#media_overlay").unbind();
 }
 
+function appendBinaryData(el, data) {
+	console.info($(el));
+	$(el).empty();
+	$(el).append(
+		$(document.createElement('source'))
+			.prop('src',data)
+	);
+}
+
 function updateLoginUi() {
 	if(currentUser != null && currentUser != undefined) {
 		$($("#ic_login").children("p")[0]).css('display','block');
@@ -895,8 +904,8 @@ function initLayout() {
 			root: $('#ui_submissions'),
 			tab: $(nav.children()[0]),
 			init: function() {
+				Media.getAvailableForms.init();
 				Media.getAll.init();
-
 			}
 		},
 		admin: {

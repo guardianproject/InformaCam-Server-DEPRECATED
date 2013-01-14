@@ -212,9 +212,78 @@ function formatTimestampForHumans(ts) {
 }
 
 function formatFromXForm(data) {
+	var el = new Array;
+	var count = 0;
 	for(key in data) {
-		console.info(key);
+		var value_element;
+		var key_info = getFormInfo(key);
+		switch(key_info['type']) {
+			case XForms.Types.CONTROL_INPUT:
+				el.push(
+					$(document.createElement('p'))
+						.html("<b>" + key_info['label'] + ":</b> " + data[key])
+				);
+				break;
+			case XForms.Types.CONTROL_SELECT_ONE:
+				el.push(
+					$(document.createElement('p'))
+						.html("<b>" + key_info['label'] + ":</b> " + data[key])
+				);
+				break;
+			case XForms.Types.CONTROL_SELECT_MULTI:
+				el.push(
+					$(document.createElement('p'))
+						.html("<b>" + key_info['label'] + ":</b> " + data[key].join(", "))
+				);
+				break;
+			case XForms.Types.CONTROL_AUDIO_UPLOAD:
+				var annotation_path = data[key];
+				el.push(
+					$(document.createElement('div'))
+						.append(
+							$(document.createElement('p'))
+								.html("<b>" + key_info['label'] + ":</b>")
+						)
+						.append(
+							$(document.createElement('audio'))
+								.attr({
+									'controls':'',
+									'informaLoaded':false,
+									'id':"audio_annotation_" + count
+								})
+								.bind('play', function() {
+									var sources = $(this).children('source');
+									if(sources.length == 0) {
+										console.info("hey" + $(this).attr('id'));
+										Media.getAudioAnnotation.init(annotation_path, $(this).attr('id'));
+									}
+								})
+					)
+				);
+				break;
+		}
+		count++;
 	}
 	
-	return "hello";
+	return el;
+}
+
+function getFormInfo(key) {
+	var label = null;
+	var type = null;
+	
+	for(var x=0; x<xform_manifests.length; x++) {
+		try {
+			type = xform_manifests[x].manifest[key];
+			label = xform_manifests[x].labels_en[key];
+		} catch(e) {
+			console.info(e);
+		}
+		
+		if(type != null && label != null)
+			break;
+		
+	}
+	
+	return {label:label,type:type};
 }

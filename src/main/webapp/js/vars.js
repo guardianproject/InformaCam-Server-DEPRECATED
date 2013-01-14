@@ -26,10 +26,11 @@ var Command = {
 	LOAD_CLIENTS: 117,
 	GET_CLIENT: 118,
 	DOWNLOAD_CLIENT_CREDENTIALS: 119,
-	GET_AVAILABLE_FORMS: 120
+	GET_AVAILABLE_FORMS: 120,
+	GET_AUDIO_ANNOTATION: 121
 };
 
-var entity, mcxAnnotation, movingAnnotation;
+var entity, mcxAnnotation, movingAnnotation, xform_manifests;
 var MediaTypes = {
 	VIDEO: 401,
 	IMAGE: 400,
@@ -42,6 +43,14 @@ var MediaTypes = {
 		400: Derivative_STR.UnaliasedTitle.IMAGE
 	}
 };
+var XForms = {
+	Types: {
+		CONTROL_INPUT: 1,
+		CONTROL_SELECT_ONE: 2,
+		CONTROL_SELECT_MULTI: 3,
+		CONTROL_AUDIO_UPLOAD: 4
+	}
+}
 
 var annotation_move_offset, messages_move_offset, expandedView_offset;
 var EditTypes = {
