@@ -171,6 +171,7 @@ public interface Constants {
 			public static final int GET_CLIENT = 118;
 			public static final int DOWNLOAD_CLIENT_CREDENTIALS = 119;
 			public static final int GET_AVAILABLE_FORMS = 120;
+			public static final int GET_AUDIO_ANNOTATION = 121;
 		}
 
 		public final static class Commands {
@@ -196,6 +197,7 @@ public interface Constants {
 			public static final int GET_CLIENT = DC.Attempts.GET_CLIENT;
 			public static final int DOWNLOAD_CLIENT_CREDENTIALS = DC.Attempts.DOWNLOAD_CLIENT_CREDENTIALS;
 			public static final int GET_AVAILABLE_FORMS = DC.Attempts.GET_AVAILABLE_FORMS;
+			public static final int GET_AUDIO_ANNOTATION = DC.Attempts.GET_AUDIO_ANNOTATION;
 		}
 
 		public final static class Keys {
@@ -213,7 +215,11 @@ public interface Constants {
 			public static final String CONTAINER_URL = "containerURL";
 			public static final String SOURCE_ID = Options.SOURCE_ID;
 			public static final String CLIENT_LIST = "clientList";
-			public static final Object XFORM_MANIFESTS = "xform_manifests";
+			public static final String XFORM_MANIFESTS = "xform_manifests";
+			public static final String AUDIO_ANNOTATION = DC.Options.AUDIO_ANNOTATION;
+			public static final String ANNOTATION_ID = DC.Options.ANNOTATION_ID;
+			public static final String BINARY_DATA = "binary_data";
+			
 			public static final class EditTypes {
 				public final static int DELETE = 500;
 				public final static int MOVE = 501;
@@ -255,6 +261,9 @@ public interface Constants {
 			public static final String NEW_CLIENT = "newClient";
 			public static final String SOURCE_ID = Couch.Views.Sources.Keys.SOURCE_ID;
 			public static final String CURRENT_SESSION = "currentSession";
+			public static final String AUDIO_ANNOTATION = "audioAnnotation";
+			public static final String ANNOTATION_PATH = "annotation_path";
+			public static final String ANNOTATION_ID = "annotation_id";
 		}
 
 	}

@@ -154,6 +154,10 @@ public class DesktopService extends AbstractService implements Constants {
 				msg.put(DC.Keys.COMMAND, DC.Commands.GET_AVAILABLE_FORMS);
 				msg.put(DC.Keys.METADATA, ml.getAvailableForms(msg.opts));
 				break;
+			case Attempts.GET_AUDIO_ANNOTATION:
+				msg.put(DC.Keys.COMMAND, DC.Commands.GET_AUDIO_ANNOTATION);
+				msg.put(DC.Keys.METADATA, ml.getAudioAnnotation(msg.opts));
+				break;
 			}
 		}
 		

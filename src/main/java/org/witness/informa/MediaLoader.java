@@ -821,4 +821,35 @@ public class MediaLoader implements Constants {
 		result.put(DC.Keys.RESULT, DC.Results.OK);
 		return result;
 	}
+
+	@SuppressWarnings("unchecked")
+	public Object getAudioAnnotation(Map<String, Object> opts) {
+		JSONObject result = new JSONObject();
+		result.put(DC.Keys.RESULT, DC.Results.FAIL);
+
+		Map<String, Object> user = (Map<String, Object>) opts.get(DC.Options.USER);
+		if(!CouchParser.validateUser(dbUsers, user))
+			return result;
+		
+		Map<String, Object> audio_options = (Map<String, Object>) opts.get(DC.Options.AUDIO_ANNOTATION);
+		
+		try {
+			FileInputStream fis = new FileInputStream((String) audio_options.get(DC.Options.ANNOTATION_PATH));
+			byte[] audio = new byte[fis.available()];
+			fis.read(audio);
+			fis.close();
+			
+			result.put(DC.Keys.BINARY_DATA, Base64.encodeBytes(audio));
+			result.put(DC.Keys.ANNOTATION_ID, audio_options.get(DC.Options.ANNOTATION_ID));
+			result.put(DC.Keys.RESULT, DC.Results.OK);
+		} catch (FileNotFoundException e) {
+			CouchParser.Log(Couch.ERROR, e.toString());
+			e.printStackTrace();
+		} catch (IOException e) {
+			CouchParser.Log(Couch.ERROR, e.toString());
+			e.printStackTrace();
+		}
+		
+		return result;
+	}
 }
