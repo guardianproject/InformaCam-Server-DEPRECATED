@@ -73,9 +73,7 @@ public class MediaLoader implements Constants {
 		 CouchParser.ClearDatabase(dbDerivatives, Derivative.class);
 		 CouchParser.ClearDatabase(dbSubmissions, Submission.class);
 		 CouchParser.ClearDatabase(dbSources, Source.class);
-		 CouchParser.ClearDatabase(dbSubmissions, Submission.class);
-		 */
-		 
+		 */	
 		 
 	}
 
