@@ -158,12 +158,14 @@ public class MediaLoader implements Constants {
 		while(rIt.hasNext()) {
 			String repName = rIt.next();
 			path = repName.substring(0, repName.length() - 4);
-			File original = new File(DERIVATIVE_ROOT + path, repName);
-			File representation = new File(MEDIA_CACHE, original.getName());
+			
 			try {
-				FileChannel o = new FileInputStream(original).getChannel();
-				FileChannel r = new FileOutputStream(representation).getChannel();
-				r.transferFrom(o, 0, o.size());
+				FileInputStream fis = new FileInputStream(new File(DERIVATIVE_ROOT + path, repName));
+				byte[] derivative_data = new byte[fis.available()];
+				fis.read(derivative_data);
+				fis.close();
+				
+				derivative.put(DC.Keys.BINARY_DATA, Base64.encodeBytes(derivative_data));
 			} catch(IOException e) {
 				CouchParser.Log(Couch.ERROR, e.toString());
 				e.printStackTrace();
