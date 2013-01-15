@@ -348,7 +348,7 @@ public class MediaLoader implements Constants {
 		JSONArray d = derivative.getJSONArray("discussions");
 
 		JSONObject annotation = new JSONObject();
-		annotation.put(Annotation.Keys.CONTENT, (String) discussion.remove(Annotation.Keys.CONTENT));
+		annotation.put(Annotation.Keys.CONTENT, discussion.remove(Annotation.Keys.CONTENT));
 		annotation.put(Annotation.Keys.SUBMITTED_BY, ((Map<String, Object>) annotationPack.get(DC.Options.USER)).get(DC.Options._ID));
 		annotation.put(Annotation.Keys.DATE, System.currentTimeMillis());
 		((JSONArray) ((JSONObject) d.get(discussionId)).get(DC.Options.ANNOTATIONS)).add(annotation);
