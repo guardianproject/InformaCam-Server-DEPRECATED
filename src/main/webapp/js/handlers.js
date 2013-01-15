@@ -144,6 +144,15 @@ function handleDesktopServiceMessage(data) {
 					showAlert(Alert_STR.Errors.MAIN_TITLE, Alert_STR.Errors.EXPORT_ICTD_FAIL, false, null, null);
 				}
 				break;
+			case Command.GET_AVAILABLE_FORMS:
+				removeSpinner();
+				if(data.metadata != null && data.metadata.result == 1)
+					Media.getAvailableForms.callback(data.metadata.xform_manifests);
+				break;
+			case Command.GET_AUDIO_ANNOTATION:
+				removeSpinner();
+				if(data.metadata != null && data.metadata.result == 1)
+					Media.getAudioAnnotation.callback(data.metadata);
 		}
 	}
 }

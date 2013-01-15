@@ -567,6 +567,47 @@ var Media = {
 				.prop('src', newSubmission.newSubmissionUrl + '?doImport=' + newSubmission.newSubmissionId + '&authToken=' + newSubmission.newSubmissionRev + '&uId=' + currentUser._id)
 			);
 		}
+	},
+	getAudioAnnotation: {
+		init: function(annotation_path, annotation_id) {
+			showSpinner();
+			broadcast({
+				attempt: Command.GET_AUDIO_ANNOTATION,
+				options: {
+					user: {
+						_id: currentUser._id,
+						_rev: currentUser._rev
+					},
+					audioAnnotation: {
+						annotation_path: "/" + annotation_path,
+						annotation_id: annotation_id
+					}
+				}
+			});
+		},
+		callback: function(data) {
+			removeSpinner();
+			console.info(data);
+			appendBinaryData("#" + data.annotation_id, "data:audio/ogg;base64," + data.binary_data);
+		}
+	},
+	getAvailableForms: {
+		init: function() {
+			showSpinner();
+			broadcast({
+				attempt: Command.GET_AVAILABLE_FORMS,
+				options: {
+					user: {
+						_id: currentUser._id,
+						_rev: currentUser._rev
+					}
+				}
+			});
+		},
+		callback: function(data) {
+			console.info(data);
+			xform_manifests = data;
+		}
 	}
 }
 
