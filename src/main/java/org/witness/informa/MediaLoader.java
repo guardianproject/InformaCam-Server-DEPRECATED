@@ -73,7 +73,9 @@ public class MediaLoader implements Constants {
 		 CouchParser.ClearDatabase(dbDerivatives, Derivative.class);
 		 CouchParser.ClearDatabase(dbSubmissions, Submission.class);
 		 CouchParser.ClearDatabase(dbSources, Source.class);
-		 */	
+		 CouchParser.ClearDatabase(dbSubmissions, Submission.class);
+		 */
+		 
 		 
 	}
 
@@ -158,14 +160,12 @@ public class MediaLoader implements Constants {
 		while(rIt.hasNext()) {
 			String repName = rIt.next();
 			path = repName.substring(0, repName.length() - 4);
-			
+			File original = new File(DERIVATIVE_ROOT + path, repName);
+			File representation = new File(MEDIA_CACHE, original.getName());
 			try {
-				FileInputStream fis = new FileInputStream(new File(DERIVATIVE_ROOT + path, repName));
-				byte[] derivative_data = new byte[fis.available()];
-				fis.read(derivative_data);
-				fis.close();
-				
-				derivative.put(DC.Keys.BINARY_DATA, Base64.encodeBytes(derivative_data));
+				FileChannel o = new FileInputStream(original).getChannel();
+				FileChannel r = new FileOutputStream(representation).getChannel();
+				r.transferFrom(o, 0, o.size());
 			} catch(IOException e) {
 				CouchParser.Log(Couch.ERROR, e.toString());
 				e.printStackTrace();

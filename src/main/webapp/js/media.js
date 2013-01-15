@@ -278,9 +278,17 @@ var MediaEntity = function(data) {
 							$(document.createElement('p')).attr('class','date')
 								.html(formatTimestampForHumans(this.date))
 						);
-					$.each(formatFromXForm(this.content), function(idx, item) {
-						aListItem.append(item);
-					});
+
+					if(this.content instanceof Object) {
+						$.each(formatFromXForm(this.content), function(idx, item) {
+							aListItem.append(item);
+						});
+					} else {
+						aListItem.append(
+							$(document.createElement('p'))
+								.html(this.content)
+						);
+					}
 					aList.append(aListItem);
 				});
 			}
