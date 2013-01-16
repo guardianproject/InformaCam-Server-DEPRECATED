@@ -36,6 +36,7 @@ import org.ektorp.util.Base64;
 
 import org.witness.informa.utils.Constants;
 import org.witness.informa.utils.CouchParser;
+import org.witness.informa.utils.Constants.DC;
 import org.witness.informa.utils.CouchParser.Source;
 import org.witness.informa.utils.CouchParser.Submission;
 import org.witness.informa.utils.CouchParser.User;
@@ -145,31 +146,29 @@ public class MediaLoader implements Constants {
 	}
 
 	@SuppressWarnings("unchecked")
-	public JSONObject loadMedia(String id) {
+	public JSONObject loadMedia(Map<String, Object> reqOpts) {
+		JSONObject result = new JSONObject();
+		result.put(DC.Keys.RESULT, DC.Results.FAIL);
+
+		Map<String, Object> user = (Map<String, Object>) reqOpts.get(DC.Options.USER);
+		if(!CouchParser.validateUser(dbUsers, user))
+			return result;
+		
+		
 		ViewQuery getDerivative = new ViewQuery().designDocId(Couch.Design.DERIVATIVES);
-		JSONObject derivative = CouchParser.getRecord(dbDerivatives, getDerivative, Couch.Views.Derivatives.GET_BY_ID, id, null);
+		JSONObject derivative = CouchParser.getRecord(dbDerivatives, getDerivative, Couch.Views.Derivatives.GET_BY_ID, (String) reqOpts.get(DC.Options._ID), null);
+		if(derivative != null) {
+			String url = LocalConstants.ASSETS_ROOT + "asset_token=" + user.get(DC.Options._ID) + "__" + user.get(DC.Options._REV);
+			result.put(DC.Keys.RESULT, DC.Results.OK);
+			result.put(DC.Keys.MEDIA_TOKEN, url);
+		}
 
-		// copy representations to img cache
-		File mediaCache = new File(MEDIA_CACHE);
-		if(!mediaCache.exists())
-			mediaCache.mkdir();
-
-		// TODO: this should be streamed directly to the client, not dropped into the session_cache...
+		// TODO: repName might not be accurate (important for message retrieval only)...
 		Iterator<String> rIt = derivative.getJSONArray("representation").iterator();
 		String path = "";
 		while(rIt.hasNext()) {
 			String repName = rIt.next();
 			path = repName.substring(0, repName.length() - 4);
-			File original = new File(DERIVATIVE_ROOT + path, repName);
-			File representation = new File(MEDIA_CACHE, original.getName());
-			try {
-				FileChannel o = new FileInputStream(original).getChannel();
-				FileChannel r = new FileOutputStream(representation).getChannel();
-				r.transferFrom(o, 0, o.size());
-			} catch(IOException e) {
-				CouchParser.Log(Couch.ERROR, e.toString());
-				e.printStackTrace();
-			}
 		}
 
 		derivative.put(DC.Options.MESSAGES, getMessages(path).toString());

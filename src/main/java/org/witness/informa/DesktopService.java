@@ -21,32 +21,8 @@ public class DesktopService extends AbstractService implements Constants {
 		addService("/multicast", "multicastResponse");
 		
 		//log = new Logger(getBayeux().getSessions());
-		
 		if(ml == null)
 			ml = new MediaLoader();
-			
-		new Thread(new Runnable() {			
-			private void watch() {
-				CouchParser.Log("HI", "hi! there are " +   DesktopService.this.getBayeux().getSessions().size() + " active connections!");
-				do {
-					
-				} while(DesktopService.this.getBayeux().getSessions().size() > 1 && !cFlag);
-				cleanup();
-			}
-			
-			private void cleanup() {
-				if(DesktopService.this.getBayeux().getSessions().size() == 1) {
-					ml.cleanup();
-					cFlag = false;
-				}
-				watch();
-			}
-			
-			public void run() {
-				watch();
-			}
-		});
-		
 	}
 	
 	public void multicastResponse(ServerSession remote, Message message) {
@@ -85,7 +61,7 @@ public class DesktopService extends AbstractService implements Constants {
 						ml = new MediaLoader();
 					
 					msg.put(DC.Keys.COMMAND, DC.Commands.LOAD_MEDIA);
-					msg.put(DC.Keys.METADATA, ml.loadMedia((String) msg.opts.get(DC.Options._ID)));
+					msg.put(DC.Keys.METADATA, ml.loadMedia(msg.opts));
 					
 				} catch (Exception e) {
 					Log(e.toString());

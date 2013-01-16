@@ -219,6 +219,7 @@ public interface Constants {
 			public static final String AUDIO_ANNOTATION = DC.Options.AUDIO_ANNOTATION;
 			public static final String ANNOTATION_ID = DC.Options.ANNOTATION_ID;
 			public static final String BINARY_DATA = "binary_data";
+			public static final String MEDIA_TOKEN = "media_token";
 			
 			public static final class EditTypes {
 				public final static int DELETE = 500;
