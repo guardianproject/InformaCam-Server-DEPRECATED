@@ -8,6 +8,18 @@
         <servlet-name>cometd</servlet-name>
         <servlet-class>org.cometd.server.CometdServlet</servlet-class>
         <load-on-startup>1</load-on-startup>
+        <init-param>
+            <param-name>timeout</param-name>
+            <param-value>120000</param-value>
+        </init-param>
+        <init-param>
+            <param-name>ws.timeout</param-name>
+            <param-value>120000</param-value>
+        </init-param>
+        <init-param>
+        	<param-name>long-polling.json.metaConnectDeliverOnly</param-name>
+        	<param-value>true</param-value>
+        </init-param>
     </servlet>
     <servlet-mapping>
         <servlet-name>cometd</servlet-name>

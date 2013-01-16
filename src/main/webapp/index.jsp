@@ -11,7 +11,7 @@
     <script type="text/javascript" src="js/application.js"></script>
     <script type="text/javascript" src="js/api.js"></script>
     <script type="text/javascript" src="js/formatter.js"></script>
-    <script type="text/javascript" src="js/xform.js"></script>
+    <script type="text/javascript" src="js/cors.js"></script>
     <script type="text/javascript">
         var config = {
             contextPath: '${pageContext.request.contextPath}'

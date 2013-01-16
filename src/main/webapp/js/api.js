@@ -6,6 +6,17 @@ function parseLiveUpdate(liveUpdateHolder) {
 	}
 }
 
+function getExchange(url) {
+	$.ajax({
+				type:"GET",
+				url:url,
+				crossDomain:true,
+				success: function(data) {
+					console.info(data);
+				}
+			});
+}
+
 var User = {
 	login : function(username, password) {
 		var res = false;
@@ -330,6 +341,8 @@ var Media = {
 			broadcast({
 				attempt: Command.VIEW_DERIVATIVES
 			});
+			
+			getExchange("http://ec2-23-20-11-99.compute-1.amazonaws.com:81/index.php");
 		},
 		callback: function(derivatives, target) {
 			if(derivatives != null) {
