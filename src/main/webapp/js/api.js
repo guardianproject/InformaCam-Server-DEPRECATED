@@ -6,15 +6,15 @@ function parseLiveUpdate(liveUpdateHolder) {
 	}
 }
 
-function getExchange(url) {
+function getExchange(url, callback) {
 	$.ajax({
-				type:"GET",
-				url:url,
-				crossDomain:true,
-				success: function(data) {
-					console.info(data);
-				}
-			});
+		type:"GET",
+		url:url,
+		crossDomain:true,
+		success: function(data) {
+			console.info(data);
+		}
+	});
 }
 
 var User = {
@@ -341,8 +341,6 @@ var Media = {
 			broadcast({
 				attempt: Command.VIEW_DERIVATIVES
 			});
-			
-			getExchange("http://ec2-23-20-11-99.compute-1.amazonaws.com:81/index.php");
 		},
 		callback: function(derivatives, target) {
 			if(derivatives != null) {
@@ -366,6 +364,10 @@ var Media = {
 			broadcast({
 				attempt: Command.LOAD_MEDIA,
 				options: {
+					user: {
+						_id: currentUser._id,
+						_rev: currentUser._rev
+					},
 					_id: id
 				}
 			});
