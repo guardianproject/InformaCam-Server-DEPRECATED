@@ -6,11 +6,13 @@ function parseLiveUpdate(liveUpdateHolder) {
 	}
 }
 
-function getExchange(url, callback) {
+function getExchange(url) {
+	console.info(url);
 	$.ajax({
 		type:"GET",
 		url:url,
 		crossDomain:true,
+		dataType:'json',
 		success: function(data) {
 			console.info(data);
 		}
@@ -373,6 +375,10 @@ var Media = {
 			});
 		},
 		callback: function(data) {
+			// get j3m, get representations
+			$.each(data.asset_requests, function() {
+				getExchange(data.media_token + this);
+			});
 			entity = new MediaEntity(data);
 		}
 	},

@@ -154,25 +154,29 @@ public class MediaLoader implements Constants {
 		if(!CouchParser.validateUser(dbUsers, user))
 			return result;
 		
-		
+		List<String> reqParams = new ArrayList<String>();
 		ViewQuery getDerivative = new ViewQuery().designDocId(Couch.Design.DERIVATIVES);
 		JSONObject derivative = CouchParser.getRecord(dbDerivatives, getDerivative, Couch.Views.Derivatives.GET_BY_ID, (String) reqOpts.get(DC.Options._ID), null);
 		if(derivative != null) {
-			String url = LocalConstants.ASSETS_ROOT + "asset_token=" + user.get(DC.Options._ID) + "__" + user.get(DC.Options._REV);
+			String url = LocalConstants.ASSETS_ROOT + "asset_token=" + user.get(DC.Options._ID) + "_" + user.get(DC.Options._REV);
 			result.put(DC.Keys.RESULT, DC.Results.OK);
 			result.put(DC.Keys.MEDIA_TOKEN, url);
+			reqParams.add("&asset=j3m&id=" + reqOpts.get(DC.Options._ID));
 		}
 
-		// TODO: repName might not be accurate (important for message retrieval only)...
+		// TODO: repName might not be accurate (important for message/asset retrieval only)...
 		Iterator<String> rIt = derivative.getJSONArray("representation").iterator();
 		String path = "";
+		
 		while(rIt.hasNext()) {
 			String repName = rIt.next();
 			path = repName.substring(0, repName.length() - 4);
+			reqParams.add("&asset=media&path=" + path + "/" + repName);
 		}
 
-		derivative.put(DC.Options.MESSAGES, getMessages(path).toString());
-		return derivative;
+		result.put(DC.Keys.REQUESTS, reqParams);
+		result.put(DC.Options.MESSAGES, getMessages(path).toString());
+		return result;
 	}
 
 	public void cleanup() {

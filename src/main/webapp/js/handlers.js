@@ -42,7 +42,7 @@ function handleDesktopServiceMessage(data) {
 				break;
 			case Command.LOAD_MEDIA:
 				if(data.metadata != null) {
-					if(!isEmptyObject(data.metadata)) {
+					if(!isEmptyObject(data.metadata) && data.metadata.result == 1) {
 						Media.load.callback(data.metadata);
 						placeMedia();
 					}
