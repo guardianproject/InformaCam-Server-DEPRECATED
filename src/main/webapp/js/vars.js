@@ -30,6 +30,8 @@ var Command = {
 	GET_AUDIO_ANNOTATION: 121
 };
 
+var filesystem = null;
+
 var entity, mcxAnnotation, movingAnnotation, xform_manifests;
 var MediaTypes = {
 	VIDEO: 401,

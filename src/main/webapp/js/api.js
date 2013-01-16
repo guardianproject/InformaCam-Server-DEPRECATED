@@ -6,15 +6,14 @@ function parseLiveUpdate(liveUpdateHolder) {
 	}
 }
 
-function getExchange(url) {
-	console.info(url);
+function getExchange(url, callback) {
 	$.ajax({
 		type:"GET",
 		url:url,
 		crossDomain:true,
 		dataType:'json',
 		success: function(data) {
-			console.info(data);
+			callback(data);
 		}
 	});
 }
@@ -376,10 +375,43 @@ var Media = {
 		},
 		callback: function(data) {
 			// get j3m, get representations
+			var blob_cache = new Array;
+			var expected = data.asset_requests.length;
+			var completed = 0;
+			var cb_timer = window.setInterval(function() {
+				if(completed == expected) {
+					window.clearInterval(cb_timer);
+					entity.derivative.representation = blob_cache;
+					placeMedia();
+					
+				}
+			}, 10);
+			
 			$.each(data.asset_requests, function() {
-				getExchange(data.media_token + this);
+				var url = this;
+				getExchange(data.media_token + url, function() {
+					var res = arguments[0]['res'];
+					if(res.asset_type == "j3m")
+						entity = new MediaEntity(res.j3m);
+					else if(res.asset_type == "media") {
+						var bb = new (
+							window.BlobBuilder ||
+							window.MozBlobBuilder || 
+							window.WebKitBlobBuilder || 
+							window.OBlobBuilder || 
+							window.msBlobBuilder
+						)();
+						bb.append(res.asset);
+						var blob = bb.getBlob('text/plain');
+						blob_cache.push(window.URL.createObjectURL(blob));
+					}
+					
+					completed++;
+				});
+				
 			});
-			entity = new MediaEntity(data);
+			
+				
 		}
 	},
 	annotate : {

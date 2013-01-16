@@ -44,7 +44,6 @@ function handleDesktopServiceMessage(data) {
 				if(data.metadata != null) {
 					if(!isEmptyObject(data.metadata) && data.metadata.result == 1) {
 						Media.load.callback(data.metadata);
-						placeMedia();
 					}
 				} else {
 					console.info("MEDIA IS NULL");

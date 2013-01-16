@@ -172,7 +172,7 @@ var InformaRegion = function(left, top, right, bottom, discussionId, isNew) {
 var MediaEntity = function(data) {
 	this._id = data._id;
 	this._rev = data._rev;
-
+	
 	this.regions = new Array();
 	this.getActiveRegion = function(r) {
 		return entity.regions[$(r).attr('id').split("mcx_")[1]];
