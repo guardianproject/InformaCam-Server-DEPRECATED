@@ -434,11 +434,20 @@ public interface Constants {
 			mime_types.put(".ogg", Media.MimeTypes.OGG);
 			MIME_TYPES = Collections.unmodifiableMap(mime_types);
 		}
+		public final static Map<Integer, String> MIME_TYPES_BROWSER_SIG;
+		static {
+			Map<Integer, String> mime_types_browser_sig = new HashMap<Integer, String>();
+			mime_types_browser_sig.put(MediaTypes.IMAGE, "image/jpeg");
+			mime_types_browser_sig.put(MediaTypes.VIDEO, "video/ogg");
+			mime_types_browser_sig.put(MediaTypes.AUDIO, "audio/ogg");
+			MIME_TYPES_BROWSER_SIG = Collections.unmodifiableMap(mime_types_browser_sig);
+		}
 
 		public final static String MEDIA_TYPE = "mediaType";
 		public final static class MediaTypes {
 			public final static int VIDEO = 401;
 			public final static int IMAGE = 400;
+			public final static int AUDIO = 402;
 		}
 
 		public final static String DIMENSIONS = "dimensions";

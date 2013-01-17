@@ -166,12 +166,13 @@ public class MediaLoader implements Constants {
 
 		// TODO: repName might not be accurate (important for message/asset retrieval only)...
 		Iterator<String> rIt = derivative.getJSONArray("representation").iterator();
+		String mimeType = Media.MIME_TYPES_BROWSER_SIG.get(derivative.getInt("mediaType"));
 		String path = "";
 		
 		while(rIt.hasNext()) {
 			String repName = rIt.next();
 			path = repName.substring(0, repName.length() - 4);
-			reqParams.add("&asset=media&path=" + path + "/" + repName);
+			reqParams.add("&asset=media&path=" + path + "/" + repName + "&mimeType=" + mimeType);
 		}
 
 		result.put(DC.Keys.REQUESTS, reqParams);
