@@ -361,16 +361,8 @@ function setImage() {
 			'height' : entity.displayBounds.displayHeight
 	});
 	
-	var xhr = new XMLHttpRequest();
-	xhr.open('GET', entity.derivative.representation[0], false);
-	xhr.responseType = 'arraybuffer';
-	xhr.onload = function(e) {
-		console.info(this.status);
-	};
-	xhr.send();
-		
 	var img = document.createElement('img');
-	$(img).prop('src', "data:image/jpeg;base64," + entity.derivative.representation[0]);
+	$(img).prop('src', entity.derivative.representation[0]);
 	$(img).load(function() {
 		media_overlay.css('background-image', 'url("' + img.src + '")');
 		removeSpinner();

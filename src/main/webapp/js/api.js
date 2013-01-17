@@ -402,7 +402,7 @@ var Media = {
 							window.msBlobBuilder
 						)();
 						bb.append(res.asset);
-						var blob = bb.getBlob('text/plain');
+						var blob = bb.getBlob(res.mimeType);
 						blob_cache.push(window.URL.createObjectURL(blob));
 					}
 					
