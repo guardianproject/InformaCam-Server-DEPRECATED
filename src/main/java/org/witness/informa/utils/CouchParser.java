@@ -227,7 +227,6 @@ public class CouchParser implements Constants {
 		if(!u.getString(DC.Options._REV).equals(user.get(DC.Options._REV)))
 			return false;
 		
-		Log(Couch.INFO, "user rev matches");
 		return true;
 	}
 	
