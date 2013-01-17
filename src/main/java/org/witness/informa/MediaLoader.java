@@ -546,7 +546,7 @@ public class MediaLoader implements Constants {
 
 			result.put(DC.Keys.FILE_DATA, ictd.getAbsolutePath());
 			result.put(DC.Keys.SOURCE_ID, (String) opts.get(DC.Options.SOURCE_ID));
-			result.put(DC.Keys.CONTAINER_URL, LocalConstants.SERVER_URL + "ictd.php");
+			result.put(DC.Keys.CONTAINER_URL, LocalConstants.ASSETS_ROOT.substring(0, LocalConstants.ASSETS_ROOT.length() - 1) + "ictd.php");
 			result.put(DC.Keys.RESULT, DC.Results.OK);
 
 			fis.close();
