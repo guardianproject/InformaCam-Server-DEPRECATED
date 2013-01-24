@@ -6,7 +6,6 @@ import org.cometd.bayeux.server.ServerSession;
 import org.cometd.server.AbstractService;
 import org.witness.informa.utils.Constants.DC.Attempts;
 import org.witness.informa.utils.Constants;
-import org.witness.informa.utils.CouchParser;
 import org.witness.informa.utils.InformaMessage;
 import org.witness.informa.utils.Logger;
 
@@ -23,6 +22,8 @@ public class DesktopService extends AbstractService implements Constants {
 		//log = new Logger(getBayeux().getSessions());
 		if(ml == null)
 			ml = new MediaLoader();
+		
+		
 	}
 	
 	public void multicastResponse(ServerSession remote, Message message) {

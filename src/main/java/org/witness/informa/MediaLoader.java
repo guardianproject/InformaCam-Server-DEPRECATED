@@ -131,6 +131,7 @@ public class MediaLoader implements Constants {
 		if(user != null)
 			user.put(DC.Options._REV, CouchParser.updateRecord(User.class, dbUsers, user.getString(DC.Options._ID), user.getString(DC.Options._REV), new_session));
 
+		user.put("sessionToken", user.getString(DC.Options._ID) + "_" + user.getString(DC.Options._REV) + "_" + sessionId);
 		user.remove(DC.Options.CURRENT_SESSION);
 		return user;
 	}	
